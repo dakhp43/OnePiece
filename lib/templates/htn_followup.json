@@ -1,0 +1,20 @@
+{
+  "id": "htn_followup",
+  "label": "Hypertension follow-up",
+  "keyterms": ["lisinopril", "losartan", "amlodipine", "hydrochlorothiazide", "chlorthalidone", "metoprolol", "valsartan", "olmesartan"],
+  "items": [
+    { "id": "bp_measured", "label": "Blood pressure measured today", "priority": "required", "defaultSection": "O", "condition": null },
+    { "id": "meds_confirmed", "label": "Current BP medications and doses confirmed", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "adherence", "label": "Medication adherence asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "side_effects", "label": "Medication side effects asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a new medication is prescribed" },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "home_bp", "label": "Home BP readings discussed", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "red_flags", "label": "Red-flag symptoms asked (chest pain, severe headache, vision changes, shortness of breath)", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "salt_diet", "label": "Salt / diet discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "exercise", "label": "Exercise discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "alcohol_tobacco", "label": "Alcohol and tobacco use asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "labs_kidney", "label": "Labs ordered or reviewed (kidney function / potassium)", "priority": "recommended", "defaultSection": "P", "condition": "when on an ACE inhibitor, ARB, or diuretic" },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

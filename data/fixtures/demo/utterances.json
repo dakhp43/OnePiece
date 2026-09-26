@@ -1,0 +1,106 @@
+[
+  {
+    "id": "u1",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 0.5,
+    "end": 6.79,
+    "text": "Hi Rosa, good to see you again. How have you been since we bumped up your blood pressure medicine?"
+  },
+  {
+    "id": "u2",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 8.055,
+    "end": 14.59,
+    "text": "Pretty good, but I've had this dry, tickly cough for about three weeks. It's worse at night."
+  },
+  {
+    "id": "u3",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 15.685,
+    "end": 18.245,
+    "text": "Any fever, or shortness of breath?"
+  },
+  {
+    "id": "u4",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 19.415,
+    "end": 22.01,
+    "text": "No fever, and my breathing is fine."
+  },
+  {
+    "id": "u5",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 23.125,
+    "end": 25.63,
+    "text": "And you're taking the lisinopril every day?"
+  },
+  {
+    "id": "u6",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 26.595,
+    "end": 34.135,
+    "text": "Yes, every morning. I think it's the 20 milligram, or maybe 40? The bottle's at home."
+  },
+  {
+    "id": "u7",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 35.255,
+    "end": 37.905,
+    "text": "Okay. Your blood pressure today is"
+  },
+  {
+    "id": "u8",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 39.14,
+    "end": 44.8,
+    "text": "138 over 88, which is better than last time. Have you been checking at home?"
+  },
+  {
+    "id": "u9",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 45.86,
+    "end": 49.775,
+    "text": "A few times. Mostly in the 130s."
+  },
+  {
+    "id": "u10",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 51.005,
+    "end": 60.965,
+    "text": "Good. That cough is a known side effect of lisinopril, so I'd like to switch you to losartan, 50 milligrams once a day, and stop the lisinopril."
+  },
+  {
+    "id": "u11",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 62.405,
+    "end": 64.19,
+    "text": "Okay, that's fine."
+  },
+  {
+    "id": "u12",
+    "speaker": "speaker_0",
+    "role": "unknown",
+    "start": 65.305,
+    "end": 71.385,
+    "text": "Keep cutting back on salt like we discussed. Let's check your blood pressure again in four weeks."
+  },
+  {
+    "id": "u13",
+    "speaker": "speaker_1",
+    "role": "unknown",
+    "start": 72.535,
+    "end": 75.86,
+    "text": "Sounds good. Thank you, doctor."
+  }
+]

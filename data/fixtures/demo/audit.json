@@ -1,0 +1,35 @@
+{
+  "sentenceVerdicts": [
+    { "sentenceId": "s1", "support": "supported", "hedged": false, "contradiction": false, "reason": "Patient confirms taking lisinopril every morning." },
+    { "sentenceId": "s2", "support": "partial", "hedged": true, "contradiction": false, "reason": "Patient unsure whether the dose is 20 or 40 mg; bottle not checked." },
+    { "sentenceId": "s3", "support": "supported", "hedged": false, "contradiction": false, "reason": "Patient reports home readings mostly in the 130s." },
+    { "sentenceId": "s4", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician states BP 138 over 88." },
+    { "sentenceId": "s5", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician says it is better than last time." },
+    { "sentenceId": "s6", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician switches to losartan 50 mg once a day." },
+    { "sentenceId": "s7", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician says to stop the lisinopril." },
+    { "sentenceId": "s8", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician says keep cutting back on salt." },
+    { "sentenceId": "s9", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician plans a BP check in four weeks." },
+    { "sentenceId": "s10", "support": "supported", "hedged": false, "contradiction": false, "reason": "Patient describes a dry, tickly cough for three weeks, worse at night." },
+    { "sentenceId": "s11", "support": "supported", "hedged": false, "contradiction": false, "reason": "Patient says no fever." },
+    { "sentenceId": "s12", "support": "supported", "hedged": false, "contradiction": false, "reason": "Patient says breathing is fine." },
+    { "sentenceId": "s13", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician calls the cough a known lisinopril side effect." },
+    { "sentenceId": "s14", "support": "supported", "hedged": false, "contradiction": false, "reason": "Clinician stops lisinopril because of the cough." }
+  ],
+  "checklist": [
+    { "itemId": "bp_measured", "status": "covered", "evidenceUtteranceIds": ["u7", "u8"], "explanation": "BP 138/88 stated by the clinician." },
+    { "itemId": "meds_confirmed", "status": "partial", "evidenceUtteranceIds": ["u5", "u6"], "explanation": "Lisinopril confirmed, but the patient is unsure of the dose (20 vs 40 mg)." },
+    { "itemId": "adherence", "status": "covered", "evidenceUtteranceIds": ["u5", "u6"], "explanation": "Takes it every morning." },
+    { "itemId": "side_effects", "status": "covered", "evidenceUtteranceIds": ["u2", "u10"], "explanation": "Cough identified as a lisinopril side effect." },
+    { "itemId": "allergies_reviewed", "status": "missing", "evidenceUtteranceIds": [], "explanation": "Losartan was newly prescribed, but allergies were not reviewed." },
+    { "itemId": "followup_interval", "status": "covered", "evidenceUtteranceIds": ["u12"], "explanation": "Recheck in four weeks." },
+    { "itemId": "home_bp", "status": "covered", "evidenceUtteranceIds": ["u8", "u9"], "explanation": "Home readings mostly in the 130s." },
+    { "itemId": "red_flags", "status": "partial", "evidenceUtteranceIds": ["u3", "u4"], "explanation": "Shortness of breath asked; chest pain, severe headache, and vision changes were not." },
+    { "itemId": "salt_diet", "status": "covered", "evidenceUtteranceIds": ["u12"], "explanation": "Advised to keep cutting back on salt." },
+    { "itemId": "exercise", "status": "missing", "evidenceUtteranceIds": [], "explanation": "Exercise was not discussed." },
+    { "itemId": "alcohol_tobacco", "status": "missing", "evidenceUtteranceIds": [], "explanation": "Alcohol and tobacco use were not asked." },
+    { "itemId": "labs_kidney", "status": "missing", "evidenceUtteranceIds": [], "explanation": "Starting an ARB; kidney function and potassium were not ordered or reviewed." },
+    { "itemId": "return_precautions", "status": "missing", "evidenceUtteranceIds": [], "explanation": "No warning signs or return precautions were given." },
+    { "itemId": "open:match:metabolic panel", "status": "missing", "evidenceUtteranceIds": [], "explanation": "The basic metabolic panel from the first lisinopril visit was never discussed." },
+    { "itemId": "open:match:home BP log", "status": "partial", "evidenceUtteranceIds": ["u8", "u9"], "explanation": "Home readings discussed verbally (mostly 130s); the log itself was not reviewed." }
+  ]
+}

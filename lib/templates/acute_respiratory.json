@@ -1,0 +1,17 @@
+{
+  "id": "acute_respiratory",
+  "label": "Acute respiratory",
+  "keyterms": ["amoxicillin", "azithromycin", "benzonatate", "albuterol", "oseltamivir", "prednisone", "guaifenesin", "dextromethorphan"],
+  "items": [
+    { "id": "onset_duration", "label": "Symptom onset and duration", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "fever", "label": "Fever asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "cough_breathing", "label": "Cough and breathing difficulty asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "temp_spo2", "label": "Temperature and oxygen saturation recorded", "priority": "required", "defaultSection": "O", "condition": "if measured" },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a medication is prescribed" },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "exposures", "label": "Sick contacts / exposures asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "meds_tried", "label": "Medications already tried", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "lung_smoking", "label": "Chronic lung disease or smoking asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "work_note", "label": "Work / school note", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}
