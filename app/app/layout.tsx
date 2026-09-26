@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { Activity, LogOut } from "lucide-react";
 import { requireDoctorPage } from "@/lib/auth/current";
 
 export default async function AppLayout({ children }: LayoutProps<"/app">) {
@@ -11,6 +11,9 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
           Carry<span className="text-accent">over</span>
         </Link>
         <div className="flex items-center gap-4 text-sm text-slate-600">
+          <Link href="/app/status" className="flex items-center gap-1 rounded px-2 py-1 hover:bg-slate-100" title="System status">
+            <Activity className="h-4 w-4" /> Status
+          </Link>
           <span>{session.name}</span>
           <form action="/api/auth/logout" method="post">
             <button type="submit" className="flex items-center gap-1 rounded px-2 py-1 hover:bg-slate-100" title="Sign out">

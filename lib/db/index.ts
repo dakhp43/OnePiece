@@ -30,7 +30,11 @@ async function createDb(): Promise<DB> {
     await migratePglite(pdb, { migrationsFolder: MIGRATIONS });
     db = pdb as unknown as DB;
   } else {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 5 });
+    // pg 8.x already treats sslmode=require as verify-full but warns on every start; say what it does.
+    const connectionString = process.env.DATABASE_URL!.replace(/sslmode=(require|prefer|verify-ca)\b/, "sslmode=verify-full");
+    // Tiger's free plan has no connection pooler, so keep the pool small.
+    const pool = new Pool({ connectionString, max: 5, connectionTimeoutMillis: 10_000, idleTimeoutMillis: 30_000 });
+    pool.on("error", (err) => console.error("[db] idle client error:", err.message));
     db = drizzlePg(pool, { schema });
     await migratePg(db, { migrationsFolder: MIGRATIONS });
   }
@@ -63,6 +67,7 @@ export async function ensureHypertables(db: DB) {
     await db.execute(sql`select create_hypertable('vitals', 'time', if_not_exists => TRUE, migrate_data => TRUE)`);
     await db.execute(sql`select create_hypertable('events', 'time', if_not_exists => TRUE, migrate_data => TRUE)`);
   } catch (err) {
-    console.warn("[db] could not create hypertables:", (err as Error).message);
+    // e.g. "permission denied" if the DB user can't create the extension; the app still works.
+    console.warn("[db] could not create hypertables (vitals/events stay plain tables):", (err as Error).message);
   }
 }
