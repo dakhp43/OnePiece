@@ -65,8 +65,9 @@ npm run dev                  # http://localhost:3000
 ```
 
 The database migrates and seeds itself on first request. With `DATABASE_URL` empty, it uses an embedded
-PGlite database in `data/pglite/`, so no setup is needed. For Tiger Cloud, set
-`DATABASE_URL=postgres://…?sslmode=require`; `vitals` and `events` become hypertables automatically.
+PGlite database in `data/pglite/`, so no setup is needed. For Tiger Cloud, paste the console's service URL into
+`DATABASE_URL` and the password into `PGPASSWORD` (the console URL omits it). TLS is verified against Tiger's own
+certificate authority in [certs/tiger-ca.pem](certs/tiger-ca.pem). `vitals` and `events` become hypertables automatically.
 
 Demo logins (synthetic): `dr.patel@carryover.demo` / `demo1234`, `dr.nguyen@carryover.demo` / `demo1234`.
 Dr. Nguyen can't open Dr. Patel's patients (403).
@@ -75,6 +76,7 @@ Dr. Nguyen can't open Dr. Patel's patients (403).
 |---|---|
 | `npm run db:reset` | Wipe and re-seed. Stop the dev server first when using PGlite. |
 | `npm run db:seed` | Re-seed rows only |
+| `npm run db:report` | Read-only summary of what's stored: row counts, hypertables, latest visits and events |
 | `npm test` | Unit tests (utterances, scoring, numbers, readability) |
 | `npm run lint` / `npm run typecheck` | Run before every commit |
 | `npm run demo:audio` | Re-synthesize the placeholder demo audio with Windows voices |

@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { sql } from "drizzle-orm";
 import { drizzle as drizzlePg, type NodePgDatabase } from "drizzle-orm/node-postgres";
@@ -17,6 +18,23 @@ const PGLITE_DIR = path.join(process.cwd(), "data", "pglite");
 
 const g = globalThis as unknown as { __carryoverDb?: Promise<DB> };
 
+/**
+ * Connection options with verified TLS. Tiger signs its certificates with its own CA ("ca.timescale.com"),
+ * so we trust that CA (certs/tiger-ca.pem, public, committed) and still check the hostname. `sslmode` is
+ * removed from the URL because pg lets URL settings override the explicit `ssl` option.
+ * sslmode=disable keeps plain connections for a local Docker Postgres.
+ */
+export function pgConnection(url: string): { connectionString: string; ssl: false | { ca?: string; rejectUnauthorized: true } } {
+  const u = new URL(url);
+  const mode = u.searchParams.get("sslmode");
+  u.searchParams.delete("sslmode");
+  if (mode === "disable") return { connectionString: u.toString(), ssl: false };
+  const caFile = process.env.DATABASE_CA_FILE
+    || (u.hostname.endsWith(".tsdb.cloud.timescale.com") ? path.join(process.cwd(), "certs", "tiger-ca.pem") : null);
+  const ca = caFile && fs.existsSync(/*turbopackIgnore: true*/ caFile) ? fs.readFileSync(caFile, "utf8") : undefined;
+  return { connectionString: u.toString(), ssl: { ca, rejectUnauthorized: true } };
+}
+
 /** True when no DATABASE_URL is set and we run on the embedded PGlite database. */
 export function usingPglite() {
   return !process.env.DATABASE_URL;
@@ -35,10 +53,8 @@ async function createDb(): Promise<DB> {
     if (!hasUrlPassword && !process.env.PGPASSWORD) {
       throw new Error("Database password missing: set PGPASSWORD in .env.local (Tiger's service URL doesn't include it)");
     }
-    // pg 8.x already treats sslmode=require as verify-full but warns on every start; say what it does.
-    const connectionString = process.env.DATABASE_URL!.replace(/sslmode=(require|prefer|verify-ca)\b/, "sslmode=verify-full");
     // Tiger's free plan has no connection pooler, so keep the pool small.
-    const pool = new Pool({ connectionString, max: 5, connectionTimeoutMillis: 10_000, idleTimeoutMillis: 30_000 });
+    const pool = new Pool({ ...pgConnection(process.env.DATABASE_URL!), max: 5, connectionTimeoutMillis: 10_000, idleTimeoutMillis: 30_000 });
     pool.on("error", (err) => console.error("[db] idle client error:", err.message));
     db = drizzlePg(pool, { schema });
     await migratePg(db, { migrationsFolder: MIGRATIONS });

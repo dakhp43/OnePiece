@@ -11,7 +11,8 @@ async function main() {
       fs.rmSync(path.join(process.cwd(), "data", "pglite"), { recursive: true, force: true });
       console.log("[migrate] removed embedded PGlite database");
     } else {
-      const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+      const { pgConnection } = await import("@/lib/db");
+      const pool = new Pool(pgConnection(process.env.DATABASE_URL));
       await pool.query(
         "drop table if exists events, vitals, open_items, visits, patients, doctors cascade; drop schema if exists drizzle cascade;",
       );
