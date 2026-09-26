@@ -1,3 +1,4 @@
+import tls from "node:tls";
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
 import { ApiError } from "@/lib/api";
@@ -17,7 +18,13 @@ export async function sendEmail(mail: OutgoingEmail): Promise<{ provider: string
     const user = process.env.GMAIL_USER;
     const pass = process.env.GMAIL_APP_PASSWORD;
     if (!user || !pass) throw new ApiError(503, "Email isn't configured: set GMAIL_USER and GMAIL_APP_PASSWORD in .env.local");
-    const transport = nodemailer.createTransport({ host: "smtp.gmail.com", port: 465, secure: true, auth: { user, pass } });
+    // Port 587 + STARTTLS, trusting Node's bundled CAs plus the OS certificate store. Antivirus "mail shields"
+    // (e.g. AVG) re-sign SMTP traffic with a root they install into Windows; on port 465 AVG's scanner fails and
+    // presents an untrusted root instead. Verification stays on: only certificates the OS already trusts pass.
+    const transport = nodemailer.createTransport({
+      host: "smtp.gmail.com", port: 587, secure: false, requireTLS: true, auth: { user, pass },
+      tls: { ca: [...tls.getCACertificates("default"), ...tls.getCACertificates("system")] },
+    });
     const info = await withRetry("gmail", () => transport.sendMail({
       from: process.env.EMAIL_FROM || `Carryover Demo Clinic <${user}>`,
       to: mail.to,
@@ -25,7 +32,7 @@ export async function sendEmail(mail: OutgoingEmail): Promise<{ provider: string
       text: mail.text,
       attachments: [{ filename: mail.attachment.filename, content: mail.attachment.content, contentType: "application/pdf" }],
     })).catch((err: { code?: string; message?: string }) => {
-      if (err.code === "EAUTH") throw new ApiError(502, "Gmail rejected the login: check GMAIL_USER and the 16-character app password");
+      if (err.code === "EAUTH") throw new ApiError(502, "Gmail rejected the login: create a new app password for GMAIL_USER (2-Step Verification must be on)");
       throw new ApiError(502, `Email failed: ${err.message ?? "unknown error"}`);
     });
     return { provider, id: info.messageId ?? null };
