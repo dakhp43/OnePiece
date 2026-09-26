@@ -30,6 +30,11 @@ async function createDb(): Promise<DB> {
     await migratePglite(pdb, { migrationsFolder: MIGRATIONS });
     db = pdb as unknown as DB;
   } else {
+    // Tiger's console URL omits the password; pg then reads PGPASSWORD. Fail with a clear message if neither has it.
+    const hasUrlPassword = /^postgres(?:ql)?:\/\/[^:/@]+:[^@]+@/.test(process.env.DATABASE_URL!);
+    if (!hasUrlPassword && !process.env.PGPASSWORD) {
+      throw new Error("Database password missing: set PGPASSWORD in .env.local (Tiger's service URL doesn't include it)");
+    }
     // pg 8.x already treats sslmode=require as verify-full but warns on every start; say what it does.
     const connectionString = process.env.DATABASE_URL!.replace(/sslmode=(require|prefer|verify-ca)\b/, "sslmode=verify-full");
     // Tiger's free plan has no connection pooler, so keep the pool small.
