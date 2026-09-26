@@ -13,12 +13,14 @@ interface Usage {
   geminiCalls: number;
   sttSeconds: number;
   sttCalls: number;
+  backboardCalls: number;
 }
 
 export const LIMITS = {
   geminiCalls: () => Number(process.env.GEMINI_DAILY_CALL_LIMIT || 150),
   sttSeconds: () => Number(process.env.STT_DAILY_AUDIO_MINUTES || 30) * 60,
   maxRecordingSeconds: () => Number(process.env.MAX_RECORDING_MINUTES || 10) * 60,
+  backboardCalls: () => Number(process.env.BACKBOARD_DAILY_CALL_LIMIT || 60),
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -26,9 +28,9 @@ const file = () => path.join(DIR, `${today()}.json`);
 
 export function readUsage(): Usage {
   try {
-    return { geminiCalls: 0, sttSeconds: 0, sttCalls: 0, ...JSON.parse(fs.readFileSync(file(), "utf8")) };
+    return { geminiCalls: 0, sttSeconds: 0, sttCalls: 0, backboardCalls: 0, ...JSON.parse(fs.readFileSync(file(), "utf8")) };
   } catch {
-    return { geminiCalls: 0, sttSeconds: 0, sttCalls: 0 };
+    return { geminiCalls: 0, sttSeconds: 0, sttCalls: 0, backboardCalls: 0 };
   }
 }
 
@@ -44,6 +46,15 @@ export function reserveGeminiCall(label: string) {
     throw new ExternalError("usage", null, `${label}: daily Gemini call limit (${LIMITS.geminiCalls()}) reached`);
   }
   write({ ...u, geminiCalls: u.geminiCalls + 1 });
+}
+
+/** Call immediately before each Backboard request (memory writes, brief, assistant create/delete). */
+export function reserveBackboardCall(path: string) {
+  const u = readUsage();
+  if (u.backboardCalls >= LIMITS.backboardCalls()) {
+    throw new ExternalError("usage", null, `backboard ${path}: daily call limit (${LIMITS.backboardCalls()}) reached`);
+  }
+  write({ ...u, backboardCalls: u.backboardCalls + 1 });
 }
 
 /** Call before sending audio to ElevenLabs; `seconds` is the recording length. */

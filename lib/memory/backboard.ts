@@ -2,6 +2,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
 import type { PatientRow, VisitRow } from "@/lib/db/schema";
 import { ExternalError, withRetry, withTimeout } from "@/lib/http";
+import { reserveBackboardCall } from "@/lib/usage";
 import { SECTION_LABELS, liveSentences } from "@/lib/note";
 import { VISIT_TYPE_LABELS, formatDate } from "@/lib/utils";
 
@@ -13,12 +14,41 @@ export function backboardEnabled() {
   return process.env.BACKBOARD_ENABLED !== "false" && Boolean(process.env.BACKBOARD_API_KEY);
 }
 
-async function bb<T>(path: string, body: unknown): Promise<T> {
+const MIN_BALANCE_USD = 0.5;
+
+/** Balance + auto-reload state (free call). */
+export async function backboardBalance(): Promise<{ balanceUsd: number | undefined; autoReload: boolean | undefined }> {
+  const r = await fetch(`${BASE}/billing/balance`, {
+    headers: { "X-API-Key": process.env.BACKBOARD_API_KEY! }, signal: AbortSignal.timeout(6000),
+  });
+  if (!r.ok) throw new ExternalError("backboard", r.status, `billing/balance → ${r.status}`);
+  const j = (await r.json()) as { balance_usd?: number; auto_reload_enabled?: boolean };
+  return { balanceUsd: j.balance_usd, autoReload: j.auto_reload_enabled };
+}
+
+const g = globalThis as unknown as { __bbCredit?: { at: number; ok: boolean; reason?: string } };
+
+/**
+ * Refuses spending calls when credit is low or auto-reload is on (which could turn into card charges).
+ * Checked at most every 10 minutes.
+ */
+async function assertCreditSafe() {
+  if (!g.__bbCredit || Date.now() - g.__bbCredit.at > 10 * 60_000) {
+    const { balanceUsd, autoReload } = await backboardBalance();
+    const reason = autoReload ? "auto-reload is on" : (balanceUsd ?? 0) < MIN_BALANCE_USD ? `balance ${balanceUsd} below ${MIN_BALANCE_USD}` : undefined;
+    g.__bbCredit = { at: Date.now(), ok: !reason, reason };
+  }
+  if (!g.__bbCredit.ok) throw new ExternalError("backboard", null, `refusing call: ${g.__bbCredit.reason}`);
+}
+
+async function bb<T>(path: string, body?: unknown, method: "POST" | "DELETE" = "POST"): Promise<T> {
+  await assertCreditSafe();
   return withRetry("backboard", async () => {
+    reserveBackboardCall(path); // counts retries too
     const res = await fetch(`${BASE}${path}`, {
-      method: "POST",
+      method,
       headers: { "X-API-Key": process.env.BACKBOARD_API_KEY!, "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: body === undefined ? undefined : JSON.stringify(body),
     });
     if (!res.ok) throw new ExternalError("backboard", res.status, `${path} → ${res.status} ${(await res.text()).slice(0, 200)}`);
     return res.json() as Promise<T>;
@@ -86,6 +116,11 @@ export async function rememberSignedVisit(visitId: string) {
   if (!created) await addMemory(id, visit, patient); // a fresh assistant was already back-filled with this visit
 }
 
+/** Deletes a patient's assistant (and its threads/memories) — used by the demo reset. */
+export async function deleteAssistant(assistantId: string) {
+  await bb(`/assistants/${assistantId}`, undefined, "DELETE");
+}
+
 export const BRIEF_QUESTION =
   "Before today's visit, list in at most 5 bullets what the doctor should know: active problems, current medications and recent changes, outstanding items, and trends. Reply with bullets only, one per line, starting with \"- \".";
 
@@ -97,6 +132,9 @@ export async function backboardBrief(patient: PatientRow, context: string): Prom
     content: `${BRIEF_QUESTION}\n\nCurrent chart snapshot (for trends and open items):\n${context}`,
     memory: "Readonly",
     stream: false,
+    // Cheapest capable model on Backboard (~$0.0003 per brief); override in .env.local.
+    llm_provider: process.env.BACKBOARD_LLM_PROVIDER || "google",
+    model_name: process.env.BACKBOARD_MODEL || "gemini-2.5-flash-lite",
   }), 12_000);
   const bullets = parseBullets(res.content ?? "");
   if (!bullets.length) throw new ExternalError("backboard", null, "empty brief");

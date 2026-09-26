@@ -86,7 +86,7 @@ export default async function StatusPage({ searchParams }: PageProps<"/app/statu
 
       <Card className="mt-6">
         <CardHeader><CardTitle>Today&apos;s usage (free-tier caps)</CardTitle></CardHeader>
-        <CardContent className="grid grid-cols-3 gap-4 text-center">
+        <CardContent className="grid grid-cols-4 gap-4 text-center">
           <div>
             <p className="text-xl font-semibold tabular-nums">{u.today.geminiCalls} / {u.limits.geminiCalls}</p>
             <p className="text-xs text-slate-500">Gemini calls</p>
@@ -94,6 +94,10 @@ export default async function StatusPage({ searchParams }: PageProps<"/app/statu
           <div>
             <p className="text-xl font-semibold tabular-nums">{(u.today.sttSeconds / 60).toFixed(1)} / {u.limits.sttMinutes} min</p>
             <p className="text-xs text-slate-500">audio transcribed ({u.today.sttCalls} recordings)</p>
+          </div>
+          <div>
+            <p className="text-xl font-semibold tabular-nums">{u.today.backboardCalls} / {u.limits.backboardCalls}</p>
+            <p className="text-xs text-slate-500">Backboard calls</p>
           </div>
           <div>
             <p className="text-xl font-semibold tabular-nums">{u.limits.maxRecordingMinutes} min</p>

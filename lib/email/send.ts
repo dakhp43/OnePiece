@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
+import { ApiError } from "@/lib/api";
 import { ExternalError, withRetry } from "@/lib/http";
 
 export interface OutgoingEmail {
@@ -15,7 +16,7 @@ export async function sendEmail(mail: OutgoingEmail): Promise<{ provider: string
   if (provider === "gmail") {
     const user = process.env.GMAIL_USER;
     const pass = process.env.GMAIL_APP_PASSWORD;
-    if (!user || !pass) throw new ExternalError("email", null, "GMAIL_USER / GMAIL_APP_PASSWORD not set");
+    if (!user || !pass) throw new ApiError(503, "Email isn't configured: set GMAIL_USER and GMAIL_APP_PASSWORD in .env.local");
     const transport = nodemailer.createTransport({ host: "smtp.gmail.com", port: 465, secure: true, auth: { user, pass } });
     const info = await withRetry("gmail", () => transport.sendMail({
       from: process.env.EMAIL_FROM || `Carryover Demo Clinic <${user}>`,
@@ -23,11 +24,14 @@ export async function sendEmail(mail: OutgoingEmail): Promise<{ provider: string
       subject: mail.subject,
       text: mail.text,
       attachments: [{ filename: mail.attachment.filename, content: mail.attachment.content, contentType: "application/pdf" }],
-    }));
+    })).catch((err: { code?: string; message?: string }) => {
+      if (err.code === "EAUTH") throw new ApiError(502, "Gmail rejected the login: check GMAIL_USER and the 16-character app password");
+      throw new ApiError(502, `Email failed: ${err.message ?? "unknown error"}`);
+    });
     return { provider, id: info.messageId ?? null };
   }
 
-  if (!process.env.RESEND_API_KEY) throw new ExternalError("email", null, "RESEND_API_KEY not set");
+  if (!process.env.RESEND_API_KEY) throw new ApiError(503, "Email isn't configured: set RESEND_API_KEY in .env.local");
   const resend = new Resend(process.env.RESEND_API_KEY);
   const res = await withRetry("resend", async () => {
     const r = await resend.emails.send({

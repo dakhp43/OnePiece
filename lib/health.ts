@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { getDb, usingPglite } from "@/lib/db";
 import { demoFallbackEnabled } from "@/lib/fixtures";
-import { backboardEnabled } from "@/lib/memory/backboard";
+import { backboardBalance, backboardEnabled } from "@/lib/memory/backboard";
 import { LIMITS, readUsage } from "@/lib/usage";
 
 /**
@@ -15,7 +15,7 @@ export interface Health {
   gemini: { configured: boolean; ok: boolean; model: string; fallbackModel: string | null; fallbackOk?: boolean; error?: string };
   backboard: { enabled: boolean; configured: boolean; ok: boolean; balanceUsd?: number; autoReload?: boolean; error?: string };
   email: { provider: string; configured: boolean };
-  usage: { today: ReturnType<typeof readUsage>; limits: { geminiCalls: number; sttMinutes: number; maxRecordingMinutes: number } };
+  usage: { today: ReturnType<typeof readUsage>; limits: { geminiCalls: number; sttMinutes: number; maxRecordingMinutes: number; backboardCalls: number } };
   demoFallback: boolean;
 }
 
@@ -80,20 +80,6 @@ async function checkGemini(): Promise<Health["gemini"]> {
   }
 }
 
-/** Reads Backboard's balance; field names are matched loosely since only balance_usd is documented. */
-export async function backboardBalance(): Promise<{ balanceUsd: number | undefined; autoReload: boolean | undefined }> {
-  const r = await fetch("https://app.backboard.io/api/billing/balance", {
-    headers: { "X-API-Key": process.env.BACKBOARD_API_KEY! }, signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const j = (await r.json()) as Record<string, unknown>;
-  const autoKey = Object.keys(j).find((k) => /auto.?(re)?load|auto.?top/i.test(k) && typeof j[k] === "boolean");
-  return {
-    balanceUsd: typeof j.balance_usd === "number" ? j.balance_usd : Number(j.balance_usd ?? NaN) || undefined,
-    autoReload: autoKey ? Boolean(j[autoKey]) : undefined,
-  };
-}
-
 async function checkBackboard(): Promise<Health["backboard"]> {
   const configured = Boolean(process.env.BACKBOARD_API_KEY);
   const enabled = backboardEnabled();
@@ -130,6 +116,7 @@ export async function checkHealth({ fresh = false } = {}): Promise<Health> {
         geminiCalls: LIMITS.geminiCalls(),
         sttMinutes: LIMITS.sttSeconds() / 60,
         maxRecordingMinutes: LIMITS.maxRecordingSeconds() / 60,
+        backboardCalls: LIMITS.backboardCalls(),
       },
     },
     demoFallback: demoFallbackEnabled(),
