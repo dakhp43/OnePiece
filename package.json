@@ -13,7 +13,8 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:reset": "tsx scripts/migrate.ts --reset && tsx scripts/seed.ts",
-    "demo:audio": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make-demo-audio.ps1 && tsx scripts/build-demo-fixture.ts"
+    "demo:audio": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make-demo-audio.ps1 && tsx scripts/build-demo-fixture.ts",
+    "fixtures:promote": "tsx scripts/promote-fixtures.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",

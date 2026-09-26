@@ -58,8 +58,8 @@ export async function generateJson<T>({ schema, system, user, temperature = 0.2,
       try {
         return await withRetry(label, () => call(model, prompt, withSchema));
       } catch (err) {
-        if (withSchema && statusOf(err) === 400 && /schema/i.test((err as Error).message)) {
-          console.warn(`[${label}] responseJsonSchema rejected; retrying with schema in prompt`);
+        if (withSchema && statusOf(err) === 400) {
+          console.warn(`[${label}] 400 with responseJsonSchema (${(err as Error).message.slice(0, 120)}); retrying with schema in prompt`);
           withSchema = false;
           return withRetry(label, () => call(model, prompt, false));
         }

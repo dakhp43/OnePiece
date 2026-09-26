@@ -55,3 +55,15 @@ export function remapFixtureOpenItems(audit: AuditResult, openItems: OpenItemRow
     }),
   };
 }
+
+/** Inverse of remapFixtureOpenItems: rewrites "open:<id>" as "open:match:<item text>" so a saved audit works on any install. */
+export function portableAudit(audit: AuditResult, openItems: OpenItemRow[]): AuditResult {
+  const byId = new Map(openItems.map((o) => [`${OPEN_PREFIX}${o.id}`, o]));
+  return {
+    ...audit,
+    checklist: audit.checklist.map((c) => {
+      const item = byId.get(c.itemId);
+      return item ? { ...c, itemId: `${MATCH_PREFIX}${item.text}` } : c;
+    }),
+  };
+}

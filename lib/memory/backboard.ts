@@ -97,7 +97,7 @@ export async function backboardBrief(patient: PatientRow, context: string): Prom
     content: `${BRIEF_QUESTION}\n\nCurrent chart snapshot (for trends and open items):\n${context}`,
     memory: "Readonly",
     stream: false,
-  }), 25_000);
+  }), 12_000);
   const bullets = parseBullets(res.content ?? "");
   if (!bullets.length) throw new ExternalError("backboard", null, "empty brief");
   return bullets;

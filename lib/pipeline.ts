@@ -8,8 +8,8 @@ import { eq } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
 import { logEvent } from "@/lib/events";
 import { DEMO_AUDIO, demoFallbackEnabled, loadDemoFixture, saveLastGood } from "@/lib/fixtures";
-import { buildChecklist, buildGaps, remapFixtureOpenItems } from "@/lib/gaps";
-import { withTimeout } from "@/lib/http";
+import { buildChecklist, buildGaps, portableAudit, remapFixtureOpenItems } from "@/lib/gaps";
+import { ExternalError, isRetryable, statusOf, withTimeout } from "@/lib/http";
 import { auditNote } from "@/lib/llm/prompts/auditNote";
 import { draftNote, toNote } from "@/lib/llm/prompts/draftNote";
 import { getOpenItems } from "@/lib/queries";
@@ -45,11 +45,19 @@ export async function runPipeline(visitId: string) {
   let audit: AuditResult | null = null;
   let audioPath = visit.audioPath;
 
+  // After a network-level failure in demo mode, skip remaining live calls instead of retrying each one.
+  let networkDown = false;
+  const live = <T,>(label: string, run: () => Promise<T>) => {
+    if (networkDown) return Promise.reject(new ExternalError(label, null, "skipped: network unavailable"));
+    return withTimeout(label, run(), timeout);
+  };
+
   const setStep = (step: ProcessingStep) => updateVisit(visitId, { processingStep: step });
 
   /** Replace everything up to `upTo` with the demo fixtures. */
   const switchToDemo = (upTo: "transcript" | "note" | "audit", err: unknown) => {
     if (!demoMode) throw err;
+    if (statusOf(err) === null && isRetryable(err)) networkDown = true;
     console.warn(`[pipeline] ${upTo} failed (${(err as Error).message}); using demo fixtures`);
     const t = loadDemoFixture("transcript", TranscriptSchema);
     const u = loadDemoFixture("utterances", UtteranceSchema.array());
@@ -86,7 +94,7 @@ export async function runPipeline(visitId: string) {
       try {
         if (!audioPath || !fs.existsSync(audioPath)) throw new Error("No audio recorded for this visit");
         const keyterms = [...template.keyterms, ...patient.knownMedications.map((m) => m.name)];
-        transcript = await withTimeout("elevenlabs", transcribe(audioPath, keyterms), timeout);
+        transcript = await live("elevenlabs", () => transcribe(audioPath!, keyterms));
         saveLastGood("transcript", transcript);
       } catch (err) {
         switchToDemo("transcript", err);
@@ -100,10 +108,10 @@ export async function runPipeline(visitId: string) {
     // 2. Draft note (Call A)
     await setStep("drafting");
     try {
-      const draft = await withTimeout("gemini:draft", draftNote({
+      const draft = await live("gemini:draft", () => draftNote({
         utterances, visitType: visit.visitType,
         knownMeds: patient.knownMedications, knownAllergies: patient.knownAllergies,
-      }), timeout);
+      }));
       saveLastGood("note", draft);
       note = toNote(draft);
       utterances = applySpeakerRoles(utterances, note.speakerRoles);
@@ -122,8 +130,8 @@ export async function runPipeline(visitId: string) {
     const checklist = buildChecklist(template, openItems);
     if (!audit) {
       try {
-        audit = await withTimeout("gemini:audit", auditNote({ utterances, note: note!, checklist }), timeout);
-        saveLastGood("audit", audit);
+        audit = await live("gemini:audit", () => auditNote({ utterances, note: note!, checklist }));
+        saveLastGood("audit", portableAudit(audit, openItems));
       } catch (err) {
         switchToDemo("audit", err);
       }

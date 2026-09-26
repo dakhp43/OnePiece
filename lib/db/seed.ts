@@ -7,7 +7,8 @@ type DB = NodePgDatabase<typeof schema>;
 
 const DAY = 24 * 60 * 60 * 1000;
 const daysAgo = (n: number) => new Date(Date.now() - n * DAY);
-const dobForAge = (age: number, monthDay = "03-14") => `${new Date().getFullYear() - age - 1}-${monthDay}`;
+/** A DOB in early January, so the patient is `age` for almost the whole year. */
+const dobForAge = (age: number) => `${new Date().getFullYear() - age}-01-02`;
 
 type Line = [problemId: string, section: Section, text: string, kind: SentenceKind];
 

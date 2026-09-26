@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
-import { Input, Label, Select } from "@/components/ui/form";
+import { Input, Label, Select, Textarea } from "@/components/ui/form";
 import { TaskCategorySchema, type Task } from "@/lib/contracts";
 import { cn, formatDate } from "@/lib/utils";
 import type { VisitView } from "@/lib/visits";
@@ -212,7 +212,7 @@ function TaskList({ tasks: initialTasks, onSave }: { tasks: Task[]; onSave: (tas
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
-            <Input value={t.description} onChange={(e) => update(i, { description: e.target.value })} className="mt-2" />
+            <Textarea rows={2} value={t.description} onChange={(e) => update(i, { description: e.target.value })} className="mt-2" aria-label="Task description" />
             {t.sourceSentenceIds.length > 0 && <p className="mt-1 text-[11px] text-slate-400">From note: {t.sourceSentenceIds.join(", ")}</p>}
           </div>
         ))}

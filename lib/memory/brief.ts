@@ -34,7 +34,7 @@ export async function getBrief(patient: PatientRow): Promise<Brief> {
   }
   if (!brief && process.env.GEMINI_API_KEY) {
     try {
-      brief = { bullets: await withTimeout("gemini:brief", previsitBrief(text), 20_000), source: "gemini" };
+      brief = { bullets: await withTimeout("gemini:brief", previsitBrief(text), 12_000), source: "gemini" };
     } catch (err) {
       console.warn("[brief] gemini failed:", (err as Error).message);
     }
