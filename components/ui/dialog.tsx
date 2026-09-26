@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { LiquidGlass } from "@/components/LiquidGlass";
 import { cn } from "@/lib/utils";
 
 interface DialogProps {
@@ -22,24 +24,29 @@ export function Dialog({ open, onClose, title, children, footer, className }: Di
   }, [open, onClose]);
 
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4" onMouseDown={onClose}>
-      <div
+  // Portal to <body> so no transformed/animated ancestor can trap the fixed overlay.
+  return createPortal(
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 backdrop-blur-[3px]" onMouseDown={onClose}>
+      <LiquidGlass
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn("w-full max-w-lg rounded-lg bg-white shadow-xl", className)}
+        radius={24}
+        blur={22}
+        strength={30}
+        className={cn("dialog-in w-full max-w-lg overflow-hidden rounded-3xl", className)}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
-          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <button onClick={onClose} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Close">
+        <div className="flex items-center justify-between px-6 pb-2 pt-5">
+          <h2 className="font-display text-xl font-semibold leading-tight text-ink">{title}</h2>
+          <button onClick={onClose} className="rounded-full p-1.5 text-ink-3 transition-colors hover:bg-surface-3 hover:text-ink" aria-label="Close">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto px-5 py-4">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-slate-100 px-5 py-3">{footer}</div>}
-      </div>
-    </div>
+        <div className="max-h-[70vh] overflow-y-auto px-6 py-4">{children}</div>
+        {footer && <div className="flex justify-end gap-2 border-t border-line bg-surface-3 px-6 py-3.5">{footer}</div>}
+      </LiquidGlass>
+    </div>,
+    document.body,
   );
 }

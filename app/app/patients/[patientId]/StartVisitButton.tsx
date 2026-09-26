@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic } from "lucide-react";
+import { Activity, Check, Loader2, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { Input, Label, Select } from "@/components/ui/form";
-import { VISIT_TYPE_LABELS } from "@/lib/utils";
+import { VisitTypeIcon } from "@/components/patient";
+import { Input, Label } from "@/components/ui/form";
+import { VISIT_TYPE_LABELS, cn } from "@/lib/utils";
 
 const VITAL_FIELDS = [
   { key: "systolic", label: "Systolic", placeholder: "138" },
@@ -57,20 +58,43 @@ export function StartVisitButton({ patientId, lastVisitType }: { patientId: stri
         footer={
           <>
             <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={start} disabled={busy}>{busy ? "Starting…" : "Continue to recording"}</Button>
+            <Button onClick={start} disabled={busy}>
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />}
+              {busy ? "Starting…" : "Continue to recording"}
+            </Button>
           </>
         }
       >
-        <div className="space-y-4">
+        <div className="space-y-5">
+          <fieldset>
+            <legend className="mb-2 font-sub text-xs font-semibold text-ink-2">Visit type</legend>
+            <div className="grid grid-cols-3 gap-2">
+              {Object.entries(VISIT_TYPE_LABELS).map(([id, label]) => {
+                const selected = visitType === id;
+                return (
+                  <label
+                    key={id}
+                    className={cn(
+                      "relative flex cursor-pointer flex-col gap-2 rounded-xl border p-3 text-sm transition-all has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent",
+                      selected ? "border-accent bg-accent-soft text-ink ring-1 ring-accent" : "border-line text-ink-2 hover:border-line-strong hover:bg-surface-2",
+                    )}
+                  >
+                    <input type="radio" name="visitType" value={id} checked={selected} onChange={(e) => setVisitType(e.target.value)} className="sr-only" />
+                    <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg transition-colors", selected ? "bg-accent text-white" : "bg-surface-3 text-ink-3")}>
+                      <VisitTypeIcon type={id} className="h-4 w-4" />
+                    </span>
+                    <span className="font-medium leading-tight">{label}</span>
+                    {selected && <Check className="pop absolute right-2.5 top-2.5 h-4 w-4 text-accent-ink" />}
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
           <div>
-            <Label htmlFor="visitType">Visit type</Label>
-            <Select id="visitType" value={visitType} onChange={(e) => setVisitType(e.target.value)}>
-              {Object.entries(VISIT_TYPE_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
-            </Select>
-          </div>
-          <div>
-            <p className="mb-2 text-xs font-medium text-slate-600">Vitals (optional)</p>
-            <div className="grid grid-cols-3 gap-3">
+            <p className="mb-2 flex items-center gap-2 font-sub text-xs font-semibold text-ink-2">
+              <Activity className="h-3.5 w-3.5 text-accent" /> Vitals <span className="font-normal text-ink-4">(optional)</span>
+            </p>
+            <div className="grid grid-cols-3 gap-3 rounded-xl border border-line bg-surface-2 p-3">
               {VITAL_FIELDS.map((f) => (
                 <div key={f.key}>
                   <Label htmlFor={f.key}>{f.label}</Label>
@@ -80,12 +104,13 @@ export function StartVisitButton({ patientId, lastVisitType }: { patientId: stri
                     placeholder={f.placeholder}
                     value={vitals[f.key] ?? ""}
                     onChange={(e) => setVitals((v) => ({ ...v, [f.key]: e.target.value }))}
+                    className="font-mono tabular-nums"
                   />
                 </div>
               ))}
             </div>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p role="alert" className="rounded-lg border border-danger/25 bg-danger-soft px-3 py-2 text-sm text-danger-ink">{error}</p>}
         </div>
       </Dialog>
     </>

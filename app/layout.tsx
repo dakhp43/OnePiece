@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans, Outfit, Roboto, Roboto_Mono } from "next/font/google";
+import { CursorTrail } from "@/components/CursorTrail";
+import { InlineScript } from "@/components/InlineScript";
+import { ThemeSync } from "@/components/theme";
+import { THEME_SCRIPT } from "@/components/theme-script";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Headings: Outfit (geometric sans). Subheadings: Open Sans. Body and UI: Roboto; numbers: Roboto Mono.
+const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
+const openSans = Open_Sans({ variable: "--font-open-sans", subsets: ["latin"] });
+const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"] });
+const robotoMono = Roboto_Mono({ variable: "--font-roboto-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Carryover",
@@ -19,10 +19,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${outfit.variable} ${openSans.variable} ${roboto.variable} ${robotoMono.variable} h-full antialiased`}
+    >
+      <head>
+        {/* Sets data-theme and data-trail before first paint (no flash of the wrong theme). */}
+        <InlineScript html={THEME_SCRIPT} />
+      </head>
       <body className="min-h-full flex flex-col">
+        <ThemeSync />
+        <CursorTrail />
         <div className="flex-1 flex flex-col">{children}</div>
-        <footer className="border-t border-slate-200 bg-white px-6 py-2 text-center text-xs text-slate-500">
+        <footer className="glass flex h-[var(--footer-h)] shrink-0 items-center justify-center gap-2 rounded-none border-x-0 border-b-0 px-6 text-center text-xs text-ink-3 shadow-none">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-warn" aria-hidden />
           Prototype for hackUMBC 2026. Not for clinical use. Synthetic data only.
         </footer>
       </body>

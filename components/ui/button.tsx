@@ -2,11 +2,12 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const variants = {
-  primary: "bg-accent text-white hover:bg-accent-dark disabled:bg-slate-300",
-  secondary: "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 disabled:text-slate-400",
-  ghost: "text-slate-700 hover:bg-slate-100 disabled:text-slate-400",
-  danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-slate-300",
-  record: "bg-red-600 text-white hover:bg-red-700 disabled:bg-slate-300",
+  primary: "bg-accent-strong text-on-accent shadow-[inset_0_1px_0_rgb(255_255_255/0.22)] hover:opacity-90 disabled:bg-surface-3 disabled:text-ink-4 disabled:opacity-100 disabled:shadow-none",
+  secondary:
+    "glass-pill text-ink hover:bg-surface-2 disabled:text-ink-4",
+  ghost: "text-ink-2 hover:bg-surface-3 hover:text-ink disabled:text-ink-4 disabled:hover:bg-transparent",
+  danger: "bg-danger text-white hover:opacity-90 disabled:bg-surface-3 disabled:text-ink-4 disabled:opacity-100",
+  record: "bg-danger text-white hover:opacity-90 disabled:bg-surface-3 disabled:text-ink-4 disabled:opacity-100",
 } as const;
 
 const sizes = {
@@ -26,8 +27,9 @@ export function Button({ className, variant = "primary", size = "md", type = "bu
     <button
       type={type}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
+        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-[opacity,background-color,border-color,transform] duration-200 select-none",
+        "active:scale-[0.98] disabled:active:scale-100",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas",
         "disabled:cursor-not-allowed",
         variants[variant],
         sizes[size],
