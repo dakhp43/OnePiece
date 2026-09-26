@@ -46,3 +46,17 @@ next-env.d.ts
 /data/pglite/
 /data/fixtures/last_good/
 /data/usage/
+
+# secrets: keys live only in .env.local (see .env.example)
+*.key
+*.p12
+*.pfx
+*credentials*
+*secret*.json
+service-account*.json
+tsdb-*.txt
+# Tiger Cloud's public CA certificate is not a secret; the app needs it to verify TLS
+!certs/tiger-ca.pem
+
+# local tool state
+.claude/settings.local.json
