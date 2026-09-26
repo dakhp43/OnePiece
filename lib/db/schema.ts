@@ -80,7 +80,7 @@ export type EventType =
   | "recording_started" | "recording_ended" | "note_drafted" | "sentence_accepted"
   | "sentence_edited" | "sentence_deleted" | "sentence_added" | "gap_filled"
   | "gap_dismissed" | "gap_deferred" | "signoff_override" | "signed"
-  | "summary_edited" | "email_sent";
+  | "summary_edited" | "email_sent" | "medications_updated";
 
 /** Hypertable on `time`: audit trail of every AI draft, clinician edit, and override. */
 export const events = pgTable("events", {

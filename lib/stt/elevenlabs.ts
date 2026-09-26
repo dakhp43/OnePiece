@@ -3,6 +3,7 @@ import path from "node:path";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 import type { Transcript } from "@/lib/contracts";
 import { ExternalError, withRetry } from "@/lib/http";
+import { reserveTranscription } from "@/lib/usage";
 
 let client: ElevenLabsClient | null = null;
 function getClient() {
@@ -13,9 +14,11 @@ function getClient() {
 
 /**
  * Batch transcription with Scribe v2 Medical: word timestamps + diarization (2 speakers).
- * Keyterms are only sent when USE_KEYTERMS=true (they cost extra).
+ * Keyterms are only sent when USE_KEYTERMS=true (they cost extra). Counted against the daily audio budget.
  */
-export async function transcribe(audioPath: string, keyterms: string[] = []): Promise<Transcript> {
+export async function transcribe(audioPath: string, seconds: number, keyterms: string[] = []): Promise<Transcript> {
+  getClient();
+  reserveTranscription(seconds);
   const useKeyterms = process.env.USE_KEYTERMS === "true" && keyterms.length > 0;
   const res = await withRetry("elevenlabs", async () => {
     const file = new Blob([fs.readFileSync(audioPath)], { type: mimeFor(audioPath) });

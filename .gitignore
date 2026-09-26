@@ -45,3 +45,4 @@ next-env.d.ts
 /data/audio/
 /data/pglite/
 /data/fixtures/last_good/
+/data/usage/

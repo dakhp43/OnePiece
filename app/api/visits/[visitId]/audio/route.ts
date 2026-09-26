@@ -7,12 +7,20 @@ import { loadVisit } from "@/lib/access";
 import { requireDoctorApi } from "@/lib/auth/current";
 import { logEvent } from "@/lib/events";
 import { DEMO_AUDIO, demoFallbackEnabled } from "@/lib/fixtures";
+import { LIMITS } from "@/lib/usage";
 import { AUDIO_DIR, assertStatus, updateVisit } from "@/lib/visits";
 
 export const runtime = "nodejs";
 
 type Ctx = RouteContext<"/api/visits/[visitId]/audio">;
-const MAX_BYTES = 50 * 1024 * 1024;
+const MAX_BYTES = 25 * 1024 * 1024;
+
+/** Duration of a PCM WAV file from its header (used for the demo recording). */
+function wavSeconds(file: string) {
+  const b = fs.readFileSync(file);
+  const dataAt = b.indexOf("data");
+  return dataAt > 0 ? b.readUInt32LE(dataAt + 4) / b.readUInt32LE(28) : 0;
+}
 
 /** Upload the recording as the raw request body (audio/webm). `?demo=1` uses the committed demo audio instead. */
 export const POST = route(async (req: Request, ctx: Ctx) => {
@@ -25,12 +33,16 @@ export const POST = route(async (req: Request, ctx: Ctx) => {
   fs.mkdirSync(AUDIO_DIR, { recursive: true });
   let audioPath: string;
   let bytes: number;
+  let seconds: number;
   if (demo) {
     if (!demoFallbackEnabled()) throw new ApiError(403, "Demo audio is disabled (DEMO_FALLBACK=false)");
     audioPath = path.join(AUDIO_DIR, `${visit.id}${path.extname(DEMO_AUDIO)}`);
     fs.copyFileSync(DEMO_AUDIO, audioPath);
     bytes = fs.statSync(audioPath).size;
+    seconds = DEMO_AUDIO.endsWith(".wav") ? wavSeconds(DEMO_AUDIO) : 120;
   } else {
+    seconds = Number(req.headers.get("x-recording-seconds")) || (visit.startedAt ? (Date.now() - visit.startedAt.getTime()) / 1000 : 0);
+    if (seconds > LIMITS.maxRecordingSeconds() + 5) throw new ApiError(413, `Recording longer than ${LIMITS.maxRecordingSeconds() / 60} minutes`);
     const type = req.headers.get("content-type") ?? "audio/webm";
     const ext = type.includes("wav") ? ".wav" : type.includes("mp4") ? ".m4a" : type.includes("ogg") ? ".ogg" : ".webm";
     const buf = Buffer.from(await req.arrayBuffer());
@@ -47,7 +59,7 @@ export const POST = route(async (req: Request, ctx: Ctx) => {
     status: "recording",
     startedAt: visit.startedAt ?? now,
     endedAt: now,
-    metrics: { ...(visit.metrics ?? {}), demo },
+    metrics: { ...(visit.metrics ?? {}), demo, recordingSeconds: Math.round(seconds) },
   });
   await logEvent("recording_ended", { visitId: visit.id, doctorId: session.doctorId, payload: { bytes, demo } });
   return NextResponse.json({ ok: true, bytes });

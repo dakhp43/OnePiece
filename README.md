@@ -97,10 +97,18 @@ If an external call fails or takes more than 30 s, the pipeline switches to the 
 [data/fixtures/demo/](data/fixtures/demo/) and the UI shows an **offline mode** chip. The record page
 has a small **Load demo visit** link that uses the committed demo audio instead of the mic.
 
-> The committed demo audio and transcript are **synthesized placeholders** (Windows text-to-speech,
-> with timings from the synthesizer), and the note/audit/summary fixtures were hand-written to match them.
-> After one good live run of the real role-play, run `npm run fixtures:promote <visitId>` and commit
-> `data/fixtures/demo/` so the fallback replays a real Scribe + Gemini run.
+> The committed demo audio is a **synthesized placeholder** (Windows text-to-speech of the demo script).
+> The transcript, note, audit, and summary fixtures are real ElevenLabs + Gemini output for that audio.
+> After a good live run of the real role-play, run `npm run fixtures:promote <visitId>` and commit
+> `data/fixtures/demo/` so the fallback replays it.
+
+### Free-tier guards
+
+- Daily caps in [lib/usage.ts](lib/usage.ts): `GEMINI_DAILY_CALL_LIMIT` (default 150 calls),
+  `STT_DAILY_AUDIO_MINUTES` (default 30), `MAX_RECORDING_MINUTES` (default 10; the recorder auto-stops).
+  Counters live in `data/usage/YYYY-MM-DD.json`. Past a cap, calls are refused and the demo fallback takes over.
+- ElevenLabs free plan: 10,000 credits/month, no overage. Measured cost ≈ 66 credits per minute of audio.
+- Gemini: Gemini 3 models run with low thinking (much faster); one retry on the main model, then the fallback model.
 
 ## Tracks
 

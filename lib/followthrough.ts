@@ -3,6 +3,7 @@ import {
   FollowThroughDraftSchema, PatientSummarySchema, type FollowThrough, type PatientSummary, type Task,
 } from "@/lib/contracts";
 import { getDb, schema } from "@/lib/db";
+import { logEvent } from "@/lib/events";
 import type { PatientRow, VisitRow } from "@/lib/db/schema";
 import { demoFallbackEnabled, loadDemoFixture, saveLastGood } from "@/lib/fixtures";
 import { withTimeout } from "@/lib/http";
@@ -46,8 +47,21 @@ export async function generateFollowThrough(visit: VisitRow, patient: PatientRow
     summaries: { en, ...(patient.preferredLanguage === "es" ? { es: await generateSpanish(en, offline) } : {}) },
     approvedLanguage: null,
     translationReviewed: false,
+    previousMedications: patient.knownMedications,
+    currentMedications: draft.currentMedications,
   };
   return { ft, offline };
+}
+
+/** Writes the post-visit medication list back to the patient chart (derived only from the signed note). */
+export async function applyMedicationList(visit: VisitRow, ft: FollowThrough, doctorId: string) {
+  if (!ft.currentMedications) return;
+  const db = await getDb();
+  await db.update(schema.patients).set({ knownMedications: ft.currentMedications }).where(eq(schema.patients.id, visit.patientId));
+  await logEvent("medications_updated", {
+    visitId: visit.id, doctorId,
+    payload: { before: ft.previousMedications ?? [], after: ft.currentMedications },
+  });
 }
 
 /** Every task becomes an open item so it's checked at the next visit. Re-synced when tasks are edited. */

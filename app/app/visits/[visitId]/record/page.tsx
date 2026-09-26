@@ -3,6 +3,7 @@ import { guard } from "@/components/AccessDenied";
 import { loadVisit } from "@/lib/access";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { demoFallbackEnabled } from "@/lib/fixtures";
+import { LIMITS } from "@/lib/usage";
 import { VISIT_TYPE_LABELS } from "@/lib/utils";
 import { Recorder } from "./Recorder";
 
@@ -21,6 +22,7 @@ export default async function RecordPage({ params }: PageProps<"/app/visits/[vis
       patientName={`${patient.firstName} ${patient.lastName}`}
       visitTypeLabel={VISIT_TYPE_LABELS[visit.visitType]}
       demoEnabled={demoFallbackEnabled()}
+      maxSeconds={LIMITS.maxRecordingSeconds()}
     />
   );
 }

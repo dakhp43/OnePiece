@@ -1,27 +1,93 @@
 {
   "tasks": [
-    { "id": "t1", "category": "medication", "description": "Stop lisinopril; start losartan 50 mg once daily. Send new prescription.", "dueInDays": null, "sourceSentenceIds": ["s6", "s7"] },
-    { "id": "t2", "category": "lab", "description": "Basic metabolic panel (kidney function, potassium) after switching to losartan.", "dueInDays": 14, "sourceSentenceIds": [] },
-    { "id": "t3", "category": "followup", "description": "Schedule blood pressure recheck visit.", "dueInDays": 28, "sourceSentenceIds": ["s9"] },
-    { "id": "t4", "category": "education", "description": "Reinforce low-salt diet.", "dueInDays": null, "sourceSentenceIds": ["s8"] }
+    {
+      "id": "t1",
+      "category": "medication",
+      "description": "Stop lisinopril.",
+      "dueInDays": null,
+      "sourceSentenceIds": [
+        "s10"
+      ]
+    },
+    {
+      "id": "t2",
+      "category": "medication",
+      "description": "Start losartan 50 mg once a day.",
+      "dueInDays": null,
+      "sourceSentenceIds": [
+        "s11"
+      ]
+    },
+    {
+      "id": "t3",
+      "category": "education",
+      "description": "Continue cutting back on salt.",
+      "dueInDays": null,
+      "sourceSentenceIds": [
+        "s12"
+      ]
+    },
+    {
+      "id": "t4",
+      "category": "followup",
+      "description": "Follow-up blood pressure check in 4 weeks.",
+      "dueInDays": 28,
+      "sourceSentenceIds": [
+        "s13"
+      ]
+    }
   ],
   "summaryEn": {
     "language": "en",
-    "greeting": "Hi Rosa, thank you for coming in today. Here is what we talked about.",
+    "greeting": "Hello Rosa,",
     "whatWeDiscussed": [
-      { "topic": "Your blood pressure", "explanation": "Your blood pressure today was 138 over 88. That is better than last time. Your home readings are mostly in the 130s." },
-      { "topic": "Your cough", "explanation": "Your dry cough is likely a side effect of lisinopril. Changing your medicine should help it go away." }
+      {
+        "topic": "Your Cough",
+        "explanation": "Your dry cough is likely a side effect of your medicine called lisinopril."
+      },
+      {
+        "topic": "Blood Pressure",
+        "explanation": "We are changing your blood pressure medicine to help stop the cough. Please keep cutting back on salt."
+      }
     ],
     "medicationChanges": [
-      { "name": "Lisinopril", "change": "stopped", "instructions": "Stop taking lisinopril." },
-      { "name": "Losartan 50 mg", "change": "new", "instructions": "Take 1 pill (50 mg) once a day." }
+      {
+        "name": "lisinopril",
+        "change": "stopped",
+        "instructions": "Stop taking lisinopril."
+      },
+      {
+        "name": "losartan",
+        "change": "new",
+        "instructions": "Take 50 mg once a day."
+      }
     ],
     "nextSteps": [
-      { "text": "Keep eating less salt.", "when": null },
-      { "text": "Get a blood test to check your kidneys and potassium.", "when": "In about 2 weeks" },
-      { "text": "Come back to check your blood pressure.", "when": "In 4 weeks" }
+      {
+        "text": "Stop taking your lisinopril.",
+        "when": null
+      },
+      {
+        "text": "Start taking losartan 50 mg once a day.",
+        "when": null
+      },
+      {
+        "text": "Continue cutting back on salt.",
+        "when": null
+      },
+      {
+        "text": "Return for a blood pressure check.",
+        "when": "in 4 weeks"
+      }
     ],
     "whenToGetHelp": [],
-    "followUp": "Blood pressure check in 4 weeks."
-  }
+    "followUp": "in 4 weeks"
+  },
+  "currentMedications": [
+    {
+      "name": "losartan",
+      "dose": "50 mg",
+      "frequency": "once daily"
+    }
+  ]
 }

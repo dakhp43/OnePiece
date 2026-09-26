@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { Input, Label, Select, Textarea } from "@/components/ui/form";
-import { TaskCategorySchema, type Task } from "@/lib/contracts";
+import { TaskCategorySchema, type Medication, type Task } from "@/lib/contracts";
 import { cn, formatDate } from "@/lib/utils";
 import type { VisitView } from "@/lib/visits";
 import { SummaryEditor } from "./SummaryEditor";
@@ -93,7 +93,8 @@ export function FollowThroughView({ initial }: { initial: VisitView }) {
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+          <div className="space-y-6 lg:col-span-2">
+            <MedicationListCard previous={ft.previousMedications} current={ft.currentMedications} />
             <TaskList key={JSON.stringify(ft.tasks)} tasks={ft.tasks} onSave={(tasks) => call(`/api/visits/${visit.id}/summary`, { tasks }, "PATCH")} />
           </div>
           <div className="lg:col-span-3">
@@ -161,6 +162,45 @@ export function FollowThroughView({ initial }: { initial: VisitView }) {
         }}
       />
     </div>
+  );
+}
+
+/** Shows how the chart's medication list changed; the new list was written from the signed note. */
+function MedicationListCard({ previous, current }: { previous?: Medication[]; current?: Medication[] }) {
+  if (!current) return null;
+  const key = (m: Medication) => m.name.toLowerCase();
+  const before = new Map((previous ?? []).map((m) => [key(m), m]));
+  const after = new Set(current.map(key));
+  const stopped = (previous ?? []).filter((m) => !after.has(key(m)));
+  const fmt = (m: Medication) => `${m.name} ${m.dose} ${m.frequency}`.trim();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Medication list</CardTitle>
+        <Badge tone="teal">updated in chart</Badge>
+      </CardHeader>
+      <CardContent>
+        <ul className="space-y-1.5 text-sm">
+          {current.map((m) => {
+            const old = before.get(key(m));
+            const status = !old ? "new" : fmt(old) !== fmt(m) ? "changed" : "continue";
+            return (
+              <li key={key(m)} className="flex items-center justify-between gap-2">
+                <span className="text-slate-800">{fmt(m)}{status === "changed" && <span className="ml-1 text-xs text-slate-400 line-through">{fmt(old!)}</span>}</span>
+                <Badge tone={status === "new" ? "teal" : status === "changed" ? "amber" : "slate"}>{status}</Badge>
+              </li>
+            );
+          })}
+          {stopped.map((m) => (
+            <li key={key(m)} className="flex items-center justify-between gap-2">
+              <span className="text-slate-400 line-through">{fmt(m)}</span>
+              <Badge tone="red">stopped</Badge>
+            </li>
+          ))}
+          {current.length === 0 && stopped.length === 0 && <li className="text-slate-500">No medications.</li>}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }
 

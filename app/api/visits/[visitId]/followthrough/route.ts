@@ -3,7 +3,7 @@ import { z } from "zod";
 import { ApiError, readJson, route } from "@/lib/api";
 import { loadVisit } from "@/lib/access";
 import { requireDoctorApi } from "@/lib/auth/current";
-import { generateFollowThrough, generateSpanish, syncTaskOpenItems } from "@/lib/followthrough";
+import { applyMedicationList, generateFollowThrough, generateSpanish, syncTaskOpenItems } from "@/lib/followthrough";
 import { assertStatus, updateVisit, visitView } from "@/lib/visits";
 
 export const runtime = "nodejs";
@@ -48,6 +48,7 @@ async function run(visitId: string, doctorId: string, action: z.infer<typeof Bod
     ft = res.ft;
     offline.push(...res.offline);
     await syncTaskOpenItems(visit, ft.tasks);
+    await applyMedicationList(visit, ft, doctorId);
   }
   const saved = await updateVisit(visit.id, {
     followthrough: ft,

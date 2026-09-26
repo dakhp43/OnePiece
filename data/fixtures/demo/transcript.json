@@ -1,248 +1,248 @@
 {
+  "text": "Hi Rosa, good to see you again. How have you been since we bumped up your blood pressure medicine? Pretty good, but I've had this dry, tickly cough for about three weeks. It's worse at night. Any fever or shortness of breath? No fever, and my breathing is fine. And you're taking the lisinopril every day? Yes, every morning. I think it's the 20 mg or maybe 40. The bottle's at home. Okay. Your blood pressure today is 138/88, which is better than last time. Have you been checking at home? A few times. Mostly in the 130s. Good. That cough is a known side effect of lisinopril, so I'd like to switch you to losartan 50 mg once a day and stop the lisinopril. Okay, that's fine. Keep cutting back on salt like we discussed. Let's check your blood pressure again in four weeks. Sounds good. Thank you, Doctor.",
   "languageCode": "eng",
-  "text": "Hi Rosa, good to see you again. How have you been since we bumped up your blood pressure medicine? Pretty good, but I've had this dry, tickly cough for about three weeks. It's worse at night. Any fever, or shortness of breath? No fever, and my breathing is fine. And you're taking the lisinopril every day? Yes, every morning. I think it's the 20 milligram, or maybe 40? The bottle's at home. Okay. Your blood pressure today is 138 over 88, which is better than last time. Have you been checking at home? A few times. Mostly in the 130s. Good. That cough is a known side effect of lisinopril, so I'd like to switch you to losartan, 50 milligrams once a day, and stop the lisinopril. Okay, that's fine. Keep cutting back on salt like we discussed. Let's check your blood pressure again in four weeks. Sounds good. Thank you, doctor.",
   "words": [
     {
       "text": "Hi",
-      "start": 0.5,
-      "end": 0.68,
+      "start": 0.56,
+      "end": 0.7,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 0.68,
-      "end": 0.71,
+      "start": 0.7,
+      "end": 0.78,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "Rosa,",
-      "start": 0.71,
-      "end": 1.55,
+      "start": 0.78,
+      "end": 1.12,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 1.55,
-      "end": 1.58,
+      "start": 1.12,
+      "end": 1.12,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "good",
-      "start": 1.58,
-      "end": 1.775,
+      "start": 1.64,
+      "end": 1.8,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 1.775,
-      "end": 1.805,
+      "start": 1.8,
+      "end": 1.84,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "to",
-      "start": 1.805,
-      "end": 1.88,
+      "start": 1.84,
+      "end": 1.96,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 1.88,
-      "end": 1.91,
+      "start": 1.96,
+      "end": 2.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "see",
-      "start": 1.91,
-      "end": 2.09,
+      "start": 2.02,
+      "end": 2.14,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 2.09,
-      "end": 2.12,
+      "start": 2.14,
+      "end": 2.2,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "you",
-      "start": 2.12,
-      "end": 2.255,
+      "start": 2.2,
+      "end": 2.28,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 2.255,
-      "end": 2.285,
+      "start": 2.28,
+      "end": 2.34,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "again.",
-      "start": 2.285,
-      "end": 3.54,
+      "start": 2.34,
+      "end": 2.68,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 3.54,
-      "end": 3.57,
+      "start": 2.68,
+      "end": 2.68,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "How",
-      "start": 3.57,
-      "end": 3.765,
+      "start": 3.64,
+      "end": 3.8,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 3.765,
-      "end": 3.795,
+      "start": 3.8,
+      "end": 3.86,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "have",
-      "start": 3.795,
-      "end": 3.965,
+      "start": 3.86,
+      "end": 4.019,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 3.965,
-      "end": 3.995,
+      "start": 4.019,
+      "end": 4.059,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "you",
-      "start": 3.995,
-      "end": 4.12,
+      "start": 4.059,
+      "end": 4.16,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 4.12,
-      "end": 4.15,
+      "start": 4.16,
+      "end": 4.2,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "been",
-      "start": 4.15,
-      "end": 4.305,
+      "start": 4.2,
+      "end": 4.38,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 4.305,
-      "end": 4.335,
+      "start": 4.38,
+      "end": 4.42,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "since",
-      "start": 4.335,
-      "end": 4.595,
+      "start": 4.42,
+      "end": 4.64,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 4.595,
-      "end": 4.625,
+      "start": 4.64,
+      "end": 4.68,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "we",
-      "start": 4.625,
-      "end": 4.74,
+      "start": 4.68,
+      "end": 4.82,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 4.74,
-      "end": 4.77,
+      "start": 4.82,
+      "end": 4.84,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "bumped",
-      "start": 4.77,
-      "end": 5.035,
+      "start": 4.84,
+      "end": 5.06,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 5.035,
-      "end": 5.065,
+      "start": 5.06,
+      "end": 5.14,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "up",
-      "start": 5.065,
-      "end": 5.215,
+      "start": 5.14,
+      "end": 5.26,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 5.215,
-      "end": 5.245,
+      "start": 5.26,
+      "end": 5.3,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "your",
-      "start": 5.245,
-      "end": 5.37,
+      "start": 5.3,
+      "end": 5.44,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 5.37,
-      "end": 5.4,
+      "start": 5.44,
+      "end": 5.48,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "blood",
-      "start": 5.4,
-      "end": 5.66,
+      "start": 5.48,
+      "end": 5.72,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 5.66,
-      "end": 5.69,
+      "start": 5.72,
+      "end": 5.76,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "pressure",
-      "start": 5.69,
+      "start": 5.76,
       "end": 6.06,
       "type": "word",
       "speakerId": "speaker_0"
@@ -250,517 +250,517 @@
     {
       "text": " ",
       "start": 6.06,
-      "end": 6.09,
+      "end": 6.16,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "medicine?",
-      "start": 6.09,
-      "end": 6.79,
+      "start": 6.16,
+      "end": 6.58,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 6.79,
-      "end": 8.055,
+      "start": 6.58,
+      "end": 6.58,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "Pretty",
-      "start": 8.055,
-      "end": 8.275,
+      "start": 8.08,
+      "end": 8.28,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 8.275,
-      "end": 8.305,
+      "start": 8.28,
+      "end": 8.38,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "good,",
-      "start": 8.305,
-      "end": 9.02,
+      "start": 8.38,
+      "end": 8.62,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 9.02,
-      "end": 9.05,
+      "start": 8.62,
+      "end": 8.62,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "but",
-      "start": 9.05,
-      "end": 9.165,
+      "start": 9.1,
+      "end": 9.2,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 9.165,
-      "end": 9.195,
+      "start": 9.2,
+      "end": 9.28,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "I've",
-      "start": 9.195,
-      "end": 9.335,
+      "start": 9.28,
+      "end": 9.38,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 9.335,
-      "end": 9.365,
+      "start": 9.38,
+      "end": 9.42,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "had",
-      "start": 9.365,
-      "end": 9.54,
+      "start": 9.42,
+      "end": 9.58,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 9.54,
-      "end": 9.57,
+      "start": 9.58,
+      "end": 9.62,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "this",
-      "start": 9.57,
-      "end": 9.755,
+      "start": 9.62,
+      "end": 9.8,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 9.755,
-      "end": 9.785,
+      "start": 9.8,
+      "end": 9.86,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "dry,",
-      "start": 9.785,
-      "end": 10.535,
+      "start": 9.86,
+      "end": 10.16,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 10.535,
-      "end": 10.565,
+      "start": 10.16,
+      "end": 10.16,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "tickly",
-      "start": 10.565,
-      "end": 10.865,
+      "start": 10.6,
+      "end": 10.92,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 10.865,
-      "end": 10.895,
+      "start": 10.92,
+      "end": 10.98,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "cough",
-      "start": 10.895,
-      "end": 11.19,
+      "start": 10.98,
+      "end": 11.24,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 11.19,
-      "end": 11.22,
+      "start": 11.24,
+      "end": 11.28,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "for",
-      "start": 11.22,
-      "end": 11.37,
+      "start": 11.28,
+      "end": 11.38,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 11.37,
-      "end": 11.4,
+      "start": 11.38,
+      "end": 11.46,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "about",
-      "start": 11.4,
-      "end": 11.645,
+      "start": 11.46,
+      "end": 11.68,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 11.645,
-      "end": 11.675,
+      "start": 11.68,
+      "end": 11.72,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "three",
-      "start": 11.675,
-      "end": 11.875,
+      "start": 11.72,
+      "end": 11.88,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 11.875,
-      "end": 11.905,
+      "start": 11.88,
+      "end": 11.98,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "weeks.",
-      "start": 11.905,
-      "end": 13.215,
+      "start": 11.98,
+      "end": 12.34,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 13.215,
-      "end": 13.245,
+      "start": 12.34,
+      "end": 12.34,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "It's",
-      "start": 13.245,
-      "end": 13.425,
+      "start": 13.28,
+      "end": 13.46,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 13.425,
-      "end": 13.455,
+      "start": 13.46,
+      "end": 13.52,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "worse",
-      "start": 13.455,
-      "end": 13.735,
+      "start": 13.52,
+      "end": 13.74,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 13.735,
-      "end": 13.765,
+      "start": 13.74,
+      "end": 13.78,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "at",
-      "start": 13.765,
-      "end": 13.86,
+      "start": 13.78,
+      "end": 13.9,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 13.86,
-      "end": 13.89,
+      "start": 13.9,
+      "end": 13.96,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "night.",
-      "start": 13.89,
-      "end": 14.59,
+      "start": 13.96,
+      "end": 14.26,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 14.59,
-      "end": 15.685,
+      "start": 14.26,
+      "end": 14.26,
       "type": "spacing",
-      "speakerId": "speaker_0"
+      "speakerId": "speaker_1"
     },
     {
       "text": "Any",
-      "start": 15.685,
-      "end": 15.875,
+      "start": 15.74,
+      "end": 15.88,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 15.875,
-      "end": 15.905,
+      "start": 15.88,
+      "end": 16,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
-      "text": "fever,",
-      "start": 15.905,
-      "end": 16.72,
+      "text": "fever",
+      "start": 16,
+      "end": 16.28,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 16.72,
-      "end": 16.75,
+      "start": 16.28,
+      "end": 16.28,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "or",
-      "start": 16.75,
-      "end": 16.875,
+      "start": 16.8,
+      "end": 16.88,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 16.875,
-      "end": 16.905,
+      "start": 16.88,
+      "end": 17,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "shortness",
-      "start": 16.905,
-      "end": 17.405,
+      "start": 17,
+      "end": 17.42,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 17.405,
-      "end": 17.435,
+      "start": 17.42,
+      "end": 17.48,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "of",
-      "start": 17.435,
-      "end": 17.515,
+      "start": 17.48,
+      "end": 17.58,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 17.515,
-      "end": 17.545,
+      "start": 17.58,
+      "end": 17.62,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "breath?",
-      "start": 17.545,
-      "end": 18.245,
+      "start": 17.62,
+      "end": 17.96,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 18.245,
-      "end": 19.415,
+      "start": 17.96,
+      "end": 17.96,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "No",
-      "start": 19.415,
-      "end": 19.605,
+      "start": 19.48,
+      "end": 19.6,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 19.605,
-      "end": 19.635,
+      "start": 19.6,
+      "end": 19.74,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "fever,",
-      "start": 19.635,
-      "end": 20.45,
+      "start": 19.74,
+      "end": 20.04,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 20.45,
-      "end": 20.48,
+      "start": 20.04,
+      "end": 20.04,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "and",
-      "start": 20.48,
-      "end": 20.56,
+      "start": 20.5,
+      "end": 20.6,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 20.56,
-      "end": 20.59,
+      "start": 20.6,
+      "end": 20.64,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "my",
-      "start": 20.59,
-      "end": 20.73,
+      "start": 20.64,
+      "end": 20.82,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 20.73,
-      "end": 20.76,
+      "start": 20.82,
+      "end": 20.84,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "breathing",
-      "start": 20.76,
-      "end": 21.13,
+      "start": 20.84,
+      "end": 21.16,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 21.13,
-      "end": 21.16,
+      "start": 21.16,
+      "end": 21.2,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "is",
-      "start": 21.16,
-      "end": 21.28,
+      "start": 21.2,
+      "end": 21.36,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 21.28,
-      "end": 21.31,
+      "start": 21.36,
+      "end": 21.4,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "fine.",
-      "start": 21.31,
-      "end": 22.01,
+      "start": 21.4,
+      "end": 21.7,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 22.01,
-      "end": 23.125,
+      "start": 21.7,
+      "end": 21.7,
       "type": "spacing",
-      "speakerId": "speaker_0"
+      "speakerId": "speaker_1"
     },
     {
       "text": "And",
-      "start": 23.125,
-      "end": 23.265,
+      "start": 23.18,
+      "end": 23.3,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 23.265,
-      "end": 23.295,
+      "start": 23.3,
+      "end": 23.34,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "you're",
-      "start": 23.295,
-      "end": 23.46,
+      "start": 23.34,
+      "end": 23.52,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 23.46,
-      "end": 23.49,
+      "start": 23.52,
+      "end": 23.58,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "taking",
-      "start": 23.49,
-      "end": 23.87,
+      "start": 23.58,
+      "end": 23.9,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 23.87,
-      "end": 23.9,
+      "start": 23.9,
+      "end": 23.94,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "the",
-      "start": 23.9,
-      "end": 23.965,
+      "start": 23.94,
+      "end": 24.02,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 23.965,
-      "end": 23.995,
+      "start": 24.02,
+      "end": 24.04,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "lisinopril",
-      "start": 23.995,
-      "end": 24.585,
+      "start": 24.04,
+      "end": 24.58,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 24.585,
-      "end": 24.615,
+      "start": 24.58,
+      "end": 24.7,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "every",
-      "start": 24.615,
+      "start": 24.7,
       "end": 24.9,
       "type": "word",
       "speakerId": "speaker_0"
@@ -768,265 +768,265 @@
     {
       "text": " ",
       "start": 24.9,
-      "end": 24.93,
+      "end": 24.98,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "day?",
-      "start": 24.93,
-      "end": 25.63,
+      "start": 24.98,
+      "end": 25.16,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 25.63,
-      "end": 26.595,
+      "start": 25.16,
+      "end": 25.16,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "Yes,",
-      "start": 26.595,
-      "end": 27.355,
+      "start": 26.68,
+      "end": 26.94,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 27.355,
-      "end": 27.385,
+      "start": 26.94,
+      "end": 26.94,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "every",
-      "start": 27.385,
-      "end": 27.63,
+      "start": 27.46,
+      "end": 27.64,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 27.63,
-      "end": 27.66,
+      "start": 27.64,
+      "end": 27.74,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "morning.",
-      "start": 27.66,
-      "end": 28.985,
+      "start": 27.74,
+      "end": 28.14,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 28.985,
-      "end": 29.015,
+      "start": 28.14,
+      "end": 28.14,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "I",
-      "start": 29.015,
-      "end": 29.075,
+      "start": 29.08,
+      "end": 29.14,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 29.075,
-      "end": 29.105,
+      "start": 29.14,
+      "end": 29.18,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "think",
-      "start": 29.105,
-      "end": 29.345,
+      "start": 29.18,
+      "end": 29.36,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 29.345,
-      "end": 29.375,
+      "start": 29.36,
+      "end": 29.4,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "it's",
-      "start": 29.375,
-      "end": 29.535,
+      "start": 29.4,
+      "end": 29.56,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 29.535,
-      "end": 29.565,
+      "start": 29.56,
+      "end": 29.6,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "the",
-      "start": 29.565,
-      "end": 29.63,
+      "start": 29.6,
+      "end": 29.7,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 29.63,
-      "end": 29.66,
+      "start": 29.7,
+      "end": 29.84,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "20",
-      "start": 29.66,
-      "end": 29.99,
+      "start": 29.84,
+      "end": 30.06,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 29.99,
-      "end": 30.02,
+      "start": 30.06,
+      "end": 30.1,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
-      "text": "milligram,",
-      "start": 30.02,
-      "end": 31.06,
+      "text": "mg",
+      "start": 30.1,
+      "end": 30.34,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 31.06,
-      "end": 31.09,
+      "start": 30.34,
+      "end": 30.66,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "or",
-      "start": 31.09,
-      "end": 31.185,
+      "start": 31.12,
+      "end": 31.2,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 31.185,
-      "end": 31.215,
+      "start": 31.2,
+      "end": 31.28,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "maybe",
-      "start": 31.215,
-      "end": 31.49,
+      "start": 31.28,
+      "end": 31.5,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 31.49,
-      "end": 31.52,
+      "start": 31.5,
+      "end": 31.74,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
-      "text": "40?",
-      "start": 31.52,
-      "end": 32.795,
+      "text": "40.",
+      "start": 31.74,
+      "end": 31.94,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 32.795,
-      "end": 32.825,
+      "start": 31.94,
+      "end": 31.94,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "The",
-      "start": 32.825,
-      "end": 32.895,
+      "start": 32.86,
+      "end": 32.96,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 32.895,
-      "end": 32.925,
+      "start": 32.96,
+      "end": 32.98,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "bottle's",
-      "start": 32.925,
-      "end": 33.295,
+      "start": 32.98,
+      "end": 33.32,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 33.295,
-      "end": 33.325,
+      "start": 33.32,
+      "end": 33.34,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "at",
-      "start": 33.325,
-      "end": 33.405,
+      "start": 33.34,
+      "end": 33.46,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 33.405,
-      "end": 33.435,
+      "start": 33.46,
+      "end": 33.5,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "home.",
-      "start": 33.435,
-      "end": 34.135,
+      "start": 33.5,
+      "end": 33.84,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 34.135,
-      "end": 35.255,
+      "start": 33.84,
+      "end": 33.84,
       "type": "spacing",
-      "speakerId": "speaker_0"
+      "speakerId": "speaker_1"
     },
     {
       "text": "Okay.",
-      "start": 35.255,
-      "end": 36.5,
+      "start": 35.34,
+      "end": 35.64,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 36.5,
-      "end": 36.53,
+      "start": 35.64,
+      "end": 35.64,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "Your",
-      "start": 36.53,
+      "start": 36.58,
       "end": 36.68,
       "type": "word",
       "speakerId": "speaker_0"
@@ -1034,1204 +1034,1064 @@
     {
       "text": " ",
       "start": 36.68,
-      "end": 36.71,
+      "end": 36.78,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "blood",
-      "start": 36.71,
-      "end": 36.97,
+      "start": 36.78,
+      "end": 36.98,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 36.97,
-      "end": 37,
+      "start": 36.98,
+      "end": 37.06,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "pressure",
-      "start": 37,
-      "end": 37.37,
+      "start": 37.06,
+      "end": 37.42,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 37.37,
-      "end": 37.4,
+      "start": 37.42,
+      "end": 37.48,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "today",
-      "start": 37.4,
-      "end": 37.73,
+      "start": 37.48,
+      "end": 37.78,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 37.73,
-      "end": 37.76,
+      "start": 37.78,
+      "end": 37.84,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "is",
-      "start": 37.76,
-      "end": 37.905,
+      "start": 37.84,
+      "end": 37.96,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 37.905,
-      "end": 37.935,
+      "start": 37.96,
+      "end": 38.16,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
-      "text": "",
-      "start": 37.935,
-      "end": 38.12,
+      "text": "138/88,",
+      "start": 38.16,
+      "end": 40.18,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 38.12,
-      "end": 38.15,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "",
-      "start": 38.15,
-      "end": 38.585,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 38.585,
-      "end": 38.615,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "",
-      "start": 38.615,
-      "end": 38.77,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 38.77,
-      "end": 38.8,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "",
-      "start": 38.8,
-      "end": 39.11,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 39.11,
-      "end": 39.14,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "138",
-      "start": 39.14,
-      "end": 39.345,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 39.345,
-      "end": 39.375,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "over",
-      "start": 39.375,
-      "end": 39.625,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 39.625,
-      "end": 39.655,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "",
-      "start": 39.655,
-      "end": 39.925,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 39.925,
-      "end": 39.955,
-      "type": "spacing",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": "88,",
-      "start": 39.955,
-      "end": 40.595,
-      "type": "word",
-      "speakerId": "speaker_0"
-    },
-    {
-      "text": " ",
-      "start": 40.595,
-      "end": 40.625,
+      "start": 40.18,
+      "end": 40.18,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "which",
-      "start": 40.625,
-      "end": 40.795,
+      "start": 40.66,
+      "end": 40.82,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 40.795,
-      "end": 40.825,
+      "start": 40.82,
+      "end": 40.86,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "is",
-      "start": 40.825,
-      "end": 40.93,
+      "start": 40.86,
+      "end": 41,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 40.93,
-      "end": 40.96,
+      "start": 41,
+      "end": 41.04,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "better",
-      "start": 40.96,
-      "end": 41.225,
+      "start": 41.04,
+      "end": 41.26,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 41.225,
-      "end": 41.255,
+      "start": 41.26,
+      "end": 41.3,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "than",
-      "start": 41.255,
-      "end": 41.415,
+      "start": 41.3,
+      "end": 41.44,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 41.415,
-      "end": 41.445,
+      "start": 41.44,
+      "end": 41.5,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "last",
-      "start": 41.445,
-      "end": 41.735,
+      "start": 41.5,
+      "end": 41.76,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 41.735,
-      "end": 41.765,
+      "start": 41.76,
+      "end": 41.82,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "time.",
-      "start": 41.765,
-      "end": 43,
+      "start": 41.82,
+      "end": 42.14,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 43,
-      "end": 43.03,
+      "start": 42.14,
+      "end": 42.14,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "Have",
-      "start": 43.03,
-      "end": 43.185,
+      "start": 43.08,
+      "end": 43.22,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 43.185,
-      "end": 43.215,
+      "start": 43.22,
+      "end": 43.28,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "you",
-      "start": 43.215,
-      "end": 43.335,
+      "start": 43.28,
+      "end": 43.38,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 43.335,
-      "end": 43.365,
+      "start": 43.38,
+      "end": 43.42,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "been",
-      "start": 43.365,
-      "end": 43.54,
+      "start": 43.42,
+      "end": 43.58,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 43.54,
-      "end": 43.57,
+      "start": 43.58,
+      "end": 43.64,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "checking",
-      "start": 43.57,
-      "end": 43.94,
+      "start": 43.64,
+      "end": 43.98,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 43.94,
-      "end": 43.97,
+      "start": 43.98,
+      "end": 44.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "at",
-      "start": 43.97,
-      "end": 44.07,
+      "start": 44.02,
+      "end": 44.1,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 44.07,
-      "end": 44.1,
+      "start": 44.1,
+      "end": 44.16,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "home?",
-      "start": 44.1,
-      "end": 44.8,
+      "start": 44.16,
+      "end": 44.42,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 44.8,
-      "end": 45.86,
+      "start": 44.42,
+      "end": 44.42,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "A",
-      "start": 45.86,
-      "end": 45.96,
+      "start": 45.92,
+      "end": 46.04,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 45.96,
-      "end": 45.99,
+      "start": 46.04,
+      "end": 46.1,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "few",
-      "start": 45.99,
-      "end": 46.235,
+      "start": 46.1,
+      "end": 46.22,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 46.235,
-      "end": 46.265,
+      "start": 46.22,
+      "end": 46.32,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "times.",
-      "start": 46.265,
-      "end": 47.63,
+      "start": 46.32,
+      "end": 46.76,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 47.63,
-      "end": 47.66,
+      "start": 46.76,
+      "end": 46.76,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "Mostly",
-      "start": 47.66,
-      "end": 48.1,
+      "start": 47.72,
+      "end": 48.12,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 48.1,
-      "end": 48.13,
+      "start": 48.12,
+      "end": 48.18,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "in",
-      "start": 48.13,
-      "end": 48.21,
+      "start": 48.18,
+      "end": 48.24,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 48.21,
-      "end": 48.24,
+      "start": 48.24,
+      "end": 48.28,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "the",
-      "start": 48.24,
-      "end": 48.305,
+      "start": 48.28,
+      "end": 48.36,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 48.305,
-      "end": 48.335,
-      "type": "spacing",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": "",
-      "start": 48.335,
-      "end": 48.5,
-      "type": "word",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": " ",
-      "start": 48.5,
-      "end": 48.53,
-      "type": "spacing",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": "",
-      "start": 48.53,
-      "end": 48.9,
-      "type": "word",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": " ",
-      "start": 48.9,
-      "end": 48.93,
-      "type": "spacing",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": "",
-      "start": 48.93,
-      "end": 49.045,
-      "type": "word",
-      "speakerId": "speaker_1"
-    },
-    {
-      "text": " ",
-      "start": 49.045,
-      "end": 49.075,
+      "start": 48.36,
+      "end": 48.52,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "130s.",
-      "start": 49.075,
-      "end": 49.775,
+      "start": 48.52,
+      "end": 49.56,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 49.775,
-      "end": 51.005,
+      "start": 49.56,
+      "end": 49.56,
       "type": "spacing",
-      "speakerId": "speaker_0"
+      "speakerId": "speaker_1"
     },
     {
       "text": "Good.",
-      "start": 51.005,
-      "end": 52.215,
+      "start": 51.08,
+      "end": 51.34,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 52.215,
-      "end": 52.245,
+      "start": 51.34,
+      "end": 51.34,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "That",
-      "start": 52.245,
-      "end": 52.42,
+      "start": 52.32,
+      "end": 52.46,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 52.42,
-      "end": 52.45,
+      "start": 52.46,
+      "end": 52.52,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "cough",
-      "start": 52.45,
-      "end": 52.735,
+      "start": 52.52,
+      "end": 52.76,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 52.735,
-      "end": 52.765,
+      "start": 52.76,
+      "end": 52.8,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "is",
-      "start": 52.765,
-      "end": 52.875,
+      "start": 52.8,
+      "end": 52.9,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 52.875,
-      "end": 52.905,
+      "start": 52.9,
+      "end": 52.94,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "a",
-      "start": 52.905,
-      "end": 52.955,
+      "start": 52.94,
+      "end": 53,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 52.955,
-      "end": 52.965,
+      "start": 53,
+      "end": 53.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "known",
-      "start": 52.965,
-      "end": 53.195,
+      "start": 53.02,
+      "end": 53.28,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 53.195,
-      "end": 53.225,
+      "start": 53.28,
+      "end": 53.34,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "side",
-      "start": 53.225,
-      "end": 53.54,
+      "start": 53.34,
+      "end": 53.56,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 53.54,
-      "end": 53.57,
+      "start": 53.56,
+      "end": 53.6,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "effect",
-      "start": 53.57,
-      "end": 53.895,
+      "start": 53.6,
+      "end": 53.92,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 53.895,
-      "end": 53.925,
+      "start": 53.92,
+      "end": 53.98,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "of",
-      "start": 53.925,
-      "end": 54.035,
+      "start": 53.98,
+      "end": 54.08,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 54.035,
-      "end": 54.065,
+      "start": 54.08,
+      "end": 54.14,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "lisinopril,",
-      "start": 54.065,
-      "end": 55.175,
+      "start": 54.14,
+      "end": 54.74,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 55.175,
-      "end": 55.205,
+      "start": 54.74,
+      "end": 54.74,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "so",
-      "start": 55.205,
-      "end": 55.405,
+      "start": 55.32,
+      "end": 55.44,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 55.405,
-      "end": 55.435,
+      "start": 55.44,
+      "end": 55.5,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "I'd",
-      "start": 55.435,
-      "end": 55.59,
+      "start": 55.5,
+      "end": 55.62,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 55.59,
-      "end": 55.62,
+      "start": 55.62,
+      "end": 55.68,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "like",
-      "start": 55.62,
-      "end": 55.815,
+      "start": 55.68,
+      "end": 55.84,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 55.815,
-      "end": 55.845,
+      "start": 55.84,
+      "end": 55.9,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "to",
-      "start": 55.845,
-      "end": 55.93,
+      "start": 55.9,
+      "end": 56.02,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 55.93,
-      "end": 55.96,
+      "start": 56.02,
+      "end": 56.06,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "switch",
-      "start": 55.96,
-      "end": 56.295,
+      "start": 56.06,
+      "end": 56.32,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 56.295,
-      "end": 56.325,
+      "start": 56.32,
+      "end": 56.38,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "you",
-      "start": 56.325,
-      "end": 56.415,
+      "start": 56.38,
+      "end": 56.48,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 56.415,
-      "end": 56.445,
+      "start": 56.48,
+      "end": 56.52,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "to",
-      "start": 56.445,
-      "end": 56.565,
+      "start": 56.52,
+      "end": 56.6,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 56.565,
-      "end": 56.595,
+      "start": 56.6,
+      "end": 56.64,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
-      "text": "losartan,",
-      "start": 56.595,
-      "end": 57.615,
+      "text": "losartan",
+      "start": 56.64,
+      "end": 57.18,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 57.615,
-      "end": 57.645,
+      "start": 57.18,
+      "end": 57.18,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "50",
-      "start": 57.645,
-      "end": 57.935,
+      "start": 57.82,
+      "end": 58,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 57.935,
-      "end": 57.965,
+      "start": 58,
+      "end": 58.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
-      "text": "milligrams",
-      "start": 57.965,
-      "end": 58.57,
+      "text": "mg",
+      "start": 58.02,
+      "end": 58.3,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 58.57,
-      "end": 58.6,
+      "start": 58.3,
+      "end": 58.68,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "once",
-      "start": 58.6,
-      "end": 58.845,
+      "start": 58.68,
+      "end": 58.86,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 58.845,
-      "end": 58.875,
+      "start": 58.86,
+      "end": 58.92,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "a",
-      "start": 58.875,
-      "end": 58.925,
+      "start": 58.92,
+      "end": 58.98,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 58.925,
-      "end": 58.95,
+      "start": 58.98,
+      "end": 59.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
-      "text": "day,",
-      "start": 58.95,
-      "end": 59.6,
+      "text": "day",
+      "start": 59.02,
+      "end": 59.18,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 59.6,
-      "end": 59.63,
+      "start": 59.18,
+      "end": 59.68,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "and",
-      "start": 59.63,
-      "end": 59.76,
+      "start": 59.68,
+      "end": 59.78,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 59.76,
-      "end": 59.79,
+      "start": 59.78,
+      "end": 59.92,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "stop",
-      "start": 59.79,
-      "end": 60.125,
+      "start": 59.92,
+      "end": 60.16,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 60.125,
-      "end": 60.155,
+      "start": 60.16,
+      "end": 60.2,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "the",
-      "start": 60.155,
-      "end": 60.235,
+      "start": 60.2,
+      "end": 60.28,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 60.235,
-      "end": 60.265,
+      "start": 60.28,
+      "end": 60.32,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "lisinopril.",
-      "start": 60.265,
-      "end": 60.965,
+      "start": 60.32,
+      "end": 60.94,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 60.965,
-      "end": 62.405,
+      "start": 60.94,
+      "end": 60.94,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "Okay,",
-      "start": 62.405,
-      "end": 63.205,
+      "start": 62.48,
+      "end": 62.8,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 63.205,
-      "end": 63.235,
+      "start": 62.8,
+      "end": 62.8,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "that's",
-      "start": 63.235,
-      "end": 63.46,
+      "start": 63.3,
+      "end": 63.54,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 63.46,
-      "end": 63.49,
+      "start": 63.54,
+      "end": 63.58,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "fine.",
-      "start": 63.49,
-      "end": 64.19,
+      "start": 63.58,
+      "end": 63.88,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 64.19,
-      "end": 65.305,
+      "start": 63.88,
+      "end": 63.88,
       "type": "spacing",
-      "speakerId": "speaker_0"
+      "speakerId": "speaker_1"
     },
     {
       "text": "Keep",
-      "start": 65.305,
-      "end": 65.495,
+      "start": 65.36,
+      "end": 65.54,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 65.495,
-      "end": 65.525,
+      "start": 65.54,
+      "end": 65.58,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "cutting",
-      "start": 65.525,
-      "end": 65.84,
+      "start": 65.58,
+      "end": 65.9,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 65.84,
-      "end": 65.87,
+      "start": 65.9,
+      "end": 65.94,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "back",
-      "start": 65.87,
-      "end": 66.12,
+      "start": 65.94,
+      "end": 66.14,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 66.12,
-      "end": 66.15,
+      "start": 66.14,
+      "end": 66.2,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "on",
-      "start": 66.15,
-      "end": 66.28,
+      "start": 66.2,
+      "end": 66.36,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 66.28,
-      "end": 66.31,
+      "start": 66.36,
+      "end": 66.42,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "salt",
-      "start": 66.31,
-      "end": 66.66,
+      "start": 66.42,
+      "end": 66.68,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 66.66,
-      "end": 66.69,
+      "start": 66.68,
+      "end": 66.74,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "like",
-      "start": 66.69,
-      "end": 66.895,
+      "start": 66.74,
+      "end": 66.94,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 66.895,
-      "end": 66.925,
+      "start": 66.94,
+      "end": 66.98,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "we",
-      "start": 66.925,
-      "end": 67.045,
+      "start": 66.98,
+      "end": 67.08,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 67.045,
-      "end": 67.075,
+      "start": 67.08,
+      "end": 67.12,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "discussed.",
-      "start": 67.075,
-      "end": 68.535,
+      "start": 67.12,
+      "end": 67.66,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 68.535,
-      "end": 68.565,
+      "start": 67.66,
+      "end": 67.66,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "Let's",
-      "start": 68.565,
-      "end": 68.815,
+      "start": 68.64,
+      "end": 68.86,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 68.815,
-      "end": 68.845,
+      "start": 68.86,
+      "end": 68.9,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "check",
-      "start": 68.845,
-      "end": 69.065,
+      "start": 68.9,
+      "end": 69.08,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 69.065,
-      "end": 69.095,
+      "start": 69.08,
+      "end": 69.14,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "your",
-      "start": 69.095,
-      "end": 69.22,
+      "start": 69.14,
+      "end": 69.28,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 69.22,
-      "end": 69.25,
+      "start": 69.28,
+      "end": 69.32,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "blood",
-      "start": 69.25,
-      "end": 69.51,
+      "start": 69.32,
+      "end": 69.52,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 69.51,
-      "end": 69.54,
+      "start": 69.52,
+      "end": 69.6,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "pressure",
-      "start": 69.54,
-      "end": 69.93,
+      "start": 69.6,
+      "end": 69.94,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 69.93,
-      "end": 69.96,
+      "start": 69.94,
+      "end": 70.02,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "again",
-      "start": 69.96,
-      "end": 70.255,
+      "start": 70.02,
+      "end": 70.3,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 70.255,
-      "end": 70.285,
+      "start": 70.3,
+      "end": 70.34,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "in",
-      "start": 70.285,
-      "end": 70.41,
+      "start": 70.34,
+      "end": 70.48,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 70.41,
-      "end": 70.44,
+      "start": 70.48,
+      "end": 70.52,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "four",
-      "start": 70.44,
-      "end": 70.655,
+      "start": 70.52,
+      "end": 70.66,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 70.655,
-      "end": 70.685,
+      "start": 70.66,
+      "end": 70.76,
       "type": "spacing",
       "speakerId": "speaker_0"
     },
     {
       "text": "weeks.",
-      "start": 70.685,
-      "end": 71.385,
+      "start": 70.76,
+      "end": 71.08,
       "type": "word",
       "speakerId": "speaker_0"
     },
     {
       "text": " ",
-      "start": 71.385,
-      "end": 72.535,
+      "start": 71.08,
+      "end": 71.08,
       "type": "spacing",
-      "speakerId": "speaker_1"
+      "speakerId": "speaker_0"
     },
     {
       "text": "Sounds",
-      "start": 72.535,
-      "end": 72.965,
+      "start": 72.66,
+      "end": 73.02,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 72.965,
-      "end": 72.995,
+      "start": 73.02,
+      "end": 73.08,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "good.",
-      "start": 72.995,
-      "end": 74.16,
+      "start": 73.08,
+      "end": 73.32,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 74.16,
-      "end": 74.19,
+      "start": 73.32,
+      "end": 73.32,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "Thank",
-      "start": 74.19,
-      "end": 74.46,
+      "start": 74.26,
+      "end": 74.48,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 74.46,
-      "end": 74.49,
+      "start": 74.48,
+      "end": 74.56,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
       "text": "you,",
-      "start": 74.49,
-      "end": 75.13,
+      "start": 74.56,
+      "end": 74.7,
       "type": "word",
       "speakerId": "speaker_1"
     },
     {
       "text": " ",
-      "start": 75.13,
-      "end": 75.16,
+      "start": 74.7,
+      "end": 74.72,
       "type": "spacing",
       "speakerId": "speaker_1"
     },
     {
-      "text": "doctor.",
-      "start": 75.16,
-      "end": 75.86,
+      "text": "Doctor.",
+      "start": 75.2,
+      "end": 75.58,
       "type": "word",
       "speakerId": "speaker_1"
     }

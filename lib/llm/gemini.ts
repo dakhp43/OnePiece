@@ -1,6 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { z, type ZodType } from "zod";
 import { ExternalError, isRetryable, statusOf, withRetry } from "@/lib/http";
+import { reserveGeminiCall } from "@/lib/usage";
 
 let ai: GoogleGenAI | null = null;
 function client() {
@@ -36,12 +37,15 @@ export async function generateJson<T>({ schema, system, user, temperature = 0.2,
   const jsonSchema = jsonSchemaFor(schema);
 
   const call = async (model: string, prompt: string, withSchema: boolean) => {
+    reserveGeminiCall(label); // counts every real request, including retries
     const res = await client().models.generateContent({
       model,
       contents: prompt,
       config: {
         systemInstruction: withSchema ? system : `${system}\n\nReturn ONLY JSON matching this JSON Schema:\n${JSON.stringify(jsonSchema)}`,
         responseMimeType: "application/json",
+        // Gemini 3 models "think" by default (6+ s even for tiny prompts); LOW keeps each step to a few seconds.
+        ...(/^gemini-3/.test(model) ? { thinkingConfig: { thinkingLevel: ThinkingLevel.LOW } } : {}),
         ...(withSchema ? { responseJsonSchema: jsonSchema } : {}),
         temperature,
       },
@@ -54,24 +58,26 @@ export async function generateJson<T>({ schema, system, user, temperature = 0.2,
 
   const callWithFallbacks = async (prompt: string) => {
     let withSchema = true;
-    const attempt = async (model: string) => {
+    // One quick retry on the primary, then fail over: an overloaded model (503) rarely recovers within our 30 s budget.
+    const attempt = async (model: string, retries: number) => {
       try {
-        return await withRetry(label, () => call(model, prompt, withSchema));
+        return await withRetry(label, () => call(model, prompt, withSchema), { retries });
       } catch (err) {
         if (withSchema && statusOf(err) === 400) {
           console.warn(`[${label}] 400 with responseJsonSchema (${(err as Error).message.slice(0, 120)}); retrying with schema in prompt`);
           withSchema = false;
-          return withRetry(label, () => call(model, prompt, false));
+          return withRetry(label, () => call(model, prompt, false), { retries });
         }
         throw err;
       }
     };
     try {
-      return await attempt(primary);
+      return await attempt(primary, fallback ? 1 : 3);
     } catch (err) {
-      if (fallback && fallback !== primary && isRetryable(err)) {
+      // 404 = model retired/unavailable for this key; 429/5xx = overloaded. Either way, try the fallback model.
+      if (fallback && fallback !== primary && (isRetryable(err) || statusOf(err) === 404)) {
         console.warn(`[${label}] ${primary} failed; trying fallback ${fallback}`);
-        return attempt(fallback);
+        return attempt(fallback, 2);
       }
       throw err;
     }

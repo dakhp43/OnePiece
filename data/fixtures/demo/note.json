@@ -1,27 +1,157 @@
 {
-  "chiefComplaint": "Hypertension follow-up; dry cough for 3 weeks",
+  "chiefComplaint": "Hypertension follow-up and cough",
   "speakerRoles": [
-    { "speaker": "speaker_0", "role": "clinician" },
-    { "speaker": "speaker_1", "role": "patient" }
+    {
+      "speaker": "speaker_0",
+      "role": "clinician"
+    },
+    {
+      "speaker": "speaker_1",
+      "role": "patient"
+    }
   ],
   "problems": [
-    { "id": "p1", "title": "Essential hypertension", "status": "established" },
-    { "id": "p2", "title": "Dry cough", "status": "new" }
+    {
+      "id": "p1",
+      "title": "Cough",
+      "status": "new"
+    },
+    {
+      "id": "p2",
+      "title": "Hypertension",
+      "status": "established"
+    }
   ],
   "sentences": [
-    { "id": "s1", "problemId": "p1", "section": "S", "text": "Taking lisinopril every morning.", "sourceUtteranceIds": ["u5", "u6"], "kind": "medication" },
-    { "id": "s2", "problemId": "p1", "section": "S", "text": "Unsure of lisinopril dose; reports 20 mg or possibly 40 mg.", "sourceUtteranceIds": ["u6"], "kind": "dose" },
-    { "id": "s3", "problemId": "p1", "section": "S", "text": "Checks BP at home a few times; readings mostly in the 130s.", "sourceUtteranceIds": ["u8", "u9"], "kind": "history" },
-    { "id": "s4", "problemId": "p1", "section": "O", "text": "BP 138/88.", "sourceUtteranceIds": ["u7", "u8"], "kind": "vital" },
-    { "id": "s5", "problemId": "p1", "section": "A", "text": "Blood pressure improved since last visit.", "sourceUtteranceIds": ["u8"], "kind": "assessment" },
-    { "id": "s6", "problemId": "p1", "section": "P", "text": "Switch to losartan 50 mg once daily.", "sourceUtteranceIds": ["u10"], "kind": "medication" },
-    { "id": "s7", "problemId": "p1", "section": "P", "text": "Stop lisinopril.", "sourceUtteranceIds": ["u10"], "kind": "medication" },
-    { "id": "s8", "problemId": "p1", "section": "P", "text": "Continue reducing dietary salt.", "sourceUtteranceIds": ["u12"], "kind": "plan" },
-    { "id": "s9", "problemId": "p1", "section": "P", "text": "Recheck blood pressure in 4 weeks.", "sourceUtteranceIds": ["u12"], "kind": "plan" },
-    { "id": "s10", "problemId": "p2", "section": "S", "text": "Reports dry, tickly cough for about 3 weeks, worse at night.", "sourceUtteranceIds": ["u2"], "kind": "symptom" },
-    { "id": "s11", "problemId": "p2", "section": "S", "text": "Denies fever.", "sourceUtteranceIds": ["u3", "u4"], "kind": "symptom" },
-    { "id": "s12", "problemId": "p2", "section": "S", "text": "Denies shortness of breath.", "sourceUtteranceIds": ["u3", "u4"], "kind": "symptom" },
-    { "id": "s13", "problemId": "p2", "section": "A", "text": "Cough likely a side effect of lisinopril.", "sourceUtteranceIds": ["u10"], "kind": "assessment" },
-    { "id": "s14", "problemId": "p2", "section": "P", "text": "Stopping lisinopril to address cough.", "sourceUtteranceIds": ["u10"], "kind": "plan" }
+    {
+      "id": "s1",
+      "problemId": "p1",
+      "section": "S",
+      "text": "Reports dry, tickly cough for about 3 weeks.",
+      "sourceUtteranceIds": [
+        "u2"
+      ],
+      "kind": "symptom"
+    },
+    {
+      "id": "s2",
+      "problemId": "p1",
+      "section": "S",
+      "text": "Reports cough is worse at night.",
+      "sourceUtteranceIds": [
+        "u2"
+      ],
+      "kind": "symptom"
+    },
+    {
+      "id": "s3",
+      "problemId": "p1",
+      "section": "S",
+      "text": "Denies fever.",
+      "sourceUtteranceIds": [
+        "u4"
+      ],
+      "kind": "symptom"
+    },
+    {
+      "id": "s4",
+      "problemId": "p1",
+      "section": "S",
+      "text": "Denies shortness of breath.",
+      "sourceUtteranceIds": [
+        "u4"
+      ],
+      "kind": "symptom"
+    },
+    {
+      "id": "s5",
+      "problemId": "p2",
+      "section": "S",
+      "text": "Reports taking lisinopril every morning.",
+      "sourceUtteranceIds": [
+        "u6"
+      ],
+      "kind": "medication"
+    },
+    {
+      "id": "s6",
+      "problemId": "p2",
+      "section": "S",
+      "text": "Reports uncertain dose of lisinopril as 20 mg or 40 mg.",
+      "sourceUtteranceIds": [
+        "u6"
+      ],
+      "kind": "dose"
+    },
+    {
+      "id": "s7",
+      "problemId": "p2",
+      "section": "O",
+      "text": "Blood pressure is 138/88.",
+      "sourceUtteranceIds": [
+        "u7"
+      ],
+      "kind": "vital"
+    },
+    {
+      "id": "s8",
+      "problemId": "p2",
+      "section": "S",
+      "text": "Reports home blood pressure readings mostly in the 130s.",
+      "sourceUtteranceIds": [
+        "u8"
+      ],
+      "kind": "vital"
+    },
+    {
+      "id": "s9",
+      "problemId": "p1",
+      "section": "A",
+      "text": "Assessment of cough as a known side effect of lisinopril.",
+      "sourceUtteranceIds": [
+        "u9"
+      ],
+      "kind": "assessment"
+    },
+    {
+      "id": "s10",
+      "problemId": "p2",
+      "section": "P",
+      "text": "Stop lisinopril.",
+      "sourceUtteranceIds": [
+        "u9"
+      ],
+      "kind": "plan"
+    },
+    {
+      "id": "s11",
+      "problemId": "p2",
+      "section": "P",
+      "text": "Start losartan 50 mg once a day.",
+      "sourceUtteranceIds": [
+        "u9"
+      ],
+      "kind": "plan"
+    },
+    {
+      "id": "s12",
+      "problemId": "p2",
+      "section": "P",
+      "text": "Continue cutting back on salt.",
+      "sourceUtteranceIds": [
+        "u11"
+      ],
+      "kind": "plan"
+    },
+    {
+      "id": "s13",
+      "problemId": "p2",
+      "section": "P",
+      "text": "Follow-up blood pressure check in 4 weeks.",
+      "sourceUtteranceIds": [
+        "u11"
+      ],
+      "kind": "plan"
+    }
   ]
 }

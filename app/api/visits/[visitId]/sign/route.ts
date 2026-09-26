@@ -10,6 +10,7 @@ import { logEvent } from "@/lib/events";
 import { OPEN_PREFIX, unresolvedRequired } from "@/lib/gaps";
 import { rememberSignedVisit } from "@/lib/memory/backboard";
 import { computeReviewMetrics } from "@/lib/metrics";
+import { vitalsFromNote } from "@/lib/vitals";
 import { assertStatus, updateVisit } from "@/lib/visits";
 
 export const runtime = "nodejs";
@@ -52,8 +53,9 @@ export const POST = route(async (req: Request, ctx: RouteContext<"/api/visits/[v
       .where(and(inArray(schema.openItems.id, closeIds), eq(schema.openItems.patientId, visit.patientId)));
   }
 
-  const vitals = visit.metrics?.vitals;
-  if (vitals && Object.keys(vitals).length) {
+  // Vitals typed at visit start win; anything else stated in the signed note fills the gaps.
+  const vitals = { ...vitalsFromNote(visit.note), ...(visit.metrics?.vitals ?? {}) };
+  if (Object.keys(vitals).length) {
     await db.insert(schema.vitals).values({ time: visit.startedAt ?? signedAt, patientId: visit.patientId, visitId: visit.id, ...vitals });
   }
 

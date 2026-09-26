@@ -1,19 +1,46 @@
 {
   "language": "es",
-  "greeting": "Hola Rosa, gracias por venir hoy. Esto es lo que hablamos.",
+  "greeting": "Hola Rosa,",
   "whatWeDiscussed": [
-    { "topic": "Su presión arterial", "explanation": "Su presión arterial hoy fue 138 sobre 88. Está mejor que la última vez. Sus lecturas en casa están casi siempre en los 130." },
-    { "topic": "Su tos", "explanation": "Su tos seca probablemente es un efecto secundario del lisinopril. Cambiar su medicina debería ayudar a que se quite." }
+    {
+      "topic": "Su tos",
+      "explanation": "Es probable que su tos seca sea un efecto secundario de su medicamento llamado lisinopril."
+    },
+    {
+      "topic": "Presión arterial",
+      "explanation": "Estamos cambiando su medicamento para la presión arterial para ayudar a que se le quite la tos. Por favor siga reduciendo el consumo de sal."
+    }
   ],
   "medicationChanges": [
-    { "name": "Lisinopril", "change": "stopped", "instructions": "Deje de tomar lisinopril." },
-    { "name": "Losartan 50 mg", "change": "new", "instructions": "Tome 1 pastilla (50 mg) una vez al día." }
+    {
+      "name": "lisinopril",
+      "change": "stopped",
+      "instructions": "Deje de tomar lisinopril."
+    },
+    {
+      "name": "losartan",
+      "change": "new",
+      "instructions": "Tome 50 mg una vez al día."
+    }
   ],
   "nextSteps": [
-    { "text": "Siga comiendo menos sal.", "when": null },
-    { "text": "Hágase un análisis de sangre para revisar sus riñones y su potasio.", "when": "En unas 2 semanas" },
-    { "text": "Regrese para revisar su presión arterial.", "when": "En 4 semanas" }
+    {
+      "text": "Deje de tomar su lisinopril.",
+      "when": null
+    },
+    {
+      "text": "Comience a tomar losartan 50 mg una vez al día.",
+      "when": null
+    },
+    {
+      "text": "Continúe reduciendo el consumo de sal.",
+      "when": null
+    },
+    {
+      "text": "Regrese para una revisión de su presión arterial.",
+      "when": "en 4 semanas"
+    }
   ],
   "whenToGetHelp": [],
-  "followUp": "Revisión de la presión arterial en 4 semanas."
+  "followUp": "en 4 semanas"
 }

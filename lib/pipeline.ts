@@ -94,7 +94,9 @@ export async function runPipeline(visitId: string) {
       try {
         if (!audioPath || !fs.existsSync(/*turbopackIgnore: true*/ audioPath)) throw new Error("No audio recorded for this visit");
         const keyterms = [...template.keyterms, ...patient.knownMedications.map((m) => m.name)];
-        transcript = await live("elevenlabs", () => transcribe(audioPath!, keyterms));
+        const seconds = visit.metrics?.recordingSeconds
+          ?? (visit.startedAt && visit.endedAt ? (visit.endedAt.getTime() - visit.startedAt.getTime()) / 1000 : 600);
+        transcript = await live("elevenlabs", () => transcribe(audioPath!, seconds, keyterms));
         saveLastGood("transcript", transcript);
       } catch (err) {
         switchToDemo("transcript", err);

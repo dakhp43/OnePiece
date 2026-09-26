@@ -9,13 +9,14 @@ export interface Brief {
   source: "backboard" | "gemini" | "chart";
 }
 
-const TTL_MS = 10 * 60_000;
+// The key changes whenever the chart does, so a long TTL only saves repeat Gemini calls.
+const TTL_MS = 12 * 60 * 60_000;
 const g = globalThis as unknown as { __briefCache?: Map<string, { at: number; brief: Brief }> };
 const cache = (g.__briefCache ??= new Map());
 
 /**
  * Pre-visit brief: Backboard memory → Gemini from the DB (Call F) → deterministic chart summary.
- * Cached per patient until the chart changes (new signed visit or open-item change) or 10 minutes pass.
+ * Cached per patient until the chart changes (new signed visit or open-item change) or 12 hours pass.
  */
 export async function getBrief(patient: PatientRow): Promise<Brief> {
   const ctx = await loadChartContext(patient);

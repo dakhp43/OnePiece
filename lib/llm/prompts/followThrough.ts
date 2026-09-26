@@ -13,7 +13,10 @@ RULES
 - medicationChanges must match the note exactly (names, doses, frequency).
 - nextSteps: concrete actions for the patient, with "when" if a timeframe was stated, else null.
 - whenToGetHelp: only warning signs stated in the note. If none are in the note, return an empty list.
-- followUp: the next visit timing if stated in the note, else null.`;
+- followUp: the next visit timing if stated in the note, else null.
+- currentMedications: the patient's complete medication list AFTER this visit. Start from "Medications on file",
+  then apply every start, stop, and dose change in the signed note. Use lowercase generic names, dose like "50 mg",
+  frequency like "once daily". If the note leaves a dose uncertain, keep the value on file.`;
 
 /** Call D. Input is only the signed note (never the raw transcript), so fixed errors can't leak to the patient. */
 export async function followThrough(args: { note: Note; firstName: string; knownMeds: Medication[] }): Promise<FollowThroughDraft> {

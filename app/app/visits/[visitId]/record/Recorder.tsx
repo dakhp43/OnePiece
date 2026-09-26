@@ -13,6 +13,8 @@ interface Props {
   patientName: string;
   visitTypeLabel: string;
   demoEnabled: boolean;
+  /** Recording auto-stops here to protect the free transcription quota. */
+  maxSeconds: number;
 }
 
 type Phase = "idle" | "recording" | "uploading";
@@ -22,7 +24,7 @@ function pickMimeType() {
   return options.find((t) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t)) ?? "";
 }
 
-export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demoEnabled }: Props) {
+export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demoEnabled, maxSeconds }: Props) {
   const router = useRouter();
   const [consent, setConsent] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -31,12 +33,17 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
   const recorder = useRef<MediaRecorder | null>(null);
   const chunks = useRef<Blob[]>([]);
   const startedAt = useRef(0);
+  const stopRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (phase !== "recording") return;
-    const t = setInterval(() => setElapsed((Date.now() - startedAt.current) / 1000), 250);
+    const t = setInterval(() => {
+      const s = (Date.now() - startedAt.current) / 1000;
+      setElapsed(s);
+      if (s >= maxSeconds) stopRef.current?.();
+    }, 250);
     return () => clearInterval(t);
-  }, [phase]);
+  }, [phase, maxSeconds]);
 
   // Release the mic if the page unmounts mid-recording.
   useEffect(() => () => recorder.current?.stream.getTracks().forEach((t) => t.stop()), []);
@@ -70,14 +77,15 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
 
   async function stop() {
     const rec = recorder.current;
-    if (!rec) return;
+    if (!rec || rec.state === "inactive") return;
     setPhase("uploading");
     const blob = await new Promise<Blob>((resolve) => {
       rec.onstop = () => resolve(new Blob(chunks.current, { type: rec.mimeType || "audio/webm" }));
       rec.stop();
     });
     rec.stream.getTracks().forEach((t) => t.stop());
-    await upload(`/api/visits/${visitId}/audio`, { method: "POST", headers: { "Content-Type": blob.type }, body: blob });
+    const seconds = String(Math.round(elapsed));
+    await upload(`/api/visits/${visitId}/audio`, { method: "POST", headers: { "Content-Type": blob.type, "X-Recording-Seconds": seconds }, body: blob });
   }
 
   async function loadDemo() {
@@ -103,6 +111,11 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
     }
     router.push(`/app/visits/${visitId}/processing`);
   }
+
+  // Lets the timer effect call the latest stop() when the length cap is reached.
+  useEffect(() => {
+    stopRef.current = () => void stop();
+  });
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
@@ -135,9 +148,12 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
           </>
         )}
         {phase === "recording" && (
+          <>
+          <p className="-mt-6 mb-6 text-xs text-slate-500">Auto-stops at {formatClock(maxSeconds)}</p>
           <Button size="lg" variant="danger" onClick={stop} className="w-56">
             <Square className="h-4 w-4 fill-current" /> End visit
           </Button>
+          </>
         )}
         {phase === "uploading" && <p className="text-sm text-slate-600">Uploading recording…</p>}
         {error && <p className="mt-4 text-sm text-red-600">{error}</p>}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MedicationSchema } from "./visit";
 
 export const TaskCategorySchema = z.enum(["lab", "imaging", "referral", "medication", "followup", "education"]);
 export type TaskCategory = z.infer<typeof TaskCategorySchema>;
@@ -34,6 +35,9 @@ export const FollowThroughSchema = z.object({
   summaries: z.object({ en: PatientSummarySchema, es: PatientSummarySchema.optional() }),
   approvedLanguage: z.enum(["en", "es"]).nullable(),
   translationReviewed: z.boolean(),
+  /** Medication list before and after this visit; "after" is written back to the patient chart. */
+  previousMedications: z.array(MedicationSchema).optional(),
+  currentMedications: z.array(MedicationSchema).optional(),
 });
 export type FollowThrough = z.infer<typeof FollowThroughSchema>;
 
@@ -41,5 +45,6 @@ export type FollowThrough = z.infer<typeof FollowThroughSchema>;
 export const FollowThroughDraftSchema = z.object({
   tasks: z.array(TaskSchema),
   summaryEn: PatientSummarySchema,
+  currentMedications: z.array(MedicationSchema),
 });
 export type FollowThroughDraft = z.infer<typeof FollowThroughDraftSchema>;
