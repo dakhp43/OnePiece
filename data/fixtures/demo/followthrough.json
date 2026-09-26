@@ -1,0 +1,27 @@
+{
+  "tasks": [
+    { "id": "t1", "category": "medication", "description": "Stop lisinopril; start losartan 50 mg once daily. Send new prescription.", "dueInDays": null, "sourceSentenceIds": ["s6", "s7"] },
+    { "id": "t2", "category": "lab", "description": "Basic metabolic panel (kidney function, potassium) after switching to losartan.", "dueInDays": 14, "sourceSentenceIds": [] },
+    { "id": "t3", "category": "followup", "description": "Schedule blood pressure recheck visit.", "dueInDays": 28, "sourceSentenceIds": ["s9"] },
+    { "id": "t4", "category": "education", "description": "Reinforce low-salt diet.", "dueInDays": null, "sourceSentenceIds": ["s8"] }
+  ],
+  "summaryEn": {
+    "language": "en",
+    "greeting": "Hi Rosa, thank you for coming in today. Here is what we talked about.",
+    "whatWeDiscussed": [
+      { "topic": "Your blood pressure", "explanation": "Your blood pressure today was 138 over 88. That is better than last time. Your home readings are mostly in the 130s." },
+      { "topic": "Your cough", "explanation": "Your dry cough is likely a side effect of lisinopril. Changing your medicine should help it go away." }
+    ],
+    "medicationChanges": [
+      { "name": "Lisinopril", "change": "stopped", "instructions": "Stop taking lisinopril." },
+      { "name": "Losartan 50 mg", "change": "new", "instructions": "Take 1 pill (50 mg) once a day." }
+    ],
+    "nextSteps": [
+      { "text": "Keep eating less salt.", "when": null },
+      { "text": "Get a blood test to check your kidneys and potassium.", "when": "In about 2 weeks" },
+      { "text": "Come back to check your blood pressure.", "when": "In 4 weeks" }
+    ],
+    "whenToGetHelp": [],
+    "followUp": "Blood pressure check in 4 weeks."
+  }
+}

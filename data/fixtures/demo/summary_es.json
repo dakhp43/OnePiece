@@ -1,0 +1,19 @@
+{
+  "language": "es",
+  "greeting": "Hola Rosa, gracias por venir hoy. Esto es lo que hablamos.",
+  "whatWeDiscussed": [
+    { "topic": "Su presión arterial", "explanation": "Su presión arterial hoy fue 138 sobre 88. Está mejor que la última vez. Sus lecturas en casa están casi siempre en los 130." },
+    { "topic": "Su tos", "explanation": "Su tos seca probablemente es un efecto secundario del lisinopril. Cambiar su medicina debería ayudar a que se quite." }
+  ],
+  "medicationChanges": [
+    { "name": "Lisinopril", "change": "stopped", "instructions": "Deje de tomar lisinopril." },
+    { "name": "Losartan 50 mg", "change": "new", "instructions": "Tome 1 pastilla (50 mg) una vez al día." }
+  ],
+  "nextSteps": [
+    { "text": "Siga comiendo menos sal.", "when": null },
+    { "text": "Hágase un análisis de sangre para revisar sus riñones y su potasio.", "when": "En unas 2 semanas" },
+    { "text": "Regrese para revisar su presión arterial.", "when": "En 4 semanas" }
+  ],
+  "whenToGetHelp": [],
+  "followUp": "Revisión de la presión arterial en 4 semanas."
+}
