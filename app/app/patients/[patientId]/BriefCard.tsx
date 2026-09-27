@@ -46,7 +46,10 @@ export function BriefCard({ patientId }: { patientId: string }) {
             {[92, 76, 84, 58].map((w) => <div key={w} className="shimmer h-3.5 rounded-full" style={{ width: `${w}%` }} />)}
           </div>
         )}
-        {brief && (
+        {brief && brief.bullets.length === 0 && (
+          <p className="fade-in text-sm text-ink-3">New patient, no history yet. The brief fills in after the first signed visit.</p>
+        )}
+        {brief && brief.bullets.length > 0 && (
           <ul className="space-y-2.5 text-[15px] leading-relaxed text-ink">
             {brief.bullets.map((b, i) => (
               <li key={i} className="rise flex gap-3" style={stagger(i)}>
