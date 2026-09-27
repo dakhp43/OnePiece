@@ -11,7 +11,11 @@ import { cn } from "@/lib/utils";
 interface Message {
   role: "user" | "assistant";
   content: string;
+  /** Which model answered (assistant messages only). */
+  source?: "snowflake" | "gemini";
 }
+
+const SOURCE_LABEL = { snowflake: "Snowflake Cortex", gemini: "Gemini (fallback)" } as const;
 
 const SUGGESTIONS = ["What changed in their medications?", "Any overdue or open items?", "Summarize the last visit"];
 const MAX_SENT = 12;
@@ -40,11 +44,11 @@ export function ChatCard({ patientId, firstName }: { patientId: string; firstNam
       const res = await fetch(`/api/patients/${patientId}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next.slice(-MAX_SENT) }),
+        body: JSON.stringify({ messages: next.slice(-MAX_SENT).map(({ role, content }) => ({ role, content })) }),
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error ?? "The assistant couldn't answer right now.");
-      setMessages([...next, { role: "assistant", content: body.reply }]);
+      setMessages([...next, { role: "assistant", content: body.reply, source: body.source }]);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -56,7 +60,7 @@ export function ChatCard({ patientId, firstName }: { patientId: string; firstNam
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><MessageSquareText className="h-4 w-4" /> Ask about {firstName}</CardTitle>
-        <Badge tone="blue">Snowflake Cortex</Badge>
+        <Badge tone="blue">Snowflake Cortex · Gemini fallback</Badge>
       </CardHeader>
       <CardContent>
         {messages.length === 0 && (
@@ -76,7 +80,7 @@ export function ChatCard({ patientId, firstName }: { patientId: string; firstNam
         {messages.length > 0 && (
           <div className="mb-3 max-h-80 space-y-2.5 overflow-y-auto pr-1" aria-live="polite">
             {messages.map((m, i) => (
-              <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
+              <div key={i} className={cn("flex flex-col", m.role === "user" ? "items-end" : "items-start")}>
                 <p
                   className={cn(
                     "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
@@ -85,6 +89,7 @@ export function ChatCard({ patientId, firstName }: { patientId: string; firstNam
                 >
                   {m.content}
                 </p>
+                {m.source && <span className="mt-1 px-1 text-[10px] text-ink-4">Answered by {SOURCE_LABEL[m.source]}</span>}
               </div>
             ))}
             {busy && (

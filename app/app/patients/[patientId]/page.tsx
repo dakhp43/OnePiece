@@ -127,7 +127,7 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
               <BriefCard patientId={patient.id} />
             </div>
 
-            {snowflakeEnabled() && (
+            {(snowflakeEnabled() || Boolean(process.env.GEMINI_API_KEY)) && (
               <div className="rise" style={stagger(3)}>
                 <ChatCard patientId={patient.id} firstName={patient.firstName} />
               </div>
