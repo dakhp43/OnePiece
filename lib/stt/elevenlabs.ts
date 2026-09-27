@@ -6,7 +6,7 @@ import { ExternalError, withRetry } from "@/lib/http";
 import { reserveTranscription } from "@/lib/usage";
 
 let client: ElevenLabsClient | null = null;
-function getClient() {
+export function getClient() {
   if (!process.env.ELEVENLABS_API_KEY) throw new ExternalError("elevenlabs", null, "ELEVENLABS_API_KEY is not set");
   client ??= new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY });
   return client;
