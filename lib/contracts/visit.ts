@@ -43,6 +43,8 @@ export const VisitRuntimeSchema = z.object({
   vitals: VitalsInputSchema.optional(),
   /** Audio came from the demo fixture ("Load demo visit"). */
   demo: z.boolean().optional(),
+  /** Which fixture set the demo audio came from: the 75 s demo or the longer copilot demo. */
+  demoSet: z.enum(["demo", "copilot"]).optional(),
   /** Length of the uploaded recording, for the daily transcription budget. */
   recordingSeconds: z.number().optional(),
   processingStartedAt: z.string().optional(),
