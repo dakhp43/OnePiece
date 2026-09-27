@@ -5,6 +5,7 @@ import type { PatientRow, VisitRow } from "@/lib/db/schema";
 
 export interface ReportContext {
   doctorName: string;
+  doctorSpecialty: string | null;
   vitals: { systolic: number | null; diastolic: number | null; heartRate: number | null; tempF: number | null; spo2: number | null; weightLb: number | null } | null;
   /** Medications after this visit (from follow-through), or the chart's current list when none was recorded. */
   medications: { list: { med: Medication; change: "new" | "changed" | "stopped" | "continue" }[]; reconciled: boolean };
@@ -17,7 +18,7 @@ export interface ReportContext {
 /** Live chart data shown around the narrative. Read at view/export time so it always matches the record. */
 export async function loadReportContext(visit: VisitRow, patient: PatientRow): Promise<ReportContext> {
   const db = await getDb();
-  const [doctor] = await db.select({ name: schema.doctors.name }).from(schema.doctors).where(eq(schema.doctors.id, visit.doctorId));
+  const [doctor] = await db.select({ name: schema.doctors.name, specialty: schema.doctors.specialty }).from(schema.doctors).where(eq(schema.doctors.id, visit.doctorId));
   const [vitals] = await db.select().from(schema.vitals)
     .where(and(eq(schema.vitals.patientId, patient.id), eq(schema.vitals.visitId, visit.id)))
     .orderBy(asc(schema.vitals.time)).limit(1);
@@ -45,6 +46,7 @@ export async function loadReportContext(visit: VisitRow, patient: PatientRow): P
 
   return {
     doctorName: doctor?.name ?? "",
+    doctorSpecialty: doctor?.specialty ?? null,
     vitals: vitals
       ? { systolic: vitals.systolic, diastolic: vitals.diastolic, heartRate: vitals.heartRate, tempF: vitals.tempF, spo2: vitals.spo2, weightLb: vitals.weightLb }
       : null,
