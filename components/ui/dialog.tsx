@@ -26,7 +26,9 @@ export function Dialog({ open, onClose, title, children, footer, className }: Di
   if (!open) return null;
   // Portal to <body> so no transformed/animated ancestor can trap the fixed overlay.
   return createPortal(
-    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 backdrop-blur-[3px]" onMouseDown={onClose}>
+    // The overlay's backdrop-filter is the only blur the page behind gets (it also stops the glass lens
+    // below from sampling the page), so the pane itself is near-opaque: nothing competes with the form.
+    <div className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md" onMouseDown={onClose}>
       <LiquidGlass
         role="dialog"
         aria-modal="true"
@@ -34,7 +36,7 @@ export function Dialog({ open, onClose, title, children, footer, className }: Di
         radius={24}
         blur={22}
         strength={30}
-        className={cn("dialog-in w-full max-w-lg overflow-hidden rounded-3xl", className)}
+        className={cn("dialog-in w-full max-w-lg overflow-hidden rounded-3xl bg-pane", className)}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 pb-2 pt-5">

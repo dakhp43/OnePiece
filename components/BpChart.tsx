@@ -23,8 +23,10 @@ export function BpChart({ points }: { points: BpPoint[] }) {
     return <p className="py-8 text-center text-sm text-ink-3">No blood pressure readings yet.</p>;
   }
   const values = data.flatMap((p) => [p.systolic ?? 0, p.diastolic ?? 0]).filter(Boolean);
-  const yMin = Math.min(70, Math.floor((Math.min(...values) - 10) / 10) * 10);
-  const yMax = Math.max(160, Math.ceil((Math.max(...values) + 10) / 10) * 10);
+  // Whole steps of 20 mmHg so the axis reads 60, 80, ... 160 (recharts would otherwise split 70–160 into 70, 95, 120...).
+  const yMin = Math.min(60, Math.floor((Math.min(...values) - 10) / 20) * 20);
+  const yMax = Math.max(160, Math.ceil((Math.max(...values) + 10) / 20) * 20);
+  const ticks = Array.from({ length: (yMax - yMin) / 20 + 1 }, (_, i) => yMin + i * 20);
 
   return (
     <div className="h-56 w-full">
@@ -32,7 +34,7 @@ export function BpChart({ points }: { points: BpPoint[] }) {
         <LineChart data={data} margin={{ top: 8, right: 24, bottom: 0, left: -12 }}>
           <CartesianGrid stroke={GRID} vertical={false} />
           <XAxis dataKey="date" tickFormatter={short} tick={{ fontSize: 12, fill: INK_MUTED }} stroke={GRID} tickLine={false} />
-          <YAxis domain={[yMin, yMax]} tick={{ fontSize: 12, fill: INK_MUTED }} stroke={GRID} unit="" axisLine={false} tickLine={false} />
+          <YAxis domain={[yMin, yMax]} ticks={ticks} interval={0} tick={{ fontSize: 12, fill: INK_MUTED }} stroke={GRID} unit="" axisLine={false} tickLine={false} />
           <Tooltip
             labelFormatter={(v) => new Date(String(v)).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
             formatter={(value, name) => [`${value} mmHg`, name]}

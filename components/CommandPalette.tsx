@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { Activity, CornerDownLeft, HeartPulse, Search, Users, type LucideIcon } from "lucide-react";
 import { setTrail, useTrailEnabled } from "@/components/CursorTrail";
@@ -39,6 +39,7 @@ export function CommandPalette() {
   const listRef = useRef<HTMLUListElement>(null);
   const trailOn = useTrailEnabled();
   const theme = useTheme();
+  const mod = useModKey();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -108,7 +109,7 @@ export function CommandPalette() {
   };
 
   return (
-    <div className="fade-in fixed inset-0 z-[60] flex items-start justify-center bg-black/25 px-4 pt-[14vh] backdrop-blur-[3px]" onMouseDown={close}>
+    <div className="fade-in fixed inset-0 z-[60] flex items-start justify-center bg-black/40 px-4 pt-[14vh] backdrop-blur-md" onMouseDown={close}>
       <LiquidGlass
         role="dialog"
         aria-modal="true"
@@ -116,7 +117,7 @@ export function CommandPalette() {
         radius={24}
         blur={22}
         strength={30}
-        className="dialog-in w-full max-w-xl overflow-hidden rounded-3xl"
+        className="dialog-in w-full max-w-xl overflow-hidden rounded-3xl bg-pane"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 border-b border-line px-4">
@@ -173,25 +174,32 @@ export function CommandPalette() {
         <div className="flex items-center gap-4 border-t border-line bg-surface-3 px-4 py-2 text-[11px] text-ink-3">
           <span><kbd className="font-mono">↑↓</kbd> navigate</span>
           <span><kbd className="font-mono">↵</kbd> open</span>
-          <span className="ml-auto"><kbd className="font-mono">⌘K</kbd> toggle</span>
+          <span className="ml-auto"><kbd className="font-mono">{mod}K</kbd> toggle</span>
         </div>
       </LiquidGlass>
     </div>
   );
 }
 
+/** The shortcut modifier as the viewer's keyboard labels it: ⌘ on Apple devices, Ctrl elsewhere. */
+const isApple = () => /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+function useModKey() {
+  return useSyncExternalStore(() => () => {}, () => (isApple() ? "⌘" : "Ctrl "), () => "Ctrl ");
+}
+
 /** Header button that opens the palette. */
 export function CommandPaletteTrigger() {
+  const mod = useModKey();
   return (
     <button
       type="button"
       onClick={() => window.dispatchEvent(new Event("carryover:palette"))}
       className="glass-pill group hidden items-center gap-2 rounded-full py-1.5 pl-3 pr-1.5 text-sm text-ink-3 transition-colors hover:text-ink-2 lg:flex"
-      title="Quick navigation (⌘K)"
+      title={`Quick navigation (${mod}K)`}
     >
       <Search className="h-3.5 w-3.5" />
       <span className="pr-6">Jump to…</span>
-      <kbd className="rounded-full border border-line bg-surface-3 px-2 py-0.5 font-mono text-[11px] text-ink-3 group-hover:text-accent-ink">⌘K</kbd>
+      <kbd className="rounded-full border border-line bg-surface-3 px-2 py-0.5 font-mono text-[11px] text-ink-3 group-hover:text-accent-ink">{mod}K</kbd>
     </button>
   );
 }
