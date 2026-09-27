@@ -19,15 +19,19 @@ import { applySpeakerRoles, buildUtterances } from "@/lib/stt/utterances";
 import { getTemplate } from "@/lib/templates";
 import { AUDIO_DIR, updateVisit } from "@/lib/visits";
 
+// The scripted demo must stay snappy on stage; a real recording may wait for a slower model or a fallback.
 const DEMO_STEP_TIMEOUT_MS = 30_000;
-const STEP_TIMEOUT_MS = 180_000;
+const STEP_TIMEOUT_MS = 120_000;
 
 class DemoUnavailable extends Error {}
 
 /**
  * Runs transcribe → draft → audit → score for a visit, updating processing_step as it goes.
- * With DEMO_FALLBACK=true, any failing or slow (> 30 s) external step switches the visit onto the
- * committed demo fixtures from that point back (transcript, audio, note, audit) and marks it offline.
+ *
+ * A real recording is only ever processed live: if a step fails, the visit goes to "error" and Retry
+ * resumes from that step (the saved transcript and draft are reused). Demo fixtures are used only for
+ * the demo recording itself ("Load demo visit"), and only with DEMO_FALLBACK=true: there a failing or
+ * slow (> 30 s) step switches the visit onto the committed fixtures from that point back.
  */
 export async function runPipeline(visitId: string) {
   const db = await getDb();
@@ -35,14 +39,17 @@ export async function runPipeline(visitId: string) {
   if (!visit) throw new Error(`visit ${visitId} not found`);
   const [patient] = await db.select().from(schema.patients).where(eq(schema.patients.id, visit.patientId));
   const template = getTemplate(visit.visitType);
-  const demoMode = demoFallbackEnabled();
+  // Fixtures belong to the demo recording; they must never replace what was said in a real visit.
+  const demoVisit = visit.metrics?.demo === true;
+  const demoMode = demoVisit && demoFallbackEnabled();
   const timeout = demoMode ? DEMO_STEP_TIMEOUT_MS : STEP_TIMEOUT_MS;
   const offline = new Set<string>();
 
+  // On Retry, steps that already succeeded are reused, so only the failed step runs again.
   let transcript: Transcript | null = visit.transcript ?? null;
-  let utterances: Utterance[] = [];
-  let note: Note | null = null;
-  let audit: AuditResult | null = null;
+  let utterances: Utterance[] = visit.transcript ? visit.utterances ?? [] : [];
+  let note: Note | null = visit.transcript ? visit.note ?? null : null;
+  let audit: AuditResult | null = visit.note ? visit.audit ?? null : null;
   let audioPath = visit.audioPath;
 
   // After a network-level failure in demo mode, skip remaining live calls instead of retrying each one.
@@ -109,22 +116,24 @@ export async function runPipeline(visitId: string) {
 
     // 2. Draft note (Call A)
     await setStep("drafting");
-    try {
-      const draft = await live("gemini:draft", () => draftNote({
-        utterances, visitType: visit.visitType,
-        knownMeds: patient.knownMedications, knownAllergies: patient.knownAllergies,
-      }));
-      saveLastGood("note", draft);
-      note = toNote(draft);
-      utterances = applySpeakerRoles(utterances, note.speakerRoles);
-    } catch (err) {
-      switchToDemo("note", err);
+    if (!note) {
+      try {
+        const draft = await live("gemini:draft", () => draftNote({
+          utterances, visitType: visit.visitType,
+          knownMeds: patient.knownMedications, knownAllergies: patient.knownAllergies,
+        }));
+        saveLastGood("note", draft);
+        note = toNote(draft);
+        utterances = applySpeakerRoles(utterances, note.speakerRoles);
+      } catch (err) {
+        switchToDemo("note", err);
+      }
+      await updateVisit(visitId, { transcript, utterances, audioPath, note });
+      await logEvent("note_drafted", {
+        visitId, doctorId: visit.doctorId,
+        payload: { sentences: note!.sentences.length, problems: note!.problems.length, offline: offline.has("drafting") },
+      });
     }
-    await updateVisit(visitId, { transcript, utterances, audioPath, note });
-    await logEvent("note_drafted", {
-      visitId, doctorId: visit.doctorId,
-      payload: { sentences: note!.sentences.length, problems: note!.problems.length, offline: offline.has("drafting") },
-    });
 
     // 3. Audit (Call B) — separate call so the model checks work it didn't just write
     await setStep("auditing");

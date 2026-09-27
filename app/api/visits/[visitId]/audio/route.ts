@@ -56,6 +56,8 @@ export const POST = route(async (req: Request, ctx: Ctx) => {
   const now = new Date();
   await updateVisit(visit.id, {
     audioPath,
+    // A new recording starts processing from scratch: nothing from an earlier attempt may be reused.
+    transcript: null, utterances: null, note: null, audit: null, scores: null, gaps: null,
     status: "recording",
     startedAt: visit.startedAt ?? now,
     endedAt: now,
