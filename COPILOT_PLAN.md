@@ -19,6 +19,22 @@ After the visit, the review screen shows which gaps were **caught live**, a new 
 
 **The after-visit pipeline stays unchanged and authoritative.** The copilot is an additive layer. If it fails in any way, recording, upload and processing behave exactly as they do today.
 
+### Revision 2 (2026-09-27, after Phase 19): follow the conversation, not a checklist
+The user tried the first version and it listed all ~22 checklist items. New direction (supersedes the checklist
+parts of Phases 17–21 below):
+- **Topics, not checklist.** Each check, Gemini lists the topics the conversation opened ("Dizziness on standing",
+  "Switch to losartan") with what is known and what is still missing. Questions are written on the fly for a
+  half-answered topic, typically a symptom mentioned in passing that the doctor moved on from.
+- **Input is the conversation only**, plus the chart's medications and allergies. No visit-type checklist, no
+  carried-over open items.
+- **Screen:** only the half-answered topics (0–3 lines, e.g. "Cough: 3 weeks ✓ · fever ?") plus the one card.
+- **After the visit:** audit trail only. The GapsPanel "Asked live" marks and the `gapsCaughtLive` metric are dropped.
+- Gate rules unchanged in spirit: 30 s quiet start, one card, max 3, 45 s apart, confidence ≥ 0.8, a real
+  question of 15 words or fewer, one prompt per topic, never repeated.
+- Demo script now has a half-answered dizziness moment instead of the kidney-lab open item.
+- Verified with `npm run copilot:probe`: dizziness prompt at 60 s → captured at 120 s; allergy prompt at 140 s
+  → captured at 200 s.
+
 ### What exists and gets reused (verified in code)
 
 | Need | Existing piece |

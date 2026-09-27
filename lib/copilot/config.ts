@@ -15,13 +15,14 @@ export const COPILOT = {
   COOLDOWN_S: 45,
   /** No prompt before this: the visit has barely started. */
   QUIET_START_S: 30,
-  /** Unconditioned items may only be prompted this early if they are about what's being discussed right now. */
-  UNCONDITIONED_MIN_S: 60,
   /** An unanswered card leaves the screen after this. */
   EXPIRE_S: 90,
   MAX_QUESTION_WORDS: 15,
-  /** Minimum model confidence per source. Clinical (free-form) questions need to be near-certain. */
-  THRESHOLD: { checklist: 0.75, open_item: 0.75, clinical: 0.9 },
+  /** Minimum model confidence for a card. */
+  THRESHOLD: 0.8,
+  /** Topics tracked per visit, and short facts kept per topic. */
+  MAX_THREADS: 12,
+  MAX_FACTS: 6,
   /** Gemini time budget for one check; a late answer is useless mid-conversation. */
   CHECK_TIMEOUT_MS: 12_000,
 } as const;

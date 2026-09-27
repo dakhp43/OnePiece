@@ -9,8 +9,6 @@ export const ReviewMetricsSchema = z.object({
   clinicianAddedSentences: z.number(),
   gapsFound: z.number(),
   gapsResolved: z.number(),
-  /** Checklist gaps the live copilot prompted and the conversation then covered (optional: older visits lack it). */
-  gapsCaughtLive: z.number().optional(),
   secondsProcessing: z.number(),
   secondsToSign: z.number(),
 });

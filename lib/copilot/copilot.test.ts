@@ -1,43 +1,28 @@
 import { describe, expect, it } from "vitest";
-import type { Candidate, CopilotState, CoverageItem, LiveCoverageResult, Suggestion } from "@/lib/contracts";
-import type { OpenItemRow } from "@/lib/db/schema";
-import { getTemplate } from "@/lib/templates";
-import { initialCoverage, meterCounts, mergeCoverage } from "./coverage";
-import { applyResolutions, dismissSuggestion, pickSuggestion, sourceOf } from "./gate";
+import type { Candidate, CopilotState, Suggestion, Thread } from "@/lib/contracts";
+import { applyResolutions, dismissSuggestion, pickSuggestion } from "./gate";
 import { timelineAt } from "./replay";
-import { gapsCaughtLive, liveMarks } from "./review";
 import { appendCommitted, shouldCheck, transcriptText, wordCount } from "./segments";
+import { findThread, mergeThreads, openThreads } from "./threads";
 
-const openItems = [
-  { id: "bmp", text: "Review basic metabolic panel (kidney function, potassium) after lisinopril start" },
-] as OpenItemRow[];
+const cough: Thread = { id: "t1", topic: "Cough", known: ["3 weeks", "worse at night"], missing: ["fever"], updatedAtSecond: 20 };
+const losartan: Thread = { id: "t2", topic: "New losartan", known: ["50 mg daily"], missing: ["drug allergies"], updatedAtSecond: 90 };
 
 function state(patch: Partial<CopilotState> = {}): CopilotState {
   return {
-    version: 1, mode: "live", status: "listening", checks: 0, lastCheckSecond: 0, lastWordCount: 0,
-    coverage: initialCoverage(getTemplate("htn_followup"), openItems), suggestions: [], realtimeSecondsReserved: 600,
-    ...patch,
+    version: 2, mode: "live", status: "listening", checks: 0, lastCheckSecond: 0, lastWordCount: 0,
+    threads: [cough, losartan], suggestions: [], realtimeSecondsReserved: 600, ...patch,
   };
 }
 
-const withStatus = (cov: CoverageItem[], itemId: string, patch: Partial<CoverageItem>) =>
-  cov.map((c) => (c.itemId === itemId ? { ...c, ...patch } : c));
-
 const cand = (patch: Partial<Candidate> = {}): Candidate => ({
-  itemId: "adherence", question: "Have you missed any doses lately?", reason: "adherence not discussed",
-  confidence: 0.9, aboutCurrentTopic: true, ...patch,
+  thread: "t1", question: "Have you had any fever with the cough?", reason: "fever not asked", confidence: 0.9, ...patch,
 });
 
 const shown = (patch: Partial<Suggestion> = {}): Suggestion => ({
-  id: "q1", itemId: "adherence", label: "Adherence", source: "checklist", question: "Missed doses?", reason: "",
-  confidence: 0.9, status: "shown", atSecond: 40, resolvedAtSecond: null, ...patch,
+  id: "q1", threadId: "t1", topic: "Cough", question: "Any fever?", reason: "", confidence: 0.9,
+  status: "shown", atSecond: 40, resolvedAtSecond: null, ...patch,
 });
-
-/** A state where "adherence" is missing, so it's promptable. */
-const ready = (patch: Partial<CopilotState> = {}) => {
-  const s = state(patch);
-  return { ...s, coverage: withStatus(s.coverage, "adherence", { status: "missing" }) };
-};
 
 describe("segments", () => {
   it("appends committed text, skipping blanks and exact repeats", () => {
@@ -65,122 +50,93 @@ describe("segments", () => {
   });
 });
 
-describe("coverage", () => {
-  const items = (list: [string, LiveCoverageResult["items"][number]["status"], (boolean | null)?][]) =>
-    list.map(([itemId, status, conditionMet = null]) => ({ itemId, status, conditionMet, evidenceQuote: `said ${itemId}` }));
-
-  it("starts unknown with template + open items", () => {
-    const cov = initialCoverage(getTemplate("htn_followup"), openItems);
-    expect(cov.every((c) => c.status === "unknown")).toBe(true);
-    expect(cov.find((c) => c.itemId === "open:bmp")).toMatchObject({ priority: "required", source: "open_item" });
+describe("threads", () => {
+  it("adds new topics with fresh ids and keeps known ids", () => {
+    const next = mergeThreads([cough], [
+      { id: "t1", topic: "Cough", known: ["3 weeks", "worse at night", "no fever"], missing: [] },
+      { id: null, topic: "Dizziness", known: [], missing: ["when it happens"] },
+    ], 60);
+    expect(next.map((t) => [t.id, t.topic, t.missing, t.updatedAtSecond])).toEqual([
+      ["t1", "Cough", [], 60],
+      ["t2", "Dizziness", ["when it happens"], 60],
+    ]);
   });
 
-  it("only moves forward: covered sticks, partial never drops, missing never goes back to unknown", () => {
-    let cov = state().coverage;
-    cov = mergeCoverage(cov, items([["adherence", "covered"], ["side_effects", "partial"], ["exercise", "missing"]]), 30);
-    cov = mergeCoverage(cov, items([["adherence", "missing"], ["side_effects", "missing"], ["exercise", "unknown"]]), 50);
-    const by = new Map(cov.map((c) => [c.itemId, c]));
-    expect(by.get("adherence")).toMatchObject({ status: "covered", evidenceQuote: "said adherence", updatedAtSecond: 30 });
-    expect(by.get("side_effects")?.status).toBe("partial");
-    expect(by.get("exercise")?.status).toBe("missing");
+  it("matches a topic by name when the model forgets its id, and keeps topics it left out", () => {
+    const next = mergeThreads([cough, losartan], [{ id: null, topic: "cough", known: ["3 weeks"], missing: ["fever"] }], 70);
+    expect(next).toHaveLength(2);
+    expect(next[0]).toMatchObject({ id: "t1", known: ["3 weeks"], updatedAtSecond: 70 });
+    expect(next[1]).toBe(losartan);
   });
 
-  it("lets a conditioned item flip between not_applicable and missing, and ignores unknown ids", () => {
-    let cov = mergeCoverage(state().coverage, items([["allergies_reviewed", "not_applicable", false], ["nope", "covered"]]), 30);
-    expect(cov.find((c) => c.itemId === "allergies_reviewed")).toMatchObject({ status: "not_applicable", conditionMet: false });
-    cov = mergeCoverage(cov, items([["allergies_reviewed", "missing", true]]), 120);
-    expect(cov.find((c) => c.itemId === "allergies_reviewed")).toMatchObject({ status: "missing", conditionMet: true });
-    expect(cov.some((c) => c.itemId === "nope")).toBe(false);
+  it("dedupes facts, drops a missing detail that is now known, and leaves unchanged topics alone", () => {
+    const next = mergeThreads([cough], [{ id: "t1", topic: "Cough", known: ["3 weeks", "3 weeks ", "fever"], missing: ["fever", ""] }], 80);
+    expect(next[0]).toMatchObject({ known: ["3 weeks", "fever"], missing: [] });
+    expect(mergeThreads([cough], [{ id: "t1", topic: "Cough", known: cough.known, missing: cough.missing }], 99)[0]).toBe(cough);
   });
 
-  it("meter leaves out items that don't apply", () => {
-    const cov = mergeCoverage(state().coverage, items([["adherence", "covered"], ["allergies_reviewed", "not_applicable", false]]), 30);
-    expect(meterCounts(cov)).toEqual({ covered: 1, partial: 0, total: state().coverage.length - 1 });
+  it("lists only half-answered topics, newest first, and finds topics by id or name", () => {
+    const done: Thread = { ...cough, id: "t3", topic: "Salt", missing: [] };
+    expect(openThreads([cough, losartan, done]).map((t) => t.id)).toEqual(["t2", "t1"]);
+    expect(findThread([cough, losartan], "New Losartan")?.id).toBe("t2");
+    expect(findThread([cough], "t9")).toBeUndefined();
   });
 });
 
 describe("pickSuggestion", () => {
-  it("shows a confident candidate for a missing item", () => {
-    const { suggestion } = pickSuggestion(ready(), [cand()], 70);
-    expect(suggestion).toMatchObject({ id: "q1", itemId: "adherence", label: "Medication adherence asked", source: "checklist", status: "shown", atSecond: 70 });
+  it("shows a confident follow-up for a half-answered topic", () => {
+    const { suggestion } = pickSuggestion(state(), [cand()], 70);
+    expect(suggestion).toMatchObject({ id: "q1", threadId: "t1", topic: "Cough", status: "shown", atSecond: 70 });
   });
 
   it("stays quiet in the first 30 s, while a card shows, after 3 prompts, and within the cooldown", () => {
-    expect(pickSuggestion(ready(), [cand()], 29).suggestion).toBeNull();
-    expect(pickSuggestion(ready({ suggestions: [shown({ itemId: "side_effects" })] }), [cand()], 200).suggestion).toBeNull();
-    const three = ["a", "b", "c"].map((id, i) => shown({ id, itemId: id, status: "dismissed", atSecond: i * 10 }));
-    expect(pickSuggestion(ready({ suggestions: three }), [cand()], 300).rejected[0].why).toBe("prompt cap reached");
-    const recent = [shown({ itemId: "side_effects", status: "captured", atSecond: 100 })];
-    expect(pickSuggestion(ready({ suggestions: recent }), [cand()], 144).rejected[0].why).toBe("cooldown");
-    expect(pickSuggestion(ready({ suggestions: recent }), [cand()], 145).suggestion?.itemId).toBe("adherence");
+    expect(pickSuggestion(state(), [cand()], 29).suggestion).toBeNull();
+    expect(pickSuggestion(state({ suggestions: [shown({ threadId: "t2" })] }), [cand()], 200).suggestion).toBeNull();
+    const three = ["a", "b", "c"].map((id, i) => shown({ id, threadId: id, question: id, status: "dismissed", atSecond: i * 10 }));
+    expect(pickSuggestion(state({ suggestions: three }), [cand()], 300).rejected[0].why).toBe("prompt cap reached");
+    const recent = [shown({ threadId: "t2", question: "Allergies?", status: "captured", atSecond: 100 })];
+    expect(pickSuggestion(state({ suggestions: recent }), [cand()], 144).rejected[0].why).toBe("cooldown");
+    expect(pickSuggestion(state({ suggestions: recent }), [cand()], 145).suggestion?.threadId).toBe("t1");
   });
 
-  it("applies per-source confidence thresholds", () => {
-    expect(pickSuggestion(ready(), [cand({ confidence: 0.7 })], 70).suggestion).toBeNull();
-    expect(pickSuggestion(ready(), [cand({ itemId: null, question: "Any rash with the new pill?", confidence: 0.85 })], 70).suggestion).toBeNull();
-    expect(pickSuggestion(ready(), [cand({ itemId: null, question: "Any rash with the new pill?", confidence: 0.92 })], 70).suggestion)
-      .toMatchObject({ source: "clinical", itemId: null, label: null });
+  it("rejects low confidence, statements, long questions and repeats", () => {
+    const why = (c: Candidate, s = state()) => pickSuggestion(s, [c], 70).rejected[0]?.why;
+    expect(why(cand({ confidence: 0.7 }))).toBe("confidence 0.7 below 0.8");
+    expect(why(cand({ question: "Let's check for fever." }))).toBe("not a question");
+    expect(why(cand({ question: "Could you tell me whether you have noticed any fever or chills at all in the evenings lately?" }))).toBe("question too long");
+    const asked = state({ suggestions: [shown({ threadId: "t2", question: "Have you had any fever with the cough?", status: "dismissed", atSecond: 0 })] });
+    expect(why(cand(), asked)).toBe("same question already asked");
   });
 
-  it("only prompts missing items, never twice, and never with long questions", () => {
-    const s = ready();
-    const partial = { ...s, coverage: withStatus(s.coverage, "adherence", { status: "partial" }) };
-    expect(pickSuggestion(partial, [cand()], 70).rejected[0].why).toBe("item is partial");
-    const before = ready({ suggestions: [shown({ status: "expired", atSecond: 0 })] });
-    expect(pickSuggestion(before, [cand()], 200).rejected[0].why).toBe("item already prompted");
-    const long = cand({ question: "Could you tell me whether you have been taking every single dose of your pills this month?" });
-    expect(pickSuggestion(ready(), [long], 70).rejected[0].why).toBe("question too long");
-    expect(pickSuggestion(ready(), [cand({ itemId: "made_up" })], 70).rejected[0].why).toBe("unknown item id");
-    expect(pickSuggestion(ready(), [cand({ question: "Let's check a kidney panel." })], 70).rejected[0].why).toBe("not a question");
+  it("needs a known, still-open topic that wasn't prompted before", () => {
+    const why = (c: Candidate, s = state()) => pickSuggestion(s, [c], 70).rejected[0]?.why;
+    expect(why(cand({ thread: "t9" }))).toBe("unknown topic");
+    expect(why(cand(), state({ threads: [{ ...cough, missing: [] }] }))).toBe("topic already complete");
+    expect(why(cand(), state({ suggestions: [shown({ question: "Other?", status: "expired", atSecond: 0 })] }))).toBe("topic already prompted");
+    expect(pickSuggestion(state(), [cand({ thread: "cough" })], 70).suggestion?.threadId).toBe("t1");
   });
 
-  it("needs the condition met for conditioned items", () => {
-    const s = state();
-    const cov = withStatus(s.coverage, "allergies_reviewed", { status: "missing", conditionMet: false });
-    const c = cand({ itemId: "allergies_reviewed", question: "Any drug allergies?" });
-    expect(pickSuggestion({ ...s, coverage: cov }, [c], 130).rejected[0].why).toBe("condition not met");
-    const met = withStatus(s.coverage, "allergies_reviewed", { status: "missing", conditionMet: true });
-    expect(pickSuggestion({ ...s, coverage: met }, [c], 130).suggestion?.itemId).toBe("allergies_reviewed");
-  });
-
-  it("holds off-topic unconditioned items until 60 s", () => {
-    expect(pickSuggestion(ready(), [cand({ aboutCurrentTopic: false })], 50).rejected[0].why).toBe("too early for an off-topic item");
-    expect(pickSuggestion(ready(), [cand({ aboutCurrentTopic: false })], 61).suggestion).not.toBeNull();
-  });
-
-  it("ranks required, then open items, then recommended, then clinical", () => {
-    const s = state();
-    let cov = withStatus(s.coverage, "exercise", { status: "missing" });
-    cov = withStatus(cov, "open:bmp", { status: "missing" });
-    cov = withStatus(cov, "adherence", { status: "missing" });
-    const cands = [
-      cand({ itemId: null, question: "Any rash?", confidence: 0.99 }),
-      cand({ itemId: "exercise", question: "Exercising?", confidence: 0.99 }),
-      cand({ itemId: "open:bmp", question: "Kidney labs done?", confidence: 0.8 }),
-      cand({ itemId: "adherence", question: "Missed doses?", confidence: 0.76 }),
-    ];
-    const first = pickSuggestion({ ...s, coverage: cov }, cands, 70);
-    expect(first.suggestion?.itemId).toBe("adherence");
-    expect(first.rejected).toHaveLength(3);
-    expect(pickSuggestion({ ...s, coverage: cov }, cands.slice(0, 3), 70).suggestion?.source).toBe("open_item");
-    expect(sourceOf("open:x")).toBe("open_item");
+  it("picks the most confident of several", () => {
+    const r = pickSuggestion(state(), [cand({ confidence: 0.82 }), cand({ thread: "t2", question: "Any drug allergies?", confidence: 0.95 })], 120);
+    expect(r.suggestion?.threadId).toBe("t2");
+    expect(r.rejected).toEqual([{ question: "Have you had any fever with the cough?", why: "lower confidence than the chosen card" }]);
   });
 });
 
 describe("resolutions", () => {
-  it("captures a shown or expired card once its item is covered", () => {
-    const s = state({ suggestions: [shown(), shown({ id: "q2", itemId: "side_effects", status: "expired", atSecond: 0 })] });
-    let cov = withStatus(s.coverage, "adherence", { status: "covered" });
-    cov = withStatus(cov, "side_effects", { status: "covered" });
-    const r = applyResolutions(s, cov, [], 60);
+  it("captures a card when its topic is complete or the model says it was answered, even after expiry", () => {
+    const s = state({ suggestions: [shown(), shown({ id: "q2", threadId: "t2", status: "expired", atSecond: 0 })] });
+    const threads = [{ ...cough, missing: [] }, losartan];
+    const r = applyResolutions(s, threads, ["q2"], 60);
     expect(r.state.suggestions.map((x) => [x.status, x.resolvedAtSecond])).toEqual([["captured", 60], ["captured", 60]]);
     expect(r.transitions.map((t) => t.to)).toEqual(["captured", "captured"]);
+    expect(r.state.threads).toBe(threads);
   });
 
-  it("captures an answered clinical question and expires stale cards", () => {
-    const s = state({ suggestions: [shown({ itemId: null, source: "clinical" }), shown({ id: "q2", itemId: "exercise", atSecond: 10 })] });
-    const r = applyResolutions(s, s.coverage, ["q1"], 100);
-    expect(r.state.suggestions.map((x) => x.status)).toEqual(["captured", "expired"]);
+  it("expires unanswered cards after 90 s", () => {
+    const s = state({ suggestions: [shown({ atSecond: 10 })] });
+    expect(applyResolutions(s, s.threads, [], 99).state.suggestions[0].status).toBe("shown");
+    expect(applyResolutions(s, s.threads, [], 100).state.suggestions[0].status).toBe("expired");
   });
 
   it("dismisses once and leaves dismissed cards alone", () => {
@@ -188,21 +144,13 @@ describe("resolutions", () => {
     const d = dismissSuggestion(s, "q1", 50);
     expect(d?.suggestion).toMatchObject({ status: "dismissed", resolvedAtSecond: 50 });
     expect(dismissSuggestion(d!.state, "q1", 55)).toBeNull();
-    const cov = withStatus(s.coverage, "adherence", { status: "covered" });
-    expect(applyResolutions(d!.state, cov, [], 60).state.suggestions[0].status).toBe("dismissed");
+    expect(applyResolutions(d!.state, [{ ...cough, missing: [] }], ["q1"], 60).state.suggestions[0].status).toBe("dismissed");
   });
 });
 
-describe("review + replay", () => {
-  it("marks prompted items and counts caught gaps", () => {
-    const s = state({ suggestions: [shown({ status: "captured" }), shown({ id: "q2", itemId: "exercise", status: "dismissed" }), shown({ id: "q3", itemId: null })] });
-    expect([...liveMarks(s).keys()]).toEqual(["adherence", "exercise"]);
-    expect(gapsCaughtLive(s)).toBe(1);
-    expect(gapsCaughtLive(null)).toBe(0);
-  });
-
+describe("replay", () => {
   it("returns the latest saved result at or before a second", () => {
-    const r = (n: number) => ({ items: [], candidates: [], resolvedSuggestionIds: [`r${n}`] });
+    const r = (n: number) => ({ threads: [], candidates: [], resolvedSuggestionIds: [`r${n}`] });
     const timeline = [{ atSecond: 60, result: r(60) }, { atSecond: 20, result: r(20) }];
     expect(timelineAt(timeline, 10)).toBeNull();
     expect(timelineAt(timeline, 20)?.resolvedSuggestionIds).toEqual(["r20"]);

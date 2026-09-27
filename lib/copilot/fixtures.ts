@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { CopilotTimelineSchema, type CopilotTimeline, type LiveCoverageResult } from "@/lib/contracts";
+import { CopilotTimelineSchema, type CopilotTimeline, type LiveCheckResult } from "@/lib/contracts";
 import { FIXTURES_DIR, LAST_GOOD_DIR } from "@/lib/fixtures";
 
 export const COPILOT_DIR = path.join(FIXTURES_DIR, "copilot");
@@ -10,7 +10,7 @@ const LAST_GOOD = path.join(LAST_GOOD_DIR, "copilot_timeline.json");
  * Keeps every good live check of the current visit, so one good demo run can be promoted to
  * data/fixtures/copilot/timeline.json (the Gemini-offline fallback for the scripted replay).
  */
-export function saveTimelineEntry(visitId: string, atSecond: number, result: LiveCoverageResult) {
+export function saveTimelineEntry(visitId: string, atSecond: number, result: LiveCheckResult) {
   try {
     let saved: { visitId: string; timeline: CopilotTimeline } = { visitId, timeline: [] };
     if (fs.existsSync(LAST_GOOD)) {

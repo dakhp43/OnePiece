@@ -1,28 +1,24 @@
 import { z } from "zod";
 
 /**
- * Live Copilot: what the AI has heard so far during recording, and the few questions it chose to suggest.
- * Stored in visits.copilot. The after-visit audit (visits.gaps) stays the authoritative record.
+ * Live Copilot: the topics the conversation has opened so far, which of them are only half answered,
+ * and the few follow-up questions it chose to suggest. Stored in visits.copilot. It follows the
+ * conversation only (plus the chart's medications and allergies); the after-visit audit stays the
+ * authoritative record.
  */
 
-export const CoverageStatusSchema = z.enum(["covered", "partial", "missing", "unknown", "not_applicable"]);
-export type CoverageStatus = z.infer<typeof CoverageStatusSchema>;
-
-export const CoverageItemSchema = z.object({
-  itemId: z.string(),
-  label: z.string(),
-  priority: z.enum(["required", "recommended"]),
-  source: z.enum(["template", "open_item"]),
-  /** Template condition, e.g. "only if a new medication is prescribed". */
-  condition: z.string().nullable(),
-  /** Latest model judgement of whether the condition now applies (null for unconditioned items). */
-  conditionMet: z.boolean().nullable(),
-  status: CoverageStatusSchema,
-  evidenceQuote: z.string().nullable(),
-  /** Visit second at which the status last changed. */
+/** One topic the conversation opened, e.g. "Cough", with what's been established and what's still open. */
+export const ThreadSchema = z.object({
+  id: z.string(),
+  topic: z.string(),
+  /** Short facts already established, e.g. "3 weeks", "worse at night". */
+  known: z.array(z.string()),
+  /** Details still unanswered that matter for this topic, e.g. "fever". Empty when complete. */
+  missing: z.array(z.string()),
+  /** Visit second at which the topic last changed. */
   updatedAtSecond: z.number(),
 });
-export type CoverageItem = z.infer<typeof CoverageItemSchema>;
+export type Thread = z.infer<typeof ThreadSchema>;
 
 /** One committed chunk of the live transcript. */
 export const LiveSegmentSchema = z.object({
@@ -32,19 +28,14 @@ export const LiveSegmentSchema = z.object({
 });
 export type LiveSegment = z.infer<typeof LiveSegmentSchema>;
 
-export const SuggestionSourceSchema = z.enum(["checklist", "open_item", "clinical"]);
-export type SuggestionSource = z.infer<typeof SuggestionSourceSchema>;
-
 export const SuggestionStatusSchema = z.enum(["shown", "dismissed", "captured", "expired"]);
 export type SuggestionStatus = z.infer<typeof SuggestionStatusSchema>;
 
 export const SuggestionSchema = z.object({
   id: z.string(),
-  /** Checklist or open item this asks about; null for a free-form clinical question. */
-  itemId: z.string().nullable(),
-  /** The item's label (null for clinical), so review and audit trail can show it without a lookup. */
-  label: z.string().nullable(),
-  source: SuggestionSourceSchema,
+  /** The topic this follows up on. */
+  threadId: z.string(),
+  topic: z.string(),
   question: z.string(),
   reason: z.string(),
   confidence: z.number(),
@@ -55,13 +46,13 @@ export const SuggestionSchema = z.object({
 export type Suggestion = z.infer<typeof SuggestionSchema>;
 
 export const CopilotStateSchema = z.object({
-  version: z.literal(1),
+  version: z.literal(2),
   mode: z.enum(["live", "replay"]),
   status: z.enum(["listening", "ended", "error"]),
   checks: z.number(),
   lastCheckSecond: z.number(),
   lastWordCount: z.number(),
-  coverage: z.array(CoverageItemSchema),
+  threads: z.array(ThreadSchema),
   suggestions: z.array(SuggestionSchema),
   /** Realtime audio seconds reserved against the daily cap when the token was minted. */
   realtimeSecondsReserved: z.number(),
@@ -70,28 +61,29 @@ export const CopilotStateSchema = z.object({
 export type CopilotState = z.infer<typeof CopilotStateSchema>;
 
 /** What the model returns for one live check (Gemini call "copilot"). */
-export const LiveCoverageResultSchema = z.object({
-  items: z.array(z.object({
-    itemId: z.string(),
-    status: CoverageStatusSchema,
-    conditionMet: z.boolean().nullable(),
-    evidenceQuote: z.string().nullable(),
-  })),
+export const LiveCheckResultSchema = z.object({
+  /** Every topic so far. Reuse the given id for a known topic; id null for a new one. */
+  threads: z.array(z.object({
+    id: z.string().nullable(),
+    topic: z.string(),
+    known: z.array(z.string()),
+    missing: z.array(z.string()),
+  })).max(12),
   candidates: z.array(z.object({
-    itemId: z.string().nullable(),
+    /** Id of the topic this follows up on, or its exact topic name if the topic is new in this answer. */
+    thread: z.string(),
     question: z.string(),
     reason: z.string(),
     confidence: z.number().min(0).max(1),
-    aboutCurrentTopic: z.boolean(),
   })).max(3),
-  /** Ids of shown clinical (free-form) suggestions that the conversation has now answered. */
+  /** Ids of previously shown suggestions that the conversation has now answered. */
   resolvedSuggestionIds: z.array(z.string()),
 });
-export type LiveCoverageResult = z.infer<typeof LiveCoverageResultSchema>;
-export type Candidate = LiveCoverageResult["candidates"][number];
+export type LiveCheckResult = z.infer<typeof LiveCheckResultSchema>;
+export type Candidate = LiveCheckResult["candidates"][number];
 
 /** Saved model results by visit second; replays them when Gemini is unavailable during the scripted demo. */
-export const CopilotTimelineSchema = z.array(z.object({ atSecond: z.number(), result: LiveCoverageResultSchema }));
+export const CopilotTimelineSchema = z.array(z.object({ atSecond: z.number(), result: LiveCheckResultSchema }));
 export type CopilotTimeline = z.infer<typeof CopilotTimelineSchema>;
 
 export const CopilotCheckBodySchema = z.object({

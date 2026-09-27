@@ -4,10 +4,8 @@ import { ApiError, readJson, route } from "@/lib/api";
 import { loadVisit } from "@/lib/access";
 import { requireDoctorApi } from "@/lib/auth/current";
 import type { CopilotState } from "@/lib/contracts";
-import { initialCoverage } from "@/lib/copilot/coverage";
 import { withCopilotLock } from "@/lib/copilot/lock";
 import { copilotEnabled } from "@/lib/copilot/server";
-import { getOpenItems } from "@/lib/queries";
 import { getClient } from "@/lib/stt/elevenlabs";
 import { getTemplate } from "@/lib/templates";
 import { LIMITS, reserveRealtime, settleRealtime } from "@/lib/usage";
@@ -40,17 +38,15 @@ export const POST = route(async (req: Request, ctx: RouteContext<"/api/visits/[v
     throw err;
   }
 
-  const template = getTemplate(visit.visitType);
   const copilot: CopilotState = {
-    version: 1, mode, status: "listening", checks: 0, lastCheckSecond: 0, lastWordCount: 0,
-    coverage: initialCoverage(template, await getOpenItems(patient.id)),
-    suggestions: [], realtimeSecondsReserved: seconds,
+    version: 2, mode, status: "listening", checks: 0, lastCheckSecond: 0, lastWordCount: 0,
+    threads: [], suggestions: [], realtimeSecondsReserved: seconds,
   };
   await withCopilotLock(visitId, () => updateVisit(visitId, { copilot }));
 
   // Keyterms cost extra on ElevenLabs, so they follow the same switch as batch transcription.
   const keyterms = process.env.USE_KEYTERMS === "true"
-    ? [...new Set([...template.keyterms, ...patient.knownMedications.map((m) => m.name)])].slice(0, 50)
+    ? [...new Set([...getTemplate(visit.visitType).keyterms, ...patient.knownMedications.map((m) => m.name)])].slice(0, 50)
     : [];
   return NextResponse.json({ token, keyterms, maxSeconds: seconds, copilot });
 });

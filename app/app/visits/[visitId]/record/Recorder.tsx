@@ -8,7 +8,7 @@ import { VisitSteps } from "@/components/VisitSteps";
 import { Button } from "@/components/ui/button";
 import { useCopilot } from "@/lib/copilot/client/useCopilot";
 import { cn, formatClock } from "@/lib/utils";
-import { CopilotChipView, CoverageMeter, SuggestionCard } from "./CopilotPanel";
+import { CopilotChipView, OpenTopics, SuggestionCard } from "./CopilotPanel";
 
 interface Props {
   visitId: string;
@@ -288,7 +288,7 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
             {phase === "recording" && (
               <>
                 <SuggestionCard copilot={copilot.copilot} onDismiss={copilot.dismiss} />
-                <CoverageMeter copilot={copilot.copilot} />
+                <OpenTopics copilot={copilot.copilot} />
               </>
             )}
           </div>

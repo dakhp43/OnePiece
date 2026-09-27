@@ -24,7 +24,7 @@ const EVENT: Record<Suggestion["status"], EventType> = {
 export async function logSuggestion(visitId: string, doctorId: string, s: Suggestion) {
   await logEvent(EVENT[s.status], {
     visitId, doctorId,
-    payload: { suggestionId: s.id, itemId: s.itemId, label: s.label, source: s.source, question: s.question, atSecond: s.resolvedAtSecond ?? s.atSecond },
+    payload: { suggestionId: s.id, topic: s.topic, question: s.question, atSecond: s.resolvedAtSecond ?? s.atSecond },
   });
 }
 
