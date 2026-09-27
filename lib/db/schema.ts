@@ -88,7 +88,7 @@ export type EventType =
   | "gap_dismissed" | "gap_deferred" | "signoff_override" | "signed"
   | "summary_edited" | "email_sent" | "medications_updated" | "report_edited"
   | "copilot_suggested" | "copilot_dismissed" | "copilot_captured" | "copilot_expired"
-  | "patient_created" | "patient_updated";
+  | "patient_created" | "patient_updated" | "open_item_closed" | "open_item_reopened";
 
 /** Hypertable on `time`: audit trail of every AI draft, clinician edit, and override. */
 export const events = pgTable("events", {

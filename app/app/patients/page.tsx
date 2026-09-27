@@ -84,7 +84,12 @@ export default async function PatientsPage({ searchParams }: PageProps<"/app/pat
                   <span className="hidden tabular-nums text-ink-2 md:block">{formatDate(p.lastVisitDate)}</span>
                   <span className="hidden md:block">
                     {p.openItemCount > 0 ? (
-                      <Badge tone="amber"><span className="h-1.5 w-1.5 rounded-full bg-warn" />{p.openItemCount} open</Badge>
+                      <span className="flex flex-col items-start gap-0.5">
+                        <Badge tone={p.overdueCount ? "red" : "amber"}>
+                          <span className={p.overdueCount ? "h-1.5 w-1.5 rounded-full bg-danger" : "h-1.5 w-1.5 rounded-full bg-warn"} />{p.openItemCount} open
+                        </Badge>
+                        {p.overdueCount > 0 && <span className="text-[11px] font-semibold text-danger-ink">{p.overdueCount} overdue</span>}
+                      </span>
                     ) : (
                       <span className="text-ink-4">—</span>
                     )}

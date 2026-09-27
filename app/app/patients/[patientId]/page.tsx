@@ -10,10 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadPatient } from "@/lib/access";
 import { visitTypeForConditions, type Sex } from "@/lib/contracts";
 import { requireDoctorPage } from "@/lib/auth/current";
+import { dueLabel } from "@/lib/openItems";
 import { getOpenItems, getVisitHistory, getVitals } from "@/lib/queries";
 import { VISIT_TYPE_LABELS, ageFromDob, cn, formatDate, sexLabel } from "@/lib/utils";
 import { BriefCard } from "./BriefCard";
 import { EditPatientButton } from "./EditPatientButton";
+import { OpenItemsList } from "./OpenItemsList";
 import { StartVisitButton } from "./StartVisitButton";
 
 const STATUS_TONE = { signed: "green", sent: "teal", review: "amber", error: "red" } as const;
@@ -35,6 +37,12 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
   const previous = readings.at(-2);
   const delta = latest && previous ? latest.systolic! - previous.systolic! : null;
   const lastVisit = history.find((h) => h.status === "signed" || h.status === "sent");
+  const itemRows = openItems.map((item) => ({
+    id: item.id, text: item.text, category: item.category,
+    since: `since ${formatDate(item.createdAt, { month: "short", day: "numeric" })}`,
+    due: dueLabel(item.dueDate),
+  }));
+  const overdue = itemRows.filter((i) => i.due?.overdue).length;
 
   return (
     <div className="flex-1">
@@ -100,7 +108,7 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
               </span>
             ) : "—"}
           </Glance>
-          <Glance i={2} icon={ClipboardList} label="Open items" hint="carried from past visits" warn={openItems.length > 0}>
+          <Glance i={2} icon={ClipboardList} label="Open items" hint={overdue ? `${overdue} overdue` : "carried from past visits"} warn={openItems.length > 0}>
             <CountUp value={openItems.length} />
           </Glance>
           <Glance i={3} icon={History} label="Last signed visit" hint={lastVisit ? VISIT_TYPE_LABELS[lastVisit.visitType] : "None yet"}>
@@ -120,27 +128,13 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
             <Card className="rise" style={stagger(4)}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><ClipboardList className="h-4 w-4" /> Open items</CardTitle>
-                <Badge tone={openItems.length ? "amber" : "slate"}>{openItems.length} open</Badge>
+                <span className="flex items-center gap-1.5">
+                  {overdue > 0 && <Badge tone="red">{overdue} overdue</Badge>}
+                  <Badge tone={openItems.length ? "amber" : "slate"}>{openItems.length} open</Badge>
+                </span>
               </CardHeader>
               <CardContent className="py-2">
-                {openItems.length === 0 ? (
-                  <p className="py-2 text-sm text-ink-3">Nothing outstanding.</p>
-                ) : (
-                  <ul className="divide-y divide-line">
-                    {openItems.map((item) => (
-                      <li key={item.id} className="flex items-start justify-between gap-3 py-2.5 text-sm">
-                        <span className="flex items-start gap-2.5 text-ink">
-                          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full border-2 border-warn" aria-hidden />
-                          {item.text}
-                        </span>
-                        <span className="flex shrink-0 items-center gap-2 text-xs text-ink-3">
-                          <span className="rounded-md bg-surface-3 px-1.5 py-0.5 font-medium capitalize text-ink-2">{item.category.replace("_", " ")}</span>
-                          since {formatDate(item.createdAt, { month: "short", day: "numeric" })}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <OpenItemsList patientId={patient.id} items={itemRows} />
               </CardContent>
             </Card>
 
