@@ -13,6 +13,11 @@ export function ageFromDob(dob: string, now = new Date()) {
   return age;
 }
 
+/** Patient sex for display: "F", "M", or "Other" (stored as "X"). */
+export function sexLabel(sex: string) {
+  return sex === "F" || sex === "M" ? sex : "Other";
+}
+
 export function formatDate(value: Date | string | null | undefined, opts?: Intl.DateTimeFormatOptions) {
   if (!value) return "—";
   const d = typeof value === "string" ? new Date(value) : value;

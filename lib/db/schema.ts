@@ -24,6 +24,8 @@ export const patients = pgTable("patients", {
   preferredLanguage: text("preferred_language").$type<"en" | "es">().notNull().default("en"),
   knownMedications: jsonb("known_medications").$type<Medication[]>().notNull().default(sql`'[]'::jsonb`),
   knownAllergies: jsonb("known_allergies").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+  /** Known diagnoses entered at registration or edit, e.g. "Hypertension". Shown on the patient page only. */
+  conditions: jsonb("conditions").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
   backboardAssistantId: text("backboard_assistant_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [check("patients_language_check", sql`${t.preferredLanguage} in ('en', 'es')`)]);
@@ -85,7 +87,8 @@ export type EventType =
   | "sentence_edited" | "sentence_deleted" | "sentence_added" | "gap_filled"
   | "gap_dismissed" | "gap_deferred" | "signoff_override" | "signed"
   | "summary_edited" | "email_sent" | "medications_updated" | "report_edited"
-  | "copilot_suggested" | "copilot_dismissed" | "copilot_captured" | "copilot_expired";
+  | "copilot_suggested" | "copilot_dismissed" | "copilot_captured" | "copilot_expired"
+  | "patient_created" | "patient_updated";
 
 /** Hypertable on `time`: audit trail of every AI draft, clinician edit, and override. */
 export const events = pgTable("events", {
