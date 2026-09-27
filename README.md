@@ -61,7 +61,7 @@ Design decisions:
 A **Help** button on every page opens a chat that explains, step by step and in plain language, how to use
 Carryover, for staff who aren't comfortable with computers. It is retrieval-augmented, and Snowflake is the
 knowledge base, the retrieval engine and the analytics store, all through Snowflake's REST APIs
-([lib/snowflake.ts](lib/snowflake.ts)):
+([lib/llm/snowflake.ts](lib/llm/snowflake.ts), shared with the patient chat):
 
 ```mermaid
 flowchart LR

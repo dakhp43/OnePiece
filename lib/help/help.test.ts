@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseSse } from "@/lib/snowflake";
+import { parseSse } from "@/lib/llm/snowflake";
 import { HELP_ARTICLES, SUGGESTED_QUESTIONS } from "./articles";
 import { helpMessages } from "./prompt";
 import { searchArticles } from "./search";
@@ -68,7 +68,7 @@ describe("Cortex stream parsing", () => {
 
 describe("Cortex COMPLETE result (SQL API path)", () => {
   it("reads choices[0].messages from the JSON COMPLETE returns with options, else keeps plain text", async () => {
-    const { completeText } = await import("@/lib/snowflake");
+    const { completeText } = await import("@/lib/llm/snowflake");
     expect(completeText(JSON.stringify({ choices: [{ messages: "Click Start visit." }], usage: {} }))).toBe("Click Start visit.");
     expect(completeText("Plain answer")).toBe("Plain answer");
     expect(completeText(JSON.stringify({ other: 1 }))).toBe(JSON.stringify({ other: 1 }));
@@ -77,7 +77,7 @@ describe("Cortex COMPLETE result (SQL API path)", () => {
 
 describe("Help insights (rows from the Snowflake SQL API)", () => {
   it("totals every question, lists answered topics, keeps unanswered questions", async () => {
-    const { parseInsights } = await import("@/lib/snowflake");
+    const { parseInsights } = await import("@/lib/llm/snowflake");
     const insights = parseInsights(7, [["start-visit", "3"], ["", "2"], ["review-note", "1"]], [["can you prescribe antibiotics?", "2026-09-27 08:30"]]);
     expect(insights.total).toBe(6);
     expect(insights.topics).toEqual([{ articleId: "start-visit", count: 3 }, { articleId: "review-note", count: 1 }]);

@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { getDb, usingPglite } from "@/lib/db";
 import { demoFallbackEnabled } from "@/lib/fixtures";
 import { backboardBalance, backboardEnabled } from "@/lib/memory/backboard";
-import { cortexAvailable, cortexEnabled, cortexSearchEnabled, lastCortexError, snowflakeConfigured, snowflakeModel, snowflakeReachable } from "@/lib/snowflake";
+import { cortexAvailable, cortexEnabled, cortexSearchEnabled, lastCortexError, snowflakeEnabled, snowflakeModel, snowflakeReachable } from "@/lib/llm/snowflake";
 import { LIMITS, readUsage } from "@/lib/usage";
 
 /**
@@ -102,7 +102,7 @@ async function checkSnowflake(): Promise<Health["snowflake"]> {
     cortex: !cortexEnabled() ? "off" as const : cortexAvailable() ? "available" as const : "refused" as const,
     cortexNote: cortexAvailable() ? undefined : lastCortexError(),
   };
-  if (!snowflakeConfigured()) return { configured: false, ok: false, ...base };
+  if (!snowflakeEnabled()) return { configured: false, ok: false, ...base };
   try {
     await snowflakeReachable();
     return { configured: true, ok: true, ...base };

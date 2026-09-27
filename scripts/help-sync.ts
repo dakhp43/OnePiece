@@ -5,8 +5,8 @@ import "./load-env";
 // Run it after changing the articles. Needs the tables from scripts/snowflake/setup.sql.
 async function main() {
   const { HELP_ARTICLES } = await import("@/lib/help/articles");
-  const { SNOWFLAKE, runSql, snowflakeConfigured } = await import("@/lib/snowflake");
-  if (!snowflakeConfigured()) throw new Error("Set SNOWFLAKE_ACCOUNT_URL and SNOWFLAKE_PAT in .env.local first");
+  const { SNOWFLAKE, runSql, snowflakeEnabled } = await import("@/lib/llm/snowflake");
+  if (!snowflakeEnabled()) throw new Error("Set SNOWFLAKE_ACCOUNT_URL and SNOWFLAKE_PAT in .env.local first");
 
   const rows = HELP_ARTICLES.map((a) => [a.id, a.title, a.body]);
   const bindings = Object.fromEntries(rows.flat().map((value, i) => [String(i + 1), { type: "TEXT" as const, value }]));

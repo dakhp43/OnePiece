@@ -1,5 +1,5 @@
 import { streamText } from "@/lib/llm/gemini";
-import type { ChatMessage } from "@/lib/snowflake";
+import type { ChatMessage } from "@/lib/llm/snowflake";
 
 /**
  * Streams the help answer from Gemini, using the same grounded prompt Cortex gets (rules + retrieved articles),

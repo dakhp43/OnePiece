@@ -17,7 +17,7 @@ interface Usage {
   /** Live copilot (Scribe Realtime): seconds reserved when a token is minted, refunded when the session ends. */
   realtimeSeconds: number;
   realtimeTokens: number;
-  /** Help chat: Cortex Search and Cortex answer requests to Snowflake. */
+  /** Snowflake requests: the Help assistant and the patient chat ("Ask about this patient"). */
   snowflakeCalls: number;
 }
 
@@ -67,7 +67,7 @@ export function reserveBackboardCall(path: string) {
   write({ ...u, backboardCalls: u.backboardCalls + 1 });
 }
 
-/** Call immediately before each Snowflake request from the help chat (a question uses two). */
+/** Call immediately before each Snowflake request (Help assistant, patient chat). */
 export function reserveSnowflakeCall(label: string) {
   const u = readUsage();
   if (u.snowflakeCalls >= LIMITS.snowflakeCalls()) {

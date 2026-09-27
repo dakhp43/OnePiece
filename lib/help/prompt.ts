@@ -1,4 +1,4 @@
-import type { ChatMessage } from "@/lib/snowflake";
+import type { ChatMessage } from "@/lib/llm/snowflake";
 
 export interface Turn { role: "user" | "assistant"; content: string }
 export interface Source { id: string; title: string; content: string }

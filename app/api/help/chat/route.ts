@@ -7,9 +7,9 @@ import { geminiHelpStream } from "@/lib/help/gemini";
 import { helpMessages, type HelpEvent, type Retrieval, type Writer } from "@/lib/help/prompt";
 import { searchArticles, terms } from "@/lib/help/search";
 import {
-  cortexAnswer, cortexAvailable, cortexSearchEnabled, logHelpQuestion, searchHelp, searchHelpSql, snowflakeConfigured,
+  cortexAnswer, cortexAvailable, cortexSearchEnabled, logHelpQuestion, searchHelp, searchHelpSql, snowflakeEnabled,
   type SearchHit,
-} from "@/lib/snowflake";
+} from "@/lib/llm/snowflake";
 import { reserveSnowflakeCall } from "@/lib/usage";
 
 export const runtime = "nodejs";
@@ -36,7 +36,7 @@ const answerCache = ttlCache<{ text: string; sources: Sources; retrieval: Retrie
 async function findArticles(question: string, key: string): Promise<{ hits: SearchHit[]; retrieval: Retrieval }> {
   const cached = searchCache.get(key);
   if (cached) return cached;
-  if (snowflakeConfigured()) {
+  if (snowflakeEnabled()) {
     try {
       reserveSnowflakeCall("help search");
       const found = cortexSearchEnabled()
@@ -91,7 +91,7 @@ export const POST = route(async (req: Request) => {
         // Stream from Cortex, then Gemini; sources go out just before the first words, so the panel names them
         // at once and a refused writer never claims the answer.
         const writers: [Writer, () => AsyncGenerator<string>][] = [];
-        if (hits.length && snowflakeConfigured() && cortexAvailable()) {
+        if (hits.length && snowflakeEnabled() && cortexAvailable()) {
           writers.push(["cortex", () => {
             reserveSnowflakeCall("help answer");
             return cortexAnswer(prompt);
@@ -125,7 +125,7 @@ export const POST = route(async (req: Request) => {
       controller.close();
       console.log(`[help] ${timing.join(" · ")} · done ${Date.now() - started} ms`);
 
-      if (snowflakeConfigured()) {
+      if (snowflakeEnabled()) {
         try {
           reserveSnowflakeCall("help log");
           await logHelpQuestion({ question, topArticle, answeredBy: writer });

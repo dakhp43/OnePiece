@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MessageCircleQuestion, Snowflake } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { articleById } from "@/lib/help/articles";
-import type { HelpInsights as Insights } from "@/lib/snowflake";
+import type { HelpInsights as Insights } from "@/lib/llm/snowflake";
 
 /**
  * What staff asked the Help assistant this week, read from Snowflake. Loaded after the page so the status
