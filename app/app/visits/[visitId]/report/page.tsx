@@ -4,7 +4,7 @@ import { loadVisit } from "@/lib/access";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { currentReport } from "@/lib/report";
 import { loadReportContext } from "@/lib/report-context";
-import { VISIT_TYPE_LABELS, ageFromDob, formatDate } from "@/lib/utils";
+import { VISIT_TYPE_LABELS, ageFromDob, formatDate, sexLabel } from "@/lib/utils";
 import { ReportEditor } from "./ReportEditor";
 
 export default async function ReportPage({ params }: PageProps<"/app/visits/[visitId]/report">) {
@@ -24,7 +24,7 @@ export default async function ReportPage({ params }: PageProps<"/app/visits/[vis
       header={{
         patient: `${patient.firstName} ${patient.lastName}`,
         dob: formatDate(`${patient.dob}T12:00:00`, { year: "numeric", month: "long", day: "numeric" }),
-        ageSex: `${ageFromDob(patient.dob, visitDate)} / ${patient.sex}`,
+        ageSex: `${ageFromDob(patient.dob, visitDate)} / ${sexLabel(patient.sex)}`,
         visitDate: formatDate(visitDate, { year: "numeric", month: "long", day: "numeric" }),
         visitType: VISIT_TYPE_LABELS[visit.visitType] ?? visit.visitType,
         signedAt: visit.signedAt ? visit.signedAt.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) : "",

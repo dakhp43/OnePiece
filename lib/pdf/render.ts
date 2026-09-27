@@ -6,7 +6,7 @@ import { getDb, schema } from "@/lib/db";
 import type { PatientRow, VisitRow } from "@/lib/db/schema";
 import { currentReport } from "@/lib/report";
 import { loadReportContext } from "@/lib/report-context";
-import { VISIT_TYPE_LABELS, ageFromDob } from "@/lib/utils";
+import { VISIT_TYPE_LABELS, ageFromDob, sexLabel } from "@/lib/utils";
 import { ReportDocument, type ReportDocumentProps } from "./ReportDocument";
 import { SummaryDocument, type SummaryDocumentProps } from "./SummaryDocument";
 
@@ -45,7 +45,7 @@ export async function renderReportPdf(visit: VisitRow, patient: PatientRow): Pro
     patient: {
       name: `${patient.firstName} ${patient.lastName}`,
       dob: longDate(new Date(`${patient.dob}T12:00:00`)),
-      ageSex: `${ageFromDob(patient.dob, visitDate)} / ${patient.sex}`,
+      ageSex: `${ageFromDob(patient.dob, visitDate)} / ${sexLabel(patient.sex)}`,
     },
     visit: {
       date: longDate(visitDate),

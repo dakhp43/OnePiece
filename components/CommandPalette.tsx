@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, CornerDownLeft, HeartPulse, Search, Users, type LucideIcon } from "lucide-react";
+import { Activity, CornerDownLeft, HeartPulse, Search, UserPlus, Users, type LucideIcon } from "lucide-react";
 import { setTrail, useTrailEnabled } from "@/components/CursorTrail";
 import { LiquidGlass } from "@/components/LiquidGlass";
 import { PatientAvatar } from "@/components/patient";
+import { NEW_PATIENT_EVENT } from "@/components/AddPatientButton";
 import { THEMES, switchTheme, useTheme } from "@/components/theme";
-import { VISIT_TYPE_LABELS, ageFromDob, cn } from "@/lib/utils";
+import { VISIT_TYPE_LABELS, ageFromDob, cn, sexLabel } from "@/lib/utils";
 
 interface PatientRow {
   id: string;
@@ -57,16 +58,17 @@ export function CommandPalette() {
     };
   }, []);
 
-  // Read-only list of the signed-in doctor's patients, fetched once.
+  // Read-only list of the signed-in doctor's patients, fetched each time the palette opens so a patient
+  // added a moment ago shows up. The previous list stays visible meanwhile.
   useEffect(() => {
-    if (!open || patients) return;
+    if (!open) return;
     let cancelled = false;
     fetch("/api/patients")
       .then((r) => (r.ok ? r.json() : []))
       .then((rows: PatientRow[]) => !cancelled && setPatients(rows))
       .catch(() => !cancelled && setPatients([]));
     return () => { cancelled = true; };
-  }, [open, patients]);
+  }, [open]);
 
   const close = () => {
     setOpen(false);
@@ -80,11 +82,20 @@ export function CommandPalette() {
     const all: Item[] = [
       { id: "patients", group: "Go to", label: "My patients", icon: Users, run: go("/app/patients") },
       { id: "status", group: "Go to", label: "System status", hint: "services and free-tier usage", icon: Activity, run: go("/app/status") },
+      {
+        id: "new-patient", group: "Actions", label: "New patient", hint: "register a patient", icon: UserPlus,
+        run: () => {
+          dismiss();
+          // Already on My patients: open its dialog directly. Anywhere else: go there with the dialog open.
+          if (window.location.pathname === "/app/patients") window.dispatchEvent(new Event(NEW_PATIENT_EVENT));
+          else router.push("/app/patients?new=1");
+        },
+      },
       ...(patients ?? []).map<Item>((p) => ({
         id: p.id,
         group: "Patients",
         label: `${p.firstName} ${p.lastName}`,
-        hint: [`${ageFromDob(p.dob)} ${p.sex}`, p.lastVisitType ? VISIT_TYPE_LABELS[p.lastVisitType] : null, p.openItemCount ? `${p.openItemCount} open` : null].filter(Boolean).join(" · "),
+        hint: [`${ageFromDob(p.dob)} ${sexLabel(p.sex)}`, p.lastVisitType ? VISIT_TYPE_LABELS[p.lastVisitType] : null, p.openItemCount ? `${p.openItemCount} open` : null].filter(Boolean).join(" · "),
         patient: p,
         run: go(`/app/patients/${p.id}`),
       })),

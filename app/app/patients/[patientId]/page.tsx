@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowLeft, ArrowUpRight, CalendarDays, ChevronRight, ClipboardList, Gauge, History, Languages, Minus, Pill, ShieldAlert, TriangleAlert } from "lucide-react";
+import { ArrowDownRight, ArrowLeft, ArrowUpRight, CalendarDays, ChevronRight, ClipboardList, Gauge, History, Languages, Minus, Pill, ShieldAlert, Stethoscope, TriangleAlert } from "lucide-react";
 import { guard } from "@/components/AccessDenied";
 import { BpChart } from "@/components/BpChart";
 import { CountUp } from "@/components/fx";
@@ -8,10 +8,12 @@ import { PatientAvatar, VisitTypeIcon } from "@/components/patient";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadPatient } from "@/lib/access";
+import { visitTypeForConditions, type Sex } from "@/lib/contracts";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { getOpenItems, getVisitHistory, getVitals } from "@/lib/queries";
-import { VISIT_TYPE_LABELS, ageFromDob, cn, formatDate } from "@/lib/utils";
+import { VISIT_TYPE_LABELS, ageFromDob, cn, formatDate, sexLabel } from "@/lib/utils";
 import { BriefCard } from "./BriefCard";
+import { EditPatientButton } from "./EditPatientButton";
 import { StartVisitButton } from "./StartVisitButton";
 
 const STATUS_TONE = { signed: "green", sent: "teal", review: "amber", error: "red" } as const;
@@ -48,7 +50,7 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
             <div>
               <h1 className="font-display text-3xl font-semibold leading-tight tracking-[-0.01em] text-ink sm:text-4xl">{patient.firstName} {patient.lastName}</h1>
               <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-2">
-                <span>{ageFromDob(patient.dob)} y/o {patient.sex}</span>
+                <span>{ageFromDob(patient.dob)} y/o {sexLabel(patient.sex)}</span>
                 <span className="h-1 w-1 rounded-full bg-ink-4" aria-hidden />
                 <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5 text-ink-3" /> DOB {formatDate(patient.dob + "T12:00:00")}</span>
                 <span className="h-1 w-1 rounded-full bg-ink-4" aria-hidden />
@@ -61,7 +63,19 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
               </p>
             </div>
           </div>
-          <StartVisitButton patientId={patient.id} lastVisitType={history.find((h) => h.status === "signed" || h.status === "sent")?.visitType ?? "htn_followup"} />
+          <div className="flex flex-wrap gap-2">
+            <EditPatientButton
+              patientId={patient.id}
+              initial={{
+                firstName: patient.firstName, lastName: patient.lastName, dob: patient.dob, sex: patient.sex as Sex,
+                email: patient.email ?? "", preferredLanguage: patient.preferredLanguage,
+                knownMedications: patient.knownMedications.length ? patient.knownMedications : [{ name: "", dose: "", frequency: "" }],
+                knownAllergies: patient.knownAllergies, conditions: patient.conditions,
+              }}
+            />
+            {/* A patient's own history wins; before the first signed visit, their conditions pick the visit type. */}
+            <StartVisitButton patientId={patient.id} lastVisitType={lastVisit?.visitType ?? visitTypeForConditions(patient.conditions, "htn_followup")} />
+          </div>
         </div>
 
         {/* At a glance */}
@@ -185,8 +199,8 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
                   <p className="text-sm text-ink-3">None on file.</p>
                 ) : (
                   <ul className="space-y-2 text-sm">
-                    {patient.knownMedications.map((m) => (
-                      <li key={m.name} className="flex items-center gap-3 rounded-xl border border-line bg-surface-2 px-3 py-2.5">
+                    {patient.knownMedications.map((m, i) => (
+                      <li key={`${m.name}-${i}`} className="flex items-center gap-3 rounded-xl border border-line bg-surface-2 px-3 py-2.5">
                         <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-accent-ink"><Pill className="h-4 w-4" /></span>
                         <span><span className="font-semibold capitalize text-ink">{m.name}</span> <span className="text-ink-2">{m.dose} {m.frequency}</span></span>
                       </li>
@@ -195,7 +209,19 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
                 )}
               </CardContent>
             </Card>
-            <Card className={cn("rise", patient.knownAllergies.length > 0 && "border-danger/30")} style={stagger(6)}>
+            <Card className="rise" style={stagger(6)}>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Stethoscope className="h-4 w-4" /> Conditions</CardTitle></CardHeader>
+              <CardContent>
+                {patient.conditions.length === 0 ? (
+                  <p className="text-sm text-ink-3">None recorded.</p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {patient.conditions.map((c) => <Badge key={c} tone="teal" className="px-2.5 py-1 text-sm">{c}</Badge>)}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card className={cn("rise", patient.knownAllergies.length > 0 && "border-danger/30")} style={stagger(7)}>
               <CardHeader><CardTitle className="flex items-center gap-2"><TriangleAlert className="h-4 w-4" /> Allergies</CardTitle></CardHeader>
               <CardContent>
                 {patient.knownAllergies.length === 0 ? (

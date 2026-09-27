@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronRight, ClipboardList, Languages, Users } from "lucide-react";
+import { AddPatientButton } from "@/components/AddPatientButton";
 import { CountUp } from "@/components/fx";
 import { stagger } from "@/components/motion";
 import { PatientAvatar, VisitTypeIcon } from "@/components/patient";
@@ -7,12 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { listPatients } from "@/lib/queries";
-import { VISIT_TYPE_LABELS, ageFromDob, formatDate } from "@/lib/utils";
+import { VISIT_TYPE_LABELS, ageFromDob, formatDate, sexLabel } from "@/lib/utils";
 
 const COLS = "grid grid-cols-[minmax(0,2.2fr)_minmax(0,0.7fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,0.9fr)_1.25rem] items-center gap-4";
 
-export default async function PatientsPage() {
+export default async function PatientsPage({ searchParams }: PageProps<"/app/patients">) {
   const session = await requireDoctorPage();
+  const { new: openNew } = await searchParams;
   const patients = await listPatients(session.doctorId);
   const openTotal = patients.reduce((n, p) => n + p.openItemCount, 0);
   const spanish = patients.filter((p) => p.preferredLanguage === "es").length;
@@ -26,10 +28,13 @@ export default async function PatientsPage() {
             <h1 className="mt-1 font-display text-4xl font-semibold leading-tight tracking-[-0.01em] text-ink">My patients</h1>
             <p className="mt-2 font-sub text-sm text-ink-3">{patients.length} assigned to {session.name}</p>
           </div>
-          <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:gap-3">
-            <Stat icon={Users} value={patients.length} label="patients" />
-            <Stat icon={ClipboardList} value={openTotal} label="open items" tone={openTotal ? "warn" : "default"} />
-            <Stat icon={Languages} value={spanish} label="prefer Spanish" />
+          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+            <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:gap-3">
+              <Stat icon={Users} value={patients.length} label="patients" />
+              <Stat icon={ClipboardList} value={openTotal} label="open items" tone={openTotal ? "warn" : "default"} />
+              <Stat icon={Languages} value={spanish} label="prefer Spanish" />
+            </div>
+            <AddPatientButton startOpen={openNew === "1"} />
           </div>
         </div>
 
@@ -59,12 +64,17 @@ export default async function PatientsPage() {
                         </span>
                         {p.preferredLanguage === "es" && <Badge tone="blue">ES</Badge>}
                       </span>
+                      {p.conditions.length > 0 && (
+                        <span className="block truncate text-xs text-ink-3">
+                          {p.conditions.slice(0, 2).join(", ")}{p.conditions.length > 2 ? ` +${p.conditions.length - 2}` : ""}
+                        </span>
+                      )}
                       <span className="text-xs text-ink-3 md:hidden">
-                        {ageFromDob(p.dob)} {p.sex} · {p.lastVisitType ? VISIT_TYPE_LABELS[p.lastVisitType] : "No visits"}
+                        {ageFromDob(p.dob)} {sexLabel(p.sex)} · {p.lastVisitType ? VISIT_TYPE_LABELS[p.lastVisitType] : "No visits"}
                       </span>
                     </span>
                   </span>
-                  <span className="hidden tabular-nums text-ink-2 md:block">{ageFromDob(p.dob)} {p.sex}</span>
+                  <span className="hidden tabular-nums text-ink-2 md:block">{ageFromDob(p.dob)} {sexLabel(p.sex)}</span>
                   <span className="hidden min-w-0 items-center gap-2 text-ink-2 md:flex">
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-surface-3 text-ink-3 transition-colors group-hover:bg-accent/15 group-hover:text-accent-ink">
                       <VisitTypeIcon type={p.lastVisitType} className="h-3.5 w-3.5" />
@@ -83,7 +93,7 @@ export default async function PatientsPage() {
                 </Link>
               </li>
             ))}
-            {patients.length === 0 && <li className="px-5 py-12 text-center text-ink-3">No patients assigned.</li>}
+            {patients.length === 0 && <li className="px-5 py-12 text-center text-ink-3">No patients yet. Use Add patient to register your first.</li>}
           </ul>
         </Card>
       </div>
