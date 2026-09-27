@@ -1,5 +1,6 @@
-import { and, asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
+import { isOverdue } from "@/lib/openItems";
 
 export async function listPatients(doctorId: string) {
   const db = await getDb();
@@ -16,18 +17,19 @@ export async function listPatients(doctorId: string) {
     .where(and(inArray(schema.visits.patientId, ids), inArray(schema.visits.status, ["signed", "sent"])))
     .orderBy(desc(schema.visits.startedAt));
 
-  const counts = await db.select({ patientId: schema.openItems.patientId, n: sql<number>`count(*)::int` })
+  const open = await db.select({ patientId: schema.openItems.patientId, dueDate: schema.openItems.dueDate })
     .from(schema.openItems)
-    .where(and(inArray(schema.openItems.patientId, ids), eq(schema.openItems.status, "open")))
-    .groupBy(schema.openItems.patientId);
+    .where(and(inArray(schema.openItems.patientId, ids), eq(schema.openItems.status, "open")));
 
   return patients.map((p) => {
     const last = visits.find((v) => v.patientId === p.id);
+    const items = open.filter((o) => o.patientId === p.id);
     return {
       ...p,
       lastVisitType: last?.visitType ?? null,
       lastVisitDate: last?.startedAt ?? null,
-      openItemCount: counts.find((c) => c.patientId === p.id)?.n ?? 0,
+      openItemCount: items.length,
+      overdueCount: items.filter((o) => isOverdue(o.dueDate)).length,
     };
   });
 }
