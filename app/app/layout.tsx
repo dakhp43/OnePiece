@@ -3,6 +3,7 @@ import { LogOut } from "lucide-react";
 import { AppNav } from "@/components/AppNav";
 import { Logo } from "@/components/brand";
 import { CommandPalette, CommandPaletteTrigger } from "@/components/CommandPalette";
+import { HelpChat, HelpChatTrigger } from "@/components/HelpChat";
 import { LiquidGlass } from "@/components/LiquidGlass";
 import { TrailToggle } from "@/components/CursorTrail";
 import { ThemeToggle } from "@/components/theme";
@@ -26,8 +27,10 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
             <AppNav />
           </div>
           <div className="flex items-center gap-2 text-sm">
+            <HelpChatTrigger />
             <CommandPaletteTrigger />
-            <TrailToggle />
+            {/* The cursor trail is off on touch screens, so phones get the room for Help instead. */}
+            <span className="hidden sm:contents"><TrailToggle /></span>
             <ThemeToggle />
             <span className="glass-pill hidden items-center gap-2 rounded-full py-1 pl-1 pr-3 md:flex">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-strong text-[11px] font-semibold text-on-accent">
@@ -50,6 +53,7 @@ export default async function AppLayout({ children }: LayoutProps<"/app">) {
       </header>
       <main className="flex flex-1 flex-col">{children}</main>
       <CommandPalette />
+      <HelpChat />
     </div>
   );
 }

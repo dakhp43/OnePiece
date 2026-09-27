@@ -17,7 +17,7 @@ interface Usage {
   /** Live copilot (Scribe Realtime): seconds reserved when a token is minted, refunded when the session ends. */
   realtimeSeconds: number;
   realtimeTokens: number;
-  /** Snowflake Cortex chat ("Ask about this patient"). */
+  /** Snowflake requests: the Help assistant and the patient chat ("Ask about this patient"). */
   snowflakeCalls: number;
 }
 
@@ -30,7 +30,7 @@ export const LIMITS = {
   backboardCalls: () => Number(process.env.BACKBOARD_DAILY_CALL_LIMIT || 60),
   realtimeSeconds: () => Number(process.env.REALTIME_DAILY_MINUTES || 60) * 60,
   realtimeTokens: () => Number(process.env.REALTIME_DAILY_TOKEN_LIMIT || 30),
-  snowflakeCalls: () => Number(process.env.SNOWFLAKE_DAILY_CALL_LIMIT || 100),
+  snowflakeCalls: () => Number(process.env.SNOWFLAKE_DAILY_CALL_LIMIT || 200),
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -67,6 +67,15 @@ export function reserveBackboardCall(path: string) {
   write({ ...u, backboardCalls: u.backboardCalls + 1 });
 }
 
+/** Call immediately before each Snowflake request (Help assistant, patient chat). */
+export function reserveSnowflakeCall(label: string) {
+  const u = readUsage();
+  if (u.snowflakeCalls >= LIMITS.snowflakeCalls()) {
+    throw new ExternalError("usage", null, `${label}: daily Snowflake call limit (${LIMITS.snowflakeCalls()}) reached`);
+  }
+  write({ ...u, snowflakeCalls: u.snowflakeCalls + 1 });
+}
+
 /** Call before sending audio to ElevenLabs; `seconds` is the recording length. */
 export function reserveTranscription(seconds: number) {
   const u = readUsage();
@@ -100,13 +109,4 @@ export function settleRealtime(reserved: number, used: number) {
   if (refund === 0) return;
   const u = readUsage();
   write({ ...u, realtimeSeconds: Math.max(0, u.realtimeSeconds - refund) });
-}
-
-/** Call immediately before each Snowflake Cortex request. */
-export function reserveSnowflakeCall() {
-  const u = readUsage();
-  if (u.snowflakeCalls >= LIMITS.snowflakeCalls()) {
-    throw new ExternalError("usage", null, `daily Snowflake chat limit (${LIMITS.snowflakeCalls()}) reached`);
-  }
-  write({ ...u, snowflakeCalls: u.snowflakeCalls + 1 });
 }
