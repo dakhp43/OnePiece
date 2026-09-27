@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ArrowRight, Lock, ShieldAlert, Stethoscope } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Lock, ShieldAlert, Stethoscope } from "lucide-react";
 import { guard } from "@/components/AccessDenied";
 import { Logo } from "@/components/brand";
 import { stagger } from "@/components/motion";
@@ -52,6 +52,9 @@ export default async function SignedNotePage({ params }: PageProps<"/app/visits/
                 <Badge tone="slate"><Lock className="h-3 w-3" /> read-only</Badge>
                 <Badge tone={visit.status === "sent" ? "teal" : "green"}>{visit.status}</Badge>
               </div>
+              <Link href={`/app/visits/${visit.id}/report`} className="group inline-flex items-center gap-1.5 rounded-full bg-accent-strong px-3 py-1.5 text-sm font-medium text-on-accent transition-opacity hover:opacity-90">
+                <FileText className="h-3.5 w-3.5" /> Clinical report
+              </Link>
               {visit.followthrough && (
                 <Link href={`/app/visits/${visit.id}/followthrough`} className="group inline-flex items-center gap-1 rounded-full bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent-ink transition-colors hover:bg-accent/20">
                   Follow-through <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />

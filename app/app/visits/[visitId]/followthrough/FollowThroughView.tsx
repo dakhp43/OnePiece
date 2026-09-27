@@ -80,9 +80,14 @@ export function FollowThroughView({ initial }: { initial: VisitView }) {
                 <Badge tone={sent ? "teal" : "green"}>{sent ? `Sent ${formatDate(visit.sentAt)}` : "Signed"}</Badge>
                 {offline.length > 0 && <Badge tone="slate" title={`Cached results used for: ${offline.join(", ")}`}><CloudOff className="h-3 w-3" /> offline mode</Badge>}
               </h1>
-              <Link href={`/app/visits/${visit.id}/note`} className="group mt-2 inline-flex items-center gap-1 text-sm font-medium text-accent-ink hover:underline">
-                View signed note <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </Link>
+              <div className="mt-2 flex flex-wrap items-center gap-4">
+                <Link href={`/app/visits/${visit.id}/note`} className="group inline-flex items-center gap-1 text-sm font-medium text-accent-ink hover:underline">
+                  View signed note <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+                <Link href={`/app/visits/${visit.id}/report`} className="group inline-flex items-center gap-1 text-sm font-medium text-accent-ink hover:underline">
+                  Clinical report <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </div>
             </div>
           </div>
           {m?.totalSentences !== undefined && (
