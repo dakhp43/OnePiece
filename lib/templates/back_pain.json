@@ -1,0 +1,19 @@
+{
+  "id": "back_pain",
+  "label": "Back pain",
+  "keyterms": ["ibuprofen", "naproxen", "acetaminophen", "cyclobenzaprine", "methocarbamol", "gabapentin", "sciatica", "physical therapy", "MRI", "straight leg raise"],
+  "items": [
+    { "id": "onset_injury", "label": "Onset, duration and any injury", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "pain_character", "label": "Pain location, severity and radiation to the legs", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "red_flags", "label": "Red flags asked (bladder or bowel changes, numbness in the groin, fever, weight loss, cancer history)", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "neuro_exam", "label": "Leg strength, reflexes or sensation checked", "priority": "required", "defaultSection": "O", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a medication is prescribed" },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "daily_function", "label": "Effect on work and daily activities", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "meds_tried", "label": "Pain medicines already tried", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "stay_active", "label": "Advice to stay active", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "physical_therapy", "label": "Physical therapy or home exercises discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "imaging", "label": "Imaging discussed", "priority": "recommended", "defaultSection": "P", "condition": "only if red flags are present or pain has not improved after several weeks" },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "annual_physical",
+  "label": "Annual physical",
+  "keyterms": ["colonoscopy", "mammogram", "Pap smear", "lipid panel", "A1c", "Tdap", "shingles vaccine", "flu shot", "pneumococcal", "BMI"],
+  "items": [
+    { "id": "vitals_bmi", "label": "Blood pressure and BMI recorded", "priority": "required", "defaultSection": "O", "condition": null },
+    { "id": "meds_reviewed", "label": "Current medications reviewed", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "cancer_screening", "label": "Age-appropriate cancer screening discussed", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "immunizations", "label": "Immunizations reviewed", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "followup_interval", "label": "Next visit stated", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "tobacco_alcohol", "label": "Tobacco, alcohol and drug use asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "diet_exercise", "label": "Diet and exercise discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "mood_screen", "label": "Mood or depression screen", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "screening_labs", "label": "Screening labs ordered or reviewed (cholesterol, blood sugar)", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "family_history", "label": "Family history updated", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "safety", "label": "Safety discussed (seat belts, falls, home safety)", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

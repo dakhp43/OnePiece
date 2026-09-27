@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, Check, Loader2, Mic } from "lucide-react";
+import { Activity, Loader2, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { VisitTypeIcon } from "@/components/patient";
@@ -68,23 +68,24 @@ export function StartVisitButton({ patientId, lastVisitType }: { patientId: stri
         <div className="space-y-5">
           <fieldset>
             <legend className="mb-2 font-sub text-xs font-semibold text-ink-2">Visit type</legend>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {Object.entries(VISIT_TYPE_LABELS).map(([id, label]) => {
                 const selected = visitType === id;
                 return (
                   <label
                     key={id}
                     className={cn(
-                      "relative flex cursor-pointer flex-col gap-2 rounded-xl border p-3 text-sm transition-all has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent",
+                      "relative flex cursor-pointer items-center gap-2 rounded-xl border p-2.5 text-sm transition-all has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent",
+                      // The catch-all "Regular visit" gets its own full-width row at the end.
+                      id === "general_visit" && "col-span-2 sm:col-span-3",
                       selected ? "border-accent bg-accent-soft text-ink ring-1 ring-accent" : "border-line text-ink-2 hover:border-line-strong hover:bg-surface-2",
                     )}
                   >
                     <input type="radio" name="visitType" value={id} checked={selected} onChange={(e) => setVisitType(e.target.value)} className="sr-only" />
-                    <span className={cn("flex h-8 w-8 items-center justify-center rounded-lg transition-colors", selected ? "bg-accent text-white" : "bg-surface-3 text-ink-3")}>
+                    <span className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors", selected ? "pop bg-accent text-white" : "bg-surface-3 text-ink-3")}>
                       <VisitTypeIcon type={id} className="h-4 w-4" />
                     </span>
                     <span className="font-medium leading-tight">{label}</span>
-                    {selected && <Check className="pop absolute right-2.5 top-2.5 h-4 w-4 text-accent-ink" />}
                   </label>
                 );
               })}

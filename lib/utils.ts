@@ -30,8 +30,16 @@ export function formatClock(seconds: number) {
   return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 }
 
+/** In the order the Start visit dialog lists them; "Regular visit" stays last as the catch-all. */
 export const VISIT_TYPE_LABELS: Record<string, string> = {
   htn_followup: "Hypertension follow-up",
   t2dm_followup: "Diabetes follow-up",
   acute_respiratory: "Acute respiratory",
+  asthma_copd: "Asthma / COPD",
+  mental_health: "Depression / anxiety",
+  annual_physical: "Annual physical",
+  back_pain: "Back pain",
+  urinary_symptoms: "Urinary symptoms",
+  headache: "Headache",
+  general_visit: "Regular visit",
 };

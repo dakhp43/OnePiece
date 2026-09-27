@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const VisitTypeSchema = z.enum(["htn_followup", "t2dm_followup", "acute_respiratory"]);
+export const VisitTypeSchema = z.enum([
+  "htn_followup", "t2dm_followup", "acute_respiratory", "asthma_copd", "mental_health",
+  "annual_physical", "back_pain", "urinary_symptoms", "headache", "general_visit",
+]);
 export type VisitType = z.infer<typeof VisitTypeSchema>;
 
 export const VisitStatusSchema = z.enum(["created", "recording", "processing", "review", "signed", "sent", "error"]);

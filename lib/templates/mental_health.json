@@ -1,0 +1,19 @@
+{
+  "id": "mental_health",
+  "label": "Depression / anxiety",
+  "keyterms": ["sertraline", "escitalopram", "fluoxetine", "citalopram", "bupropion", "venlafaxine", "duloxetine", "mirtazapine", "buspirone", "PHQ-9", "GAD-7"],
+  "items": [
+    { "id": "mood_symptoms", "label": "Mood and anxiety symptoms since last visit", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "self_harm", "label": "Thoughts of self-harm or suicide asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "adherence", "label": "Medication adherence asked", "priority": "required", "defaultSection": "S", "condition": "only if on a medication for mood or anxiety" },
+    { "id": "side_effects", "label": "Medication side effects asked", "priority": "required", "defaultSection": "S", "condition": "only if on a medication for mood or anxiety" },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a new medication is prescribed" },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "symptom_scale", "label": "Symptom scale recorded (PHQ-9 or GAD-7)", "priority": "recommended", "defaultSection": "O", "condition": null },
+    { "id": "sleep", "label": "Sleep asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "daily_function", "label": "Effect on work, school or relationships", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "substance_use", "label": "Alcohol and substance use asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "therapy", "label": "Therapy or counselling discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "crisis_resources", "label": "Crisis resources given (988 Suicide & Crisis Lifeline)", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}
