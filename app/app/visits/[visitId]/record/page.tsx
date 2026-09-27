@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { guard } from "@/components/AccessDenied";
 import { loadVisit } from "@/lib/access";
 import { requireDoctorPage } from "@/lib/auth/current";
+import { copilotEnabled } from "@/lib/copilot/server";
 import { demoFallbackEnabled } from "@/lib/fixtures";
 import { LIMITS } from "@/lib/usage";
 import { VISIT_TYPE_LABELS } from "@/lib/utils";
@@ -23,6 +24,7 @@ export default async function RecordPage({ params }: PageProps<"/app/visits/[vis
       visitTypeLabel={VISIT_TYPE_LABELS[visit.visitType]}
       demoEnabled={demoFallbackEnabled()}
       maxSeconds={LIMITS.maxRecordingSeconds()}
+      copilotEnabled={copilotEnabled()}
     />
   );
 }

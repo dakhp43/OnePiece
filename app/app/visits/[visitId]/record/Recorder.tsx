@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, CircleAlert, FileAudio, Loader2, Mic, ShieldCheck, Square } from "lucide-react";
 import { VisitSteps } from "@/components/VisitSteps";
 import { Button } from "@/components/ui/button";
+import { useCopilot } from "@/lib/copilot/client/useCopilot";
 import { cn, formatClock } from "@/lib/utils";
+import { CopilotChipView, CoverageMeter, SuggestionCard } from "./CopilotPanel";
 
 interface Props {
   visitId: string;
@@ -16,16 +18,20 @@ interface Props {
   demoEnabled: boolean;
   /** Recording auto-stops here to protect the free transcription quota. */
   maxSeconds: number;
+  /** Live copilot (suggested questions while recording) is configured on the server. */
+  copilotEnabled: boolean;
 }
 
 type Phase = "idle" | "recording" | "uploading";
+
+const now = () => Date.now();
 
 function pickMimeType() {
   const options = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
   return options.find((t) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t)) ?? "";
 }
 
-export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demoEnabled, maxSeconds }: Props) {
+export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demoEnabled, maxSeconds, copilotEnabled }: Props) {
   const router = useRouter();
   const [consent, setConsent] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -36,11 +42,13 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
   const startedAt = useRef(0);
   const stopRef = useRef<(() => void) | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const copilotCtx = useRef<AudioContext | null>(null);
+  const copilot = useCopilot(visitId, copilotEnabled);
 
   useEffect(() => {
     if (phase !== "recording") return;
     const t = setInterval(() => {
-      const s = (Date.now() - startedAt.current) / 1000;
+      const s = (now() - startedAt.current) / 1000;
       setElapsed(s);
       if (s >= maxSeconds) stopRef.current?.();
     }, 250);
@@ -60,7 +68,7 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
       rec.ondataavailable = (e) => e.data.size > 0 && chunks.current.push(e.data);
       rec.start(1000);
       recorder.current = rec;
-      startedAt.current = Date.now();
+      startedAt.current = now();
       setElapsed(0);
       setPhase("recording");
       void fetch(`/api/visits/${visitId}`, {
@@ -68,6 +76,7 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "start_recording" }),
       });
+      startCopilot(stream);
     } catch (err) {
       setError(
         (err as Error).name === "NotAllowedError"
@@ -77,9 +86,30 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
     }
   }
 
+  // Live copilot listens to the same mic stream. Created inside the Start click so its chime may play.
+  // Never awaited: if it fails, the chip says so and recording carries on exactly as before.
+  function startCopilot(stream: MediaStream) {
+    if (!copilotEnabled) return;
+    try {
+      const ctx = new AudioContext();
+      copilotCtx.current = ctx;
+      const clock = () => (now() - startedAt.current) / 1000;
+      void copilot.start({ ctx, source: ctx.createMediaStreamSource(stream), mode: "live", clock });
+    } catch (err) {
+      console.warn("[copilot] could not start", (err as Error).message);
+    }
+  }
+
+  function stopCopilot() {
+    copilot.stop();
+    void copilotCtx.current?.close().catch(() => {});
+    copilotCtx.current = null;
+  }
+
   async function stop() {
     const rec = recorder.current;
     if (!rec || rec.state === "inactive") return;
+    stopCopilot();
     setPhase("uploading");
     const blob = await new Promise<Blob>((resolve) => {
       rec.onstop = () => resolve(new Blob(chunks.current, { type: rec.mimeType || "audio/webm" }));
@@ -204,6 +234,11 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
               {phase === "recording" ? "Rec" : phase === "uploading" ? "Uploading" : "Standby"}
             </span>
           </div>
+          {phase === "recording" && copilot.chip !== "off" && (
+            <div className="flex justify-end border-b border-monitor-line/60 px-6 py-2 sm:px-8">
+              <CopilotChipView chip={copilot.chip} />
+            </div>
+          )}
 
           {/* Timer + signal */}
           <div className="px-6 pb-6 pt-8 sm:px-8">
@@ -249,6 +284,13 @@ export function Recorder({ visitId, patientId, patientName, visitTypeLabel, demo
               </div>
               <span>Auto-stops at {formatClock(maxSeconds)}</span>
             </div>
+
+            {phase === "recording" && (
+              <>
+                <SuggestionCard copilot={copilot.copilot} onDismiss={copilot.dismiss} />
+                <CoverageMeter copilot={copilot.copilot} />
+              </>
+            )}
           </div>
 
           {/* Controls */}
