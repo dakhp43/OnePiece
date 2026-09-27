@@ -17,9 +17,11 @@ interface Usage {
   /** Live copilot (Scribe Realtime): seconds reserved when a token is minted, refunded when the session ends. */
   realtimeSeconds: number;
   realtimeTokens: number;
+  /** Snowflake Cortex chat ("Ask about this patient"). */
+  snowflakeCalls: number;
 }
 
-const EMPTY: Usage = { geminiCalls: 0, sttSeconds: 0, sttCalls: 0, backboardCalls: 0, realtimeSeconds: 0, realtimeTokens: 0 };
+const EMPTY: Usage = { geminiCalls: 0, sttSeconds: 0, sttCalls: 0, backboardCalls: 0, realtimeSeconds: 0, realtimeTokens: 0, snowflakeCalls: 0 };
 
 export const LIMITS = {
   geminiCalls: () => Number(process.env.GEMINI_DAILY_CALL_LIMIT || 400),
@@ -28,6 +30,7 @@ export const LIMITS = {
   backboardCalls: () => Number(process.env.BACKBOARD_DAILY_CALL_LIMIT || 60),
   realtimeSeconds: () => Number(process.env.REALTIME_DAILY_MINUTES || 60) * 60,
   realtimeTokens: () => Number(process.env.REALTIME_DAILY_TOKEN_LIMIT || 30),
+  snowflakeCalls: () => Number(process.env.SNOWFLAKE_DAILY_CALL_LIMIT || 100),
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -97,4 +100,13 @@ export function settleRealtime(reserved: number, used: number) {
   if (refund === 0) return;
   const u = readUsage();
   write({ ...u, realtimeSeconds: Math.max(0, u.realtimeSeconds - refund) });
+}
+
+/** Call immediately before each Snowflake Cortex request. */
+export function reserveSnowflakeCall() {
+  const u = readUsage();
+  if (u.snowflakeCalls >= LIMITS.snowflakeCalls()) {
+    throw new ExternalError("usage", null, `daily Snowflake chat limit (${LIMITS.snowflakeCalls()}) reached`);
+  }
+  write({ ...u, snowflakeCalls: u.snowflakeCalls + 1 });
 }

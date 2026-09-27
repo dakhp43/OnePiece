@@ -8,12 +8,14 @@ import { PatientAvatar, VisitTypeIcon } from "@/components/patient";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadPatient } from "@/lib/access";
+import { snowflakeEnabled } from "@/lib/llm/snowflake";
 import { visitTypeForConditions, type Sex } from "@/lib/contracts";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { dueLabel } from "@/lib/openItems";
 import { getOpenItems, getVisitHistory, getVitals } from "@/lib/queries";
 import { VISIT_TYPE_LABELS, ageFromDob, cn, formatDate, sexLabel } from "@/lib/utils";
 import { BriefCard } from "./BriefCard";
+import { ChatCard } from "./ChatCard";
 import { EditPatientButton } from "./EditPatientButton";
 import { OpenItemsList } from "./OpenItemsList";
 import { StartVisitButton } from "./StartVisitButton";
@@ -124,6 +126,12 @@ export default async function PatientPage({ params }: PageProps<"/app/patients/[
             <div className="rise" style={stagger(3)}>
               <BriefCard patientId={patient.id} />
             </div>
+
+            {snowflakeEnabled() && (
+              <div className="rise" style={stagger(3)}>
+                <ChatCard patientId={patient.id} firstName={patient.firstName} />
+              </div>
+            )}
 
             <Card className="rise" style={stagger(4)}>
               <CardHeader>
