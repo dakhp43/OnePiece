@@ -131,6 +131,7 @@ describe("pickSuggestion", () => {
     const long = cand({ question: "Could you tell me whether you have been taking every single dose of your pills this month?" });
     expect(pickSuggestion(ready(), [long], 70).rejected[0].why).toBe("question too long");
     expect(pickSuggestion(ready(), [cand({ itemId: "made_up" })], 70).rejected[0].why).toBe("unknown item id");
+    expect(pickSuggestion(ready(), [cand({ question: "Let's check a kidney panel." })], 70).rejected[0].why).toBe("not a question");
   });
 
   it("needs the condition met for conditioned items", () => {

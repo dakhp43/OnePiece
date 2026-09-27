@@ -92,6 +92,7 @@ export function pickSuggestion(state: CopilotState, candidates: Candidate[], ela
   const ok = candidates.filter((c) => {
     const source = sourceOf(c.itemId);
     if (c.confidence < COPILOT.THRESHOLD[source]) return reject(c, `confidence ${c.confidence} below ${COPILOT.THRESHOLD[source]}`);
+    if (!c.question.trim().endsWith("?")) return reject(c, "not a question");
     if (c.question.split(/\s+/).filter(Boolean).length > COPILOT.MAX_QUESTION_WORDS) return reject(c, "question too long");
     if (askedQuestions.has(norm(c.question))) return reject(c, "same question already asked");
     if (c.itemId === null) return true;

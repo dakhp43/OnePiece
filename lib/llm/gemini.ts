@@ -23,6 +23,10 @@ interface GenerateArgs<T> {
   user: string;
   temperature?: number;
   label?: string;
+  /** Retries per model on 429/5xx. Defaults: 1 on the primary when a fallback exists (else 3), 2 on the fallback. */
+  retries?: number;
+  /** Use this model only (no fallback), e.g. a cheaper model for high-volume calls. */
+  model?: string;
 }
 
 /**
@@ -31,9 +35,9 @@ interface GenerateArgs<T> {
  * - Zod validation failure: one retry with the validation error appended.
  * - If the API rejects the JSON schema itself (400), retries once with the schema in the prompt instead.
  */
-export async function generateJson<T>({ schema, system, user, temperature = 0.2, label = "gemini" }: GenerateArgs<T>): Promise<T> {
-  const primary = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-  const fallback = process.env.GEMINI_FALLBACK_MODEL;
+export async function generateJson<T>({ schema, system, user, temperature = 0.2, label = "gemini", retries, model }: GenerateArgs<T>): Promise<T> {
+  const primary = model || process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const fallback = model ? undefined : process.env.GEMINI_FALLBACK_MODEL;
   const jsonSchema = jsonSchemaFor(schema);
 
   const call = async (model: string, prompt: string, withSchema: boolean) => {
@@ -72,12 +76,12 @@ export async function generateJson<T>({ schema, system, user, temperature = 0.2,
       }
     };
     try {
-      return await attempt(primary, fallback ? 1 : 3);
+      return await attempt(primary, retries ?? (fallback ? 1 : 3));
     } catch (err) {
       // 404 = model retired/unavailable for this key; 429/5xx = overloaded. Either way, try the fallback model.
       if (fallback && fallback !== primary && (isRetryable(err) || statusOf(err) === 404)) {
         console.warn(`[${label}] ${primary} failed; trying fallback ${fallback}`);
-        return attempt(fallback, 2);
+        return attempt(fallback, retries ?? 2);
       }
       throw err;
     }
