@@ -1,0 +1,19 @@
+{
+  "id": "urinary_symptoms",
+  "label": "Urinary symptoms",
+  "keyterms": ["nitrofurantoin", "trimethoprim-sulfamethoxazole", "cephalexin", "fosfomycin", "ciprofloxacin", "phenazopyridine", "urinalysis", "urine culture", "dysuria"],
+  "items": [
+    { "id": "urinary_symptoms", "label": "Burning, frequency or urgency asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "fever_flank", "label": "Fever or flank pain asked", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "pregnancy", "label": "Possibility of pregnancy asked", "priority": "required", "defaultSection": "S", "condition": "only for patients who could be pregnant" },
+    { "id": "urine_test", "label": "Urine test ordered or reviewed", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if an antibiotic or other medication is prescribed" },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "blood_in_urine", "label": "Blood in urine asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "discharge", "label": "Vaginal or penile discharge asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "prior_utis", "label": "Previous urinary infections asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "antibiotic_course", "label": "Antibiotic course and duration explained", "priority": "recommended", "defaultSection": "P", "condition": "only if an antibiotic is prescribed" },
+    { "id": "fluids_relief", "label": "Fluids and symptom relief discussed", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

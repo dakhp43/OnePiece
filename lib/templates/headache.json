@@ -1,0 +1,19 @@
+{
+  "id": "headache",
+  "label": "Headache",
+  "keyterms": ["ibuprofen", "acetaminophen", "naproxen", "sumatriptan", "rizatriptan", "topiramate", "propranolol", "amitriptyline", "migraine", "aura"],
+  "items": [
+    { "id": "onset_pattern", "label": "Onset, pattern and duration", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "pain_character", "label": "Location, severity and character", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "red_flags", "label": "Red flags asked (sudden worst headache, weakness, confusion, fever with stiff neck, new after age 50)", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "neuro_exam", "label": "Neurological exam done", "priority": "required", "defaultSection": "O", "condition": null },
+    { "id": "bp_measured", "label": "Blood pressure measured", "priority": "required", "defaultSection": "O", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a medication is prescribed" },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "painkiller_use", "label": "How often pain relievers are taken (overuse)", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "associated_symptoms", "label": "Nausea, light or sound sensitivity, or aura asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "triggers", "label": "Triggers asked (sleep, stress, caffeine, food)", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "headache_diary", "label": "Headache diary suggested", "priority": "recommended", "defaultSection": "P", "condition": null },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

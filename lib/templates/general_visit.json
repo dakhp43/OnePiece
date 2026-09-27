@@ -1,0 +1,18 @@
+{
+  "id": "general_visit",
+  "label": "Regular visit",
+  "keyterms": ["acetaminophen", "ibuprofen", "amoxicillin", "lisinopril", "metformin", "atorvastatin", "levothyroxine", "omeprazole"],
+  "items": [
+    { "id": "reason_for_visit", "label": "Reason for the visit stated", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "symptom_history", "label": "Symptom onset and duration", "priority": "required", "defaultSection": "S", "condition": "only if the visit is about a new or changed symptom" },
+    { "id": "meds_reviewed", "label": "Current medications reviewed", "priority": "required", "defaultSection": "S", "condition": null },
+    { "id": "allergies_reviewed", "label": "Allergies reviewed", "priority": "required", "defaultSection": "S", "condition": "only if a medication is prescribed" },
+    { "id": "plan_explained", "label": "Plan explained to the patient", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "followup_interval", "label": "Follow-up interval stated", "priority": "required", "defaultSection": "P", "condition": null },
+    { "id": "vitals", "label": "Vital signs recorded", "priority": "recommended", "defaultSection": "O", "condition": null },
+    { "id": "focused_exam", "label": "Relevant exam documented", "priority": "recommended", "defaultSection": "O", "condition": null },
+    { "id": "warning_symptoms", "label": "Warning symptoms asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "tobacco_alcohol", "label": "Tobacco and alcohol use asked", "priority": "recommended", "defaultSection": "S", "condition": null },
+    { "id": "return_precautions", "label": "Return precautions given", "priority": "recommended", "defaultSection": "P", "condition": null }
+  ]
+}

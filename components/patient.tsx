@@ -1,4 +1,4 @@
-import { Droplet, HeartPulse, Stethoscope, Wind, type LucideIcon } from "lucide-react";
+import { Bone, Brain, ClipboardCheck, Droplet, FlaskConical, HeartPulse, SprayCan, Stethoscope, Wind, Zap, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Flat, muted tones (white initials stay above 4.5:1 on each).
@@ -29,6 +29,13 @@ export const VISIT_TYPE_ICON: Record<string, LucideIcon> = {
   htn_followup: HeartPulse,
   t2dm_followup: Droplet,
   acute_respiratory: Wind,
+  asthma_copd: SprayCan,
+  mental_health: Brain,
+  annual_physical: ClipboardCheck,
+  back_pain: Bone,
+  urinary_symptoms: FlaskConical,
+  headache: Zap,
+  general_visit: Stethoscope,
 };
 
 export function VisitTypeIcon({ type, className }: { type: string | null | undefined; className?: string }) {
