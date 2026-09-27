@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { check, date, index, integer, jsonb, numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type {
   AuditResult, FollowThrough, GapItem, Medication, Note, OpenItemCategory, ProblemScore,
-  ProcessingStep, ReviewMetrics, SignoffOverride, Transcript, Utterance, VisitRuntime, VisitStatus, VisitType,
+  ProcessingStep, Report, ReviewMetrics, SignoffOverride, Transcript, Utterance, VisitRuntime, VisitStatus, VisitType,
 } from "@/lib/contracts";
 
 export const doctors = pgTable("doctors", {
@@ -49,6 +49,8 @@ export const visits = pgTable("visits", {
   followthrough: jsonb("followthrough").$type<FollowThrough>(),
   metrics: jsonb("metrics").$type<Partial<ReviewMetrics> & VisitRuntime>(),
   signoffOverrides: jsonb("signoff_overrides").$type<SignoffOverride[]>(),
+  /** Clinician-edited visit report narrative; null until first edited (it is then generated from the signed note). */
+  report: jsonb("report").$type<Report>(),
 }, (t) => [index("visits_patient_idx").on(t.patientId)]);
 
 export const openItems = pgTable("open_items", {
@@ -80,7 +82,7 @@ export type EventType =
   | "recording_started" | "recording_ended" | "note_drafted" | "sentence_accepted"
   | "sentence_edited" | "sentence_deleted" | "sentence_added" | "gap_filled"
   | "gap_dismissed" | "gap_deferred" | "signoff_override" | "signed"
-  | "summary_edited" | "email_sent" | "medications_updated";
+  | "summary_edited" | "email_sent" | "medications_updated" | "report_edited";
 
 /** Hypertable on `time`: audit trail of every AI draft, clinician edit, and override. */
 export const events = pgTable("events", {
