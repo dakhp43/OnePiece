@@ -6,3 +6,4 @@ export * from "./scores";
 export * from "./followthrough";
 export * from "./metrics";
 export * from "./visit";
+export * from "./report";
