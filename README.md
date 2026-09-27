@@ -56,6 +56,31 @@ Design decisions:
 - **Doctor in control**: nothing reaches the patient until the doctor signs and approves the send. Machine-translated Spanish needs an explicit "I reviewed it" checkbox.
 - **Tiger Data**: `vitals` (BP trend) and `events` (every AI draft, edit, override, and send) are TimescaleDB hypertables.
 
+### Help assistant (Snowflake)
+
+A **Help** button on every page opens a chat that explains, step by step and in plain language, how to use
+Carryover, for staff who aren't comfortable with computers. It is retrieval-augmented, and Snowflake is the
+knowledge base, the retrieval engine and the analytics store, all through Snowflake's REST APIs
+([lib/snowflake.ts](lib/snowflake.ts)):
+
+```mermaid
+flowchart LR
+  Q[Question] --> S[Snowflake SQL API<br/>ranked keyword search over HELP_ARTICLES]
+  S --> W[Answer written from those articles only<br/>Snowflake Cortex, or Gemini where Cortex isn't enabled]
+  W --> UI[Help panel<br/>steps + sources]
+  UI --> L[(Snowflake HELP_QUESTIONS<br/>question log)]
+  L --> I[Status page: Help insights<br/>most asked topics, unanswered questions]
+  Art[lib/help/articles.ts] -->|npm run help:sync, SQL API| KB[(Snowflake HELP_ARTICLES)] --> S
+```
+
+It answers only from the articles, names buttons exactly as they appear, and declines medical questions.
+Cortex writes the answer when the account allows AI functions (the Cortex REST API, streamed, or
+`SNOWFLAKE.CORTEX.COMPLETE` through the SQL API); trial accounts without a card get neither, so
+`SNOWFLAKE_CORTEX=off` hands the writing to Gemini while Snowflake still stores, searches and logs.
+Setup: run [scripts/snowflake/setup.sql](scripts/snowflake/setup.sql) once in Snowsight (warehouse, tables,
+least-privilege role, service user and access token), set `SNOWFLAKE_ACCOUNT_URL` and `SNOWFLAKE_PAT`, then
+`npm run help:sync`. Without Snowflake the panel searches the articles in the app.
+
 ## Setup
 
 ```bash
@@ -81,6 +106,7 @@ Dr. Nguyen can't open Dr. Patel's patients (403).
 | `npm run lint` / `npm run typecheck` | Run before every commit |
 | `npm run demo:audio` | Re-synthesize the placeholder demo audio with Windows voices |
 | `npm run fixtures:promote [visitId]` | Copy the last successful live run into `data/fixtures/demo/` (plus that visit's audio) |
+| `npm run help:sync` | Load the help articles into Snowflake (SQL API); run after changing `lib/help/articles.ts` |
 
 ### Environment
 
@@ -92,6 +118,7 @@ wrapper ([lib/http.ts](lib/http.ts)), and never log keys.
 - `BACKBOARD_API_KEY`, `BACKBOARD_ENABLED`. Without Backboard, the brief falls back to Gemini, then to a deterministic chart summary.
 - `EMAIL_PROVIDER=gmail` with `GMAIL_USER` + `GMAIL_APP_PASSWORD` (sends to any address), or `resend`
 - `AUTH_SECRET` (32+ chars), `DEMO_PATIENT_EMAIL` (inbox for the seeded demo patient)
+- `SNOWFLAKE_ACCOUNT_URL`, `SNOWFLAKE_PAT`, `SNOWFLAKE_WAREHOUSE`, `SNOWFLAKE_CORTEX` (`off` on trial accounts), `SNOWFLAKE_CHAT_MODEL`, `SNOWFLAKE_DAILY_CALL_LIMIT`, `SNOWFLAKE_CORTEX_SEARCH` for the Help assistant
 
 ### Demo safety net (`DEMO_FALLBACK=true`)
 
@@ -115,7 +142,8 @@ has a small **Load demo visit** link that uses the committed demo audio instead 
 ## Tracks
 
 Health Beyond the Clinic · Community Impact & Social Innovation · Best Entrepreneurial Idea ·
-Most Engaging Demo · [MLH] Best Use of ElevenLabs · Gemini API · Tiger Data · Backboard
+Most Engaging Demo · [MLH] Best Use of ElevenLabs · Gemini API · Tiger Data · Backboard ·
+Best Use of Snowflake API
 
 **Impact measurement plan:** per visit, measure seconds from visit end to signed note, flagged vs.
 total sentences, gaps caught, share of open items closed by the next visit, and summary delivery in the

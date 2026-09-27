@@ -2,11 +2,12 @@ import { sql } from "drizzle-orm";
 import { getDb, usingPglite } from "@/lib/db";
 import { demoFallbackEnabled } from "@/lib/fixtures";
 import { backboardBalance, backboardEnabled } from "@/lib/memory/backboard";
+import { cortexAvailable, cortexEnabled, cortexSearchEnabled, lastCortexError, snowflakeConfigured, snowflakeModel, snowflakeReachable } from "@/lib/snowflake";
 import { LIMITS, readUsage } from "@/lib/usage";
 
 /**
  * Pre-demo readiness check. Makes no billable calls: DB ping, ElevenLabs subscription,
- * Gemini model metadata, Backboard balance, and email config only.
+ * Gemini model metadata, Backboard balance, Snowflake database lookup, and email config only.
  */
 export interface Health {
   checkedAt: string;
@@ -14,8 +15,9 @@ export interface Health {
   elevenlabs: { configured: boolean; ok: boolean; tier?: string; creditsUsed?: number; creditLimit?: number; model: string; error?: string };
   gemini: { configured: boolean; ok: boolean; model: string; fallbackModel: string | null; fallbackOk?: boolean; error?: string };
   backboard: { enabled: boolean; configured: boolean; ok: boolean; balanceUsd?: number; autoReload?: boolean; error?: string };
+  snowflake: { configured: boolean; ok: boolean; model: string; retrieval: "cortex-search" | "sql"; cortex: "available" | "refused" | "off"; cortexNote?: string; error?: string };
   email: { provider: string; configured: boolean };
-  usage: { today: ReturnType<typeof readUsage>; limits: { geminiCalls: number; sttMinutes: number; maxRecordingMinutes: number; backboardCalls: number } };
+  usage: { today: ReturnType<typeof readUsage>; limits: { geminiCalls: number; sttMinutes: number; maxRecordingMinutes: number; backboardCalls: number; snowflakeCalls: number } };
   demoFallback: boolean;
 }
 
@@ -92,6 +94,23 @@ async function checkBackboard(): Promise<Health["backboard"]> {
   }
 }
 
+async function checkSnowflake(): Promise<Health["snowflake"]> {
+  // Cortex refusals (e.g. trial accounts) only show up once a question is asked; answers then come from Gemini.
+  const base = {
+    model: snowflakeModel(),
+    retrieval: cortexSearchEnabled() ? "cortex-search" as const : "sql" as const,
+    cortex: !cortexEnabled() ? "off" as const : cortexAvailable() ? "available" as const : "refused" as const,
+    cortexNote: cortexAvailable() ? undefined : lastCortexError(),
+  };
+  if (!snowflakeConfigured()) return { configured: false, ok: false, ...base };
+  try {
+    await snowflakeReachable();
+    return { configured: true, ok: true, ...base };
+  } catch (e) {
+    return { configured: true, ok: false, ...base, error: errMsg(e) };
+  }
+}
+
 function checkEmail(): Health["email"] {
   const provider = process.env.EMAIL_PROVIDER === "resend" ? "resend" : "gmail";
   const configured = provider === "gmail"
@@ -105,10 +124,12 @@ const g = globalThis as unknown as { __health?: { at: number; value: Health } };
 /** Cached 30 s so refreshing the status page doesn't repeat network checks. */
 export async function checkHealth({ fresh = false } = {}): Promise<Health> {
   if (!fresh && g.__health && Date.now() - g.__health.at < 30_000) return g.__health.value;
-  const [db, elevenlabs, gemini, backboard] = await Promise.all([checkDb(), checkElevenLabs(), checkGemini(), checkBackboard()]);
+  const [db, elevenlabs, gemini, backboard, snowflake] = await Promise.all([
+    checkDb(), checkElevenLabs(), checkGemini(), checkBackboard(), checkSnowflake(),
+  ]);
   const value: Health = {
     checkedAt: new Date().toISOString(),
-    db, elevenlabs, gemini, backboard,
+    db, elevenlabs, gemini, backboard, snowflake,
     email: checkEmail(),
     usage: {
       today: readUsage(),
@@ -117,6 +138,7 @@ export async function checkHealth({ fresh = false } = {}): Promise<Health> {
         sttMinutes: LIMITS.sttSeconds() / 60,
         maxRecordingMinutes: LIMITS.maxRecordingSeconds() / 60,
         backboardCalls: LIMITS.backboardCalls(),
+        snowflakeCalls: LIMITS.snowflakeCalls(),
       },
     },
     demoFallback: demoFallbackEnabled(),

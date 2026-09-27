@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireDoctorPage } from "@/lib/auth/current";
 import { checkHealth } from "@/lib/health";
 import { cn } from "@/lib/utils";
+import { HelpInsights } from "./HelpInsights";
 
 type State = "ok" | "off" | "fail";
 
@@ -70,9 +71,10 @@ export default async function StatusPage({ searchParams }: PageProps<"/app/statu
   const elevenState: State = !h.elevenlabs.configured ? "off" : h.elevenlabs.ok ? "ok" : "fail";
   const geminiState: State = !h.gemini.configured ? "off" : h.gemini.ok ? "ok" : "fail";
   const backboardState: State = !h.backboard.configured ? "off" : !h.backboard.ok ? "fail" : h.backboard.autoReload ? "fail" : "ok";
+  const snowflakeState: State = !h.snowflake.configured ? "off" : h.snowflake.ok ? "ok" : "fail";
   const emailState: State = h.email.configured ? "ok" : "off";
   const fallbackState: State = h.demoFallback ? "ok" : "off";
-  const states = [dbState, elevenState, geminiState, backboardState, emailState, fallbackState];
+  const states = [dbState, elevenState, geminiState, backboardState, snowflakeState, emailState, fallbackState];
   const failing = states.filter((x) => x === "fail").length;
   const off = states.filter((x) => x === "off").length;
 
@@ -145,12 +147,22 @@ export default async function StatusPage({ searchParams }: PageProps<"/app/statu
             />
             <Row
               i={7}
+              label="Snowflake help assistant"
+              state={snowflakeState}
+              detail={h.snowflake.configured
+                ? h.snowflake.ok
+                  ? <>Knowledge base, search and question log in Snowflake ({h.snowflake.retrieval === "cortex-search" ? "Cortex Search" : "SQL API"}) · answers by {h.snowflake.cortex === "available" ? <>Cortex {h.snowflake.model}</> : <span title={h.snowflake.cortexNote}>Gemini ({h.snowflake.cortex === "off" ? "Cortex off: SNOWFLAKE_CORTEX=off" : "Cortex isn't enabled on this account"})</span>}</>
+                  : h.snowflake.error
+                : "Set SNOWFLAKE_ACCOUNT_URL and SNOWFLAKE_PAT (help answers from the built-in articles meanwhile)"}
+            />
+            <Row
+              i={8}
               label={`Email (${h.email.provider})`}
               state={emailState}
               detail={h.email.configured ? "Configured (not test-sent)" : "Set GMAIL_USER and GMAIL_APP_PASSWORD"}
             />
             <Row
-              i={8}
+              i={9}
               label="Offline demo fallback"
               state={fallbackState}
               detail={h.demoFallback ? "On: failed or slow AI calls use the saved demo run" : "Off (DEMO_FALLBACK=false)"}
@@ -158,12 +170,15 @@ export default async function StatusPage({ searchParams }: PageProps<"/app/statu
           </ul>
         </Card>
 
+        {h.snowflake.configured && h.snowflake.ok && <HelpInsights />}
+
         <h2 className="mt-8 font-sub text-sm font-semibold text-ink-2">Today&apos;s usage (free-tier caps)</h2>
-        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-5">
           <Meter i={9} value={u.today.geminiCalls} limit={u.limits.geminiCalls} display={<>{u.today.geminiCalls} / {u.limits.geminiCalls}</>} label="Gemini calls" />
           <Meter i={10} value={u.today.sttSeconds / 60} limit={u.limits.sttMinutes} display={<>{(u.today.sttSeconds / 60).toFixed(1)} / {u.limits.sttMinutes} min</>} label={`audio transcribed (${u.today.sttCalls} recordings)`} />
           <Meter i={11} value={u.today.backboardCalls} limit={u.limits.backboardCalls} display={<>{u.today.backboardCalls} / {u.limits.backboardCalls}</>} label="Backboard calls" />
-          <div className="rise glass rounded-2xl p-4" style={stagger(12)}>
+          <Meter i={12} value={u.today.snowflakeCalls} limit={u.limits.snowflakeCalls} display={<>{u.today.snowflakeCalls} / {u.limits.snowflakeCalls}</>} label="Snowflake calls (help)" />
+          <div className="rise glass rounded-2xl p-4" style={stagger(13)}>
             <p className="font-mono text-xl font-semibold tabular-nums text-ink">{u.limits.maxRecordingMinutes} min</p>
             <p className="mt-0.5 text-xs text-ink-3">max per recording</p>
           </div>

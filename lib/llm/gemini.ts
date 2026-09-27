@@ -107,3 +107,32 @@ export async function generateJson<T>({ schema, system, user, temperature = 0.2,
   if (second.ok) return second.data;
   throw new ExternalError("gemini", null, `invalid structured output: ${second.error.slice(0, 300)}`);
 }
+
+/**
+ * Streams plain text, for replies people watch appear (the Help assistant). Minimal thinking keeps the first
+ * words under a second on Gemini 3; if a model rejects that level (400) it retries with LOW.
+ */
+export async function* streamText({ system, user, model, temperature = 0.2, label = "gemini" }: {
+  system: string; user: string; model?: string; temperature?: number; label?: string;
+}): AsyncGenerator<string> {
+  const name = model || process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const open = (level: ThinkingLevel) => {
+    reserveGeminiCall(label);
+    return client().models.generateContentStream({
+      model: name,
+      contents: user,
+      config: { systemInstruction: system, temperature, ...(/^gemini-3/.test(name) ? { thinkingConfig: { thinkingLevel: level } } : {}) },
+    });
+  };
+  const stream = await withRetry(label, async () => {
+    try {
+      return await open(ThinkingLevel.MINIMAL);
+    } catch (err) {
+      if (statusOf(err) === 400) return open(ThinkingLevel.LOW);
+      throw err;
+    }
+  }, { retries: 1 });
+  for await (const chunk of stream) {
+    if (chunk.text) yield chunk.text;
+  }
+}
