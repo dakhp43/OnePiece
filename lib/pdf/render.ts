@@ -39,13 +39,20 @@ export async function renderReportPdf(visit: VisitRow, patient: PatientRow): Pro
   if (!current) throw new ApiError(404, "No signed note to build a report from");
   const context = await loadReportContext(visit, patient);
   const visitDate = visit.startedAt ?? visit.signedAt ?? new Date();
+  const dob = new Date(`${patient.dob}T12:00:00`);
   const props: ReportDocumentProps = {
     report: current.report,
     context,
     patient: {
       name: `${patient.firstName} ${patient.lastName}`,
-      dob: longDate(new Date(`${patient.dob}T12:00:00`)),
-      ageSex: `${ageFromDob(patient.dob, visitDate)} / ${sexLabel(patient.sex)}`,
+      sortName: `${patient.lastName}, ${patient.firstName}`,
+      dob: longDate(dob),
+      dobShort: dob.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+      age: ageFromDob(patient.dob, visitDate),
+      sex: patient.sex === "F" ? "Female" : patient.sex === "M" ? "Male" : sexLabel(patient.sex),
+      // Short, stable record number from the patient's id (the chart has no separate MRN).
+      id: patient.id.replace(/-/g, "").slice(0, 8).toUpperCase(),
+      conditions: patient.conditions,
     },
     visit: {
       date: longDate(visitDate),
