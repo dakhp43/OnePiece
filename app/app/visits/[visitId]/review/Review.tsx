@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CloudOff, PenLine } from "lucide-react";
+import { ArrowLeft, CircleAlert, CircleCheck, CloudOff, Keyboard, PenLine, TriangleAlert } from "lucide-react";
+import { LiquidGlass } from "@/components/LiquidGlass";
+import { VisitSteps } from "@/components/VisitSteps";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Sentence } from "@/lib/contracts";
@@ -14,6 +16,7 @@ import type { VisitView } from "@/lib/visits";
 import { GapsPanel } from "./GapsPanel";
 import { NotePanel } from "./NotePanel";
 import { SignDialog } from "./SignDialog";
+import { SourceLinks } from "./SourceLinks";
 import { TranscriptPanel } from "./TranscriptPanel";
 
 export type Mutate = (url: string, body: unknown, method?: string) => Promise<boolean>;
@@ -27,6 +30,7 @@ export function Review({ initial }: { initial: VisitView }) {
   const [error, setError] = useState<string | null>(null);
   const [signOpen, setSignOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const note = visit.note!;
   const utterances = useMemo(() => visit.utterances ?? [], [visit.utterances]);
@@ -97,18 +101,20 @@ export function Review({ initial }: { initial: VisitView }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [note, scores, scoreById, selectedId, selectSentence, sentencePatch]);
 
+  const reviewedShare = progress.flagged ? progress.reviewedFlagged / progress.flagged : 1;
+  const ready = progress.needReview === 0 && progress.gapsOpen === 0;
   return (
-    <div className="flex h-[calc(100vh-3.5rem-2.25rem)] flex-col">
-      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
-        <div>
-          <Link href={`/app/patients/${visit.patient.id}`} className="text-sm text-slate-500 hover:text-accent">
-            ← {visit.patient.firstName} {visit.patient.lastName}
+    <div className="flex h-[calc(100dvh-var(--header-h)-var(--footer-h))] flex-col">
+      <div className="glass flex flex-wrap items-center justify-between gap-3 rounded-none border-x-0 border-t-0 px-6 py-3 shadow-none">
+        <div className="min-w-0">
+          <Link href={`/app/patients/${visit.patient.id}`} className="group inline-flex items-center gap-1 text-xs text-ink-3 transition-colors hover:text-accent-ink">
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" /> {visit.patient.firstName} {visit.patient.lastName}
           </Link>
-          <div className="flex items-center gap-3">
-            <h1 className="text-lg font-semibold text-slate-900">Review note</h1>
-            <span className="text-sm text-slate-600">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="font-display text-2xl font-semibold leading-tight tracking-[-0.01em] text-ink">Review note</h1>
+            <span className="text-sm text-ink-3">
               {VISIT_TYPE_LABELS[visit.visitType]} · {progress.totalSentences} sentences ·{" "}
-              <span className={progress.needReview ? "font-medium text-amber-700" : "text-emerald-700"}>
+              <span className={progress.needReview ? "font-semibold text-warn-ink" : "font-semibold text-ok-ink"}>
                 {progress.needReview} need review
               </span>
             </span>
@@ -119,19 +125,22 @@ export function Review({ initial }: { initial: VisitView }) {
             )}
           </div>
         </div>
-        <p className="hidden text-xs text-slate-500 xl:block">
-          Keys: <kbd className="rounded border px-1">n</kbd> next flagged · <kbd className="rounded border px-1">a</kbd> accept ·{" "}
-          <kbd className="rounded border px-1">e</kbd> edit
-        </p>
+        <div className="flex items-center gap-5">
+          <p className="hidden items-center gap-1.5 text-xs text-ink-3 2xl:flex">
+            <Keyboard className="h-3.5 w-3.5" />
+            <Kbd>n</Kbd> next flagged <Kbd>a</Kbd> accept <Kbd>e</Kbd> edit
+          </p>
+          <VisitSteps at="review" />
+        </div>
       </div>
 
       {error && (
-        <div className="border-b border-red-200 bg-red-50 px-6 py-2 text-sm text-red-700">
-          {error} <button className="ml-2 underline" onClick={() => setError(null)}>dismiss</button>
+        <div role="alert" className="fade-in flex items-center gap-2 border-b border-danger/25 bg-danger-soft px-6 py-2 text-sm text-danger-ink">
+          <CircleAlert className="h-4 w-4" /> {error} <button className="ml-2 underline underline-offset-2" onClick={() => setError(null)}>dismiss</button>
         </div>
       )}
 
-      <div className="grid min-h-0 flex-1 grid-cols-[2fr_1fr_1fr]">
+      <div ref={gridRef} className="relative grid min-h-0 flex-1 grid-cols-[2fr_1fr_1fr]">
         <NotePanel
           visitId={visit.id}
           note={note}
@@ -153,19 +162,29 @@ export function Review({ initial }: { initial: VisitView }) {
           onUtteranceClick={(id) => showEvidence([id])}
         />
         <GapsPanel visitId={visit.id} gaps={gaps} problems={note.problems} mutate={mutate} onEvidence={showEvidence} />
+        <SourceLinks containerRef={gridRef} selectedId={selectedId} highlight={highlight} />
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-200 bg-white px-6 py-3 shadow-[0_-2px_6px_rgba(15,23,42,0.04)]">
-        <p className="text-sm text-slate-600">
-          Reviewed <span className="font-semibold text-slate-900">{progress.reviewedFlagged} of {progress.flagged}</span> flagged ·{" "}
-          <span className={progress.gapsOpen ? "font-semibold text-amber-700" : "font-semibold text-emerald-700"}>
+      <LiquidGlass radius={0} blur={14} strength={20} band={16} className="flex items-center justify-between gap-6 px-6 py-3">
+        <div className="flex min-w-0 flex-1 items-center gap-6">
+          <div className="w-full max-w-xs">
+            <p className="flex items-baseline justify-between text-sm text-ink-2">
+              <span>Reviewed <span className="font-semibold text-ink">{progress.reviewedFlagged} of {progress.flagged}</span> flagged</span>
+              <span className="font-mono text-xs text-ink-3">{Math.round(reviewedShare * 100)}%</span>
+            </p>
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-3">
+              <div className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out" style={{ width: `${reviewedShare * 100}%` }} />
+            </div>
+          </div>
+          <span className={progress.gapsOpen ? "inline-flex items-center gap-1.5 rounded-full bg-warn-soft px-2.5 py-1 text-sm font-semibold text-warn-ink" : "inline-flex items-center gap-1.5 rounded-full bg-ok-soft px-2.5 py-1 text-sm font-semibold text-ok-ink"}>
+            {progress.gapsOpen ? <TriangleAlert className="h-3.5 w-3.5" /> : <CircleCheck className="h-3.5 w-3.5" />}
             {progress.gapsOpen} gap{progress.gapsOpen === 1 ? "" : "s"} open
           </span>
-        </p>
+        </div>
         <Button size="lg" onClick={() => setSignOpen(true)}>
-          <PenLine className="h-4 w-4" /> Sign note
+          {ready ? <CircleCheck className="h-4 w-4" /> : <PenLine className="h-4 w-4" />} Sign note
         </Button>
-      </div>
+      </LiquidGlass>
 
       <SignDialog
         open={signOpen}
@@ -176,6 +195,10 @@ export function Review({ initial }: { initial: VisitView }) {
       />
     </div>
   );
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded-md border border-line-strong bg-surface-2 px-1 font-mono text-[11px] font-semibold text-ink-2 shadow-[0_1px_0_var(--line-strong)]">{children}</kbd>;
 }
 
 /** Sentences in on-screen order: problems sorted by score ascending, then S/O/A/P. */

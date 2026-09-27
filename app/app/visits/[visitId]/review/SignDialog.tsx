@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { TriangleAlert } from "lucide-react";
+import { Loader2, Lock, PenLine, ScrollText, TriangleAlert } from "lucide-react";
+import { stagger } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Label, Select } from "@/components/ui/form";
@@ -45,6 +46,7 @@ export function SignDialog({ open, onClose, visitId, gaps, onSigned }: Props) {
         <>
           <Button variant="secondary" onClick={onClose}>Back to review</Button>
           <Button onClick={sign} disabled={busy || (blockers.length > 0 && !reason)} variant={blockers.length ? "danger" : "primary"}>
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <PenLine className="h-4 w-4" />}
             {busy ? "Signing…" : blockers.length ? "Override and sign" : "Sign note"}
           </Button>
         </>
@@ -52,10 +54,14 @@ export function SignDialog({ open, onClose, visitId, gaps, onSigned }: Props) {
     >
       {blockers.length > 0 ? (
         <div className="space-y-4">
-          <div className="flex gap-3 rounded-md bg-amber-50 p-3 text-sm text-amber-900">
-            <TriangleAlert className="h-5 w-5 shrink-0" />
-            <ul className="list-disc space-y-1 pl-4">
-              {blockers.map((g) => <li key={g.itemId}>{g.label}</li>)}
+          <div className="rounded-xl border border-warn/40 bg-warn-soft p-3.5 text-sm text-warn-ink">
+            <p className="flex items-center gap-2 font-semibold"><TriangleAlert className="h-4 w-4 shrink-0" /> Still unresolved</p>
+            <ul className="mt-2 space-y-1.5">
+              {blockers.map((g, i) => (
+                <li key={g.itemId} className="rise flex items-start gap-2" style={stagger(i)}>
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-warn" /> {g.label}
+                </li>
+              ))}
             </ul>
           </div>
           <div>
@@ -64,14 +70,18 @@ export function SignDialog({ open, onClose, visitId, gaps, onSigned }: Props) {
               <option value="" disabled>Choose a reason…</option>
               {DismissReasonSchema.options.map((r) => <option key={r} value={r}>{DISMISS_REASON_LABELS[r]}</option>)}
             </Select>
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-ink-3"><ScrollText className="h-3.5 w-3.5" /> Overrides are recorded in the visit&apos;s audit trail.</p>
           </div>
         </div>
       ) : (
-        <p className="text-sm text-slate-700">
-          Signing freezes the note. Follow-through tasks and the patient summary are generated from the signed note only.
-        </p>
+        <div className="flex items-start gap-3 rounded-xl border border-line bg-surface-2 p-4 text-sm text-ink-2">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink"><Lock className="h-4 w-4" /></span>
+          <p>
+            Signing freezes the note. Follow-through tasks and the patient summary are generated from the signed note only.
+          </p>
+        </div>
       )}
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="mt-3 rounded-lg border border-danger/25 bg-danger-soft px-3 py-2 text-sm text-danger-ink">{error}</p>}
     </Dialog>
   );
 }

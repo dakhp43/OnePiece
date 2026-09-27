@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { CalendarCheck, ListChecks, MessagesSquare, Pill, Plus, Siren, X, type LucideIcon } from "lucide-react";
 import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select, Textarea } from "@/components/ui/form";
@@ -24,22 +24,26 @@ export function SummaryEditor({ summary: initial, onSave }: { summary: PatientSu
   const set = <K extends keyof PatientSummary>(k: K, v: PatientSummary[K]) => setS((prev) => ({ ...prev, [k]: v }));
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         {grade !== null ? (
-          <Badge tone={grade <= 6.5 ? "green" : grade <= 8 ? "amber" : "red"}>Reading level: grade {grade.toFixed(1)}</Badge>
+          <div className="flex items-center gap-3">
+            <Badge tone={grade <= 6.5 ? "green" : grade <= 8 ? "amber" : "red"}>Reading level: grade {grade.toFixed(1)}</Badge>
+            <ReadingMeter grade={grade} />
+          </div>
         ) : <span />}
         {dirty && (
-          <div className="flex gap-2">
+          <div className="fade-in flex items-center gap-2">
+            <span className="flex items-center gap-1.5 text-xs text-warn-ink"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-warn" /> Unsaved edits</span>
             <Button size="sm" variant="ghost" onClick={() => setS(initial)}>Discard</Button>
             <Button size="sm" disabled={busy} onClick={async () => { setBusy(true); await onSave(s); setBusy(false); }}>Save changes</Button>
           </div>
         )}
       </div>
 
-      <Textarea rows={2} value={s.greeting} onChange={(e) => set("greeting", e.target.value)} className="text-base" aria-label="Greeting" />
+      <Textarea rows={2} value={s.greeting} onChange={(e) => set("greeting", e.target.value)} className="text-xl font-medium leading-snug" aria-label="Greeting" />
 
-      <Section title={h.discussed}>
+      <Section title={h.discussed} icon={MessagesSquare}>
         {s.whatWeDiscussed.map((d, i) => (
           <div key={i} className="space-y-1">
             <Input value={d.topic} className="font-medium" aria-label="Topic"
@@ -50,8 +54,8 @@ export function SummaryEditor({ summary: initial, onSave }: { summary: PatientSu
         ))}
       </Section>
 
-      <Section title={h.meds}>
-        {s.medicationChanges.length === 0 && <p className="text-sm text-slate-500">No medication changes.</p>}
+      <Section title={h.meds} icon={Pill}>
+        {s.medicationChanges.length === 0 && <p className="text-sm text-ink-3">No medication changes.</p>}
         {s.medicationChanges.map((m, i) => (
           <div key={i} className="flex items-start gap-2">
             <Select value={m.change} className="h-10 w-32"
@@ -71,7 +75,7 @@ export function SummaryEditor({ summary: initial, onSave }: { summary: PatientSu
         ))}
       </Section>
 
-      <Section title={h.next}>
+      <Section title={h.next} icon={ListChecks}>
         {s.nextSteps.map((n, i) => (
           <div key={i} className="flex gap-2">
             <Input value={n.text} aria-label="Next step"
@@ -84,9 +88,9 @@ export function SummaryEditor({ summary: initial, onSave }: { summary: PatientSu
         <AddButton onClick={() => set("nextSteps", [...s.nextSteps, { text: "", when: null }])} />
       </Section>
 
-      <Section title={h.help}>
+      <Section title={h.help} icon={Siren}>
         {s.whenToGetHelp.length === 0 && (
-          <p className="text-xs text-amber-700">No warning signs were in the signed note, so none are listed. Add any you gave the patient.</p>
+          <p className="rounded-lg bg-warn-soft px-2.5 py-1.5 text-xs text-warn-ink">No warning signs were in the signed note, so none are listed. Add any you gave the patient.</p>
         )}
         {s.whenToGetHelp.map((w, i) => (
           <div key={i} className="flex gap-2">
@@ -97,25 +101,42 @@ export function SummaryEditor({ summary: initial, onSave }: { summary: PatientSu
         <AddButton onClick={() => set("whenToGetHelp", [...s.whenToGetHelp, ""])} />
       </Section>
 
-      <Section title={h.follow}>
+      <Section title={h.follow} icon={CalendarCheck}>
         <Input value={s.followUp ?? ""} onChange={(e) => set("followUp", e.target.value || null)} aria-label="Next visit" />
       </Section>
     </div>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: React.ReactNode }) {
   return (
-    <section>
-      <h3 className="mb-2 text-sm font-semibold text-teal-800">{title}</h3>
+    <section className="rounded-2xl border border-line bg-surface-2/60 p-4">
+      <h3 className="mb-3 flex items-center gap-2 font-sub text-sm font-semibold text-accent-ink">
+        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-accent-soft"><Icon className="h-3.5 w-3.5" /></span>
+        {title}
+      </h3>
       <div className="space-y-2">{children}</div>
     </section>
   );
 }
 
+/** Where the grade sits on a 0-14 scale; the marker slides as the text is edited. Target is grade 6 or lower. */
+function ReadingMeter({ grade }: { grade: number }) {
+  const pos = Math.min(100, Math.max(0, (grade / 14) * 100));
+  return (
+    <span className="relative hidden h-2 w-36 sm:flex" title="Flesch-Kincaid grade (target ≤ 6.5)">
+      {/* Bands match the badge thresholds: ≤ 6.5 green, ≤ 8 amber, above that red (scale 0-14). */}
+      <span className="h-full rounded-l-full bg-ok" style={{ width: `${(6.5 / 14) * 100}%` }} />
+      <span className="h-full bg-warn" style={{ width: `${(1.5 / 14) * 100}%` }} />
+      <span className="h-full flex-1 rounded-r-full bg-danger" />
+      <span className="absolute -top-1 h-4 w-1.5 -translate-x-1/2 rounded-full border-2 border-surface bg-ink transition-[left] duration-500 ease-out" style={{ left: `${pos}%` }} />
+    </span>
+  );
+}
+
 function AddButton({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex items-center gap-1 text-xs text-slate-500 hover:text-accent">
+    <button onClick={onClick} className="flex items-center gap-1 rounded-md px-1.5 py-1 text-xs text-ink-3 transition-colors hover:bg-accent-soft hover:text-accent-ink">
       <Plus className="h-3 w-3" /> Add
     </button>
   );
@@ -123,7 +144,7 @@ function AddButton({ onClick }: { onClick: () => void }) {
 
 function RemoveButton({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} aria-label="Remove" title="Remove" className="rounded p-2 text-slate-400 hover:bg-slate-100 hover:text-red-600">
+    <button onClick={onClick} aria-label="Remove" title="Remove" className="rounded-md p-2 text-ink-4 transition-colors hover:bg-danger-soft hover:text-danger">
       <X className="h-4 w-4" />
     </button>
   );

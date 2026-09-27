@@ -2,8 +2,8 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const field =
-  "w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 " +
-  "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 disabled:bg-slate-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-ink-4 backdrop-blur-md transition-[border-color,box-shadow] " +
+  "hover:border-ink-4 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 disabled:bg-surface-2 disabled:text-ink-3";
 
 export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(field, "h-10", className)} {...props} />;
@@ -14,9 +14,9 @@ export function Textarea({ className, ...props }: React.TextareaHTMLAttributes<H
 }
 
 export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return <select className={cn(field, "h-10", className)} {...props} />;
+  return <select className={cn(field, "h-10 cursor-pointer", className)} {...props} />;
 }
 
 export function Label({ className, ...props }: React.LabelHTMLAttributes<HTMLLabelElement>) {
-  return <label className={cn("mb-1 block text-xs font-medium text-slate-600", className)} {...props} />;
+  return <label className={cn("mb-1.5 block text-xs font-medium text-ink-2", className)} {...props} />;
 }
